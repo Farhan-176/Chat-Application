@@ -1,0 +1,138 @@
+:root {
+  /* Architectural Palette: The Viridian Void */
+  --bg-primary: #040707;
+  --bg-secondary: #08100f;
+  --accent-emerald: #10b981;
+  --accent-jade: #059669;
+  --accent-glow: rgba(16, 185, 129, 0.4);
+
+  /* Refractive Tones */
+  --glass-bg: rgba(8, 16, 15, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.04);
+
+  /* Text Spectrum */
+  --text-primary: #f0fdf4;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #475569;
+
+  /* Spatial Metrics (4px precision grid) */
+  --space-unit: 4px;
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+
+  /* Physics-based Transitions */
+  --spring-duration: 0.6s;
+  --spring-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --smooth-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Luminous Void Background */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 20% 30%, #064e3b 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, #022c22 0%, transparent 50%);
+  z-index: -2;
+  animation: drift 30s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+
+  100% {
+    transform: scale(1.1) translate(20px, -20px);
+  }
+}
+
+/* Sub-pixel Dot Texture */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Typography Utilities */
+h1,
+h2,
+h3 {
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+
+p {
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+/* Base Interactions */
+button {
+  cursor: pointer;
+  transition: all 0.3s var(--smooth-ease);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+input,
+textarea {
+  outline: none;
+  font-family: inherit;
+}
+
+/* Global Transition Classes */
+.fade-in {
+  animation: fadeIn var(--spring-duration) var(--spring-ease) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
