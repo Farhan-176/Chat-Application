@@ -1,0 +1,172 @@
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: var(--space-md);
+  position: relative;
+  perspective: 1000px;
+}
+
+/* The Refractive Prism Unit */
+.auth-prism {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+
+  border-radius: 32px;
+  padding: var(--space-xl);
+
+  /* Multi-layered Architectural Depth */
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 0 0 1px var(--glass-highlight) inset,
+    0 1px 2px rgba(255, 255, 255, 0.1) inset,
+    0 20px 50px -10px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  transition: transform 0.8s var(--spring-ease);
+  overflow: hidden;
+}
+
+.auth-prism::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg,
+      transparent 45%,
+      rgba(255, 255, 255, 0.05) 50%,
+      transparent 55%);
+  animation: shine 10s infinite linear;
+}
+
+@keyframes shine {
+  0% {
+    transform: translate(-30%, -30%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(30%, 30%) rotate(360deg);
+  }
+}
+
+.prism-content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.prism-title {
+  font-size: 48px;
+  margin-bottom: var(--space-xs);
+  color: var(--text-primary);
+  /* Satin Text Treatment */
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent-emerald), var(--accent-jade));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.prism-subtitle {
+  color: var(--text-secondary);
+  font-size: 16px;
+  margin-bottom: var(--space-xl);
+  max-width: 300px;
+  font-weight: 500;
+}
+
+/* Architectural Button Design */
+.google-btn {
+  width: 100%;
+  padding: var(--space-md);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.google-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-emerald);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 15px rgba(16, 185, 129, 0.2);
+  transform: translateY(-2px);
+}
+
+.btn-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.google-btn:hover .btn-shine {
+  left: 100%;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--accent-emerald);
+}
+
+.prism-footer {
+  margin-top: var(--space-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.footer-dot {
+  width: 4px;
+  height: 4px;
+  background: var(--accent-jade);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent-jade);
+}
+
+/* Loading Logic */
+.prism-loader {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--glass-border);
+  border-top-color: var(--accent-emerald);
+  border-radius: 50%;
+  animation: spin 1s var(--smooth-ease) infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,95 @@
+.message-input-form {
+  padding: var(--space-md);
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+}
+
+/* The Detached Frosted Pill */
+.message-input-container {
+  display: flex;
+  width: 100%;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 8px;
+  gap: 8px;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+
+  transition: all 0.4s var(--smooth-ease);
+}
+
+.message-input-container:focus-within {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-emerald);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(16, 185, 129, 0.2);
+  transform: translateY(-2px);
+}
+
+.message-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px 20px;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 500;
+  resize: none;
+  max-height: 120px;
+  min-height: 48px;
+}
+
+.message-input::placeholder {
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.send-button {
+  width: 48px;
+  height: 48px;
+  background: var(--accent-emerald);
+  color: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.send-button:hover:not(:disabled) {
+  background: var(--accent-jade);
+  transform: scale(1.05) rotate(5deg);
+  box-shadow: 0 8px 16px rgba(5, 150, 105, 0.4);
+}
+
+.send-button:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-tertiary);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.send-icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.4s var(--spring-ease);
+}
+
+.send-button:hover .send-icon {
+  transform: translateX(2px) translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .message-input-form {
+    padding: var(--space-sm);
+  }
+}
