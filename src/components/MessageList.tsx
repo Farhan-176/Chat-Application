@@ -38,7 +38,15 @@ export const MessageList = ({ messages, currentUserId }: MessageListProps) => {
               key={message.id}
               className={`message-wrapper ${message.uid === currentUserId ? 'own' : 'other'}`}
             >
-              <div className={`message-bubble ${message.uid === currentUserId ? 'own' : 'other'}`}>
+              <div
+                className={`message-bubble ${message.uid === currentUserId ? 'own' : 'other'} ${message.mood ? `mood-${message.mood}` : ''}`}
+                style={message.moodColor ? { '--mood-color': message.moodColor } as React.CSSProperties : {}}
+              >
+                {message.moodEmoji && (
+                  <div className="mood-emoji-badge" title={message.mood}>
+                    {message.moodEmoji}
+                  </div>
+                )}
                 {message.uid !== currentUserId && (
                   <div className="message-sender">{message.displayName}</div>
                 )}

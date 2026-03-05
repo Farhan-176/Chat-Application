@@ -106,6 +106,82 @@
   color: var(--text-tertiary);
 }
 
+/* ─── AI Mood Rings ─── */
+[class^="mood-"] {
+  --glow-opacity: 0.15;
+  transition: box-shadow 0.4s ease;
+}
+
+.message-bubble.own[class*="mood-"] {
+  box-shadow:
+    0 10px 20px -5px rgba(16, 185, 129, 0.4),
+    0 0 20px 2px var(--mood-color),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  animation: moodPulsateOwn 3s infinite alternate ease-in-out;
+}
+
+.message-bubble.other[class*="mood-"] {
+  box-shadow:
+    0 0 15px 1px var(--mood-color),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  animation: moodPulsateOther 3s infinite alternate ease-in-out;
+}
+
+@keyframes moodPulsateOwn {
+  0% {
+    box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4), 0 0 10px 1px var(--mood-color), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+
+  100% {
+    box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.5), 0 0 25px 5px var(--mood-color), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  }
+}
+
+@keyframes moodPulsateOther {
+  0% {
+    box-shadow: 0 0 12px 1px var(--mood-color), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  }
+
+  100% {
+    box-shadow: 0 0 22px 4px var(--mood-color), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+}
+
+.mood-emoji-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--mood-color);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 5;
+  animation: badgePop 0.4s var(--spring-ease);
+}
+
+.message-bubble.other .mood-emoji-badge {
+  left: -10px;
+  right: auto;
+}
+
+@keyframes badgePop {
+  0% {
+    transform: scale(0) rotate(-20deg);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
 @media (max-width: 768px) {
   .message-bubble {
     max-width: 85%;

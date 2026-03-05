@@ -1,42 +1,60 @@
 import { useEffect, useState } from 'react'
 import {
   collection,
-  addDoc,
   query,
   orderBy,
   limit,
   onSnapshot,
-  serverTimestamp,
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { User, Message } from '../types'
+import { sendMessageToServer } from '../api'
 import { MessageList } from './MessageList'
 import { MessageInput } from './MessageInput'
 import './ChatRoom.css'
 
-const ROOM_ID = 'general' // Single room for v1.0
 const MESSAGES_LIMIT = 50
 
 interface ChatRoomProps {
   user: User
-  onLogout: () => void
+  roomId: string
 }
 
-export const ChatRoom = ({ user, onLogout }: ChatRoomProps) => {
+export const ChatRoom = ({ user, roomId }: ChatRoomProps) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(true)
+  const [roomName, setRoomName] = useState(roomId)
 
+  // Fetch room name
   useEffect(() => {
-    const messagesCollection = collection(db, 'chatRooms', ROOM_ID, 'messages')
+    const roomRef = collection(db, 'chatRooms')
+    const unsubscribe = onSnapshot(
+      roomRef,
+      (snapshot) => {
+        const room = snapshot.docs.find((doc) => doc.id === roomId)
+        if (room) {
+          setRoomName(room.data().name || roomId)
+        }
+      }
+    )
+    return () => unsubscribe()
+  }, [roomId])
+
+  // Real-time message listener
+  useEffect(() => {
+    const messagesCollection = collection(db, 'chatRooms', roomId, 'messages')
     const q = query(messagesCollection, orderBy('createdAt', 'asc'), limit(MESSAGES_LIMIT))
 
-    // Set up real-time listener
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
         const messagesData: Message[] = []
         snapshot.forEach((doc) => {
           const data = doc.data()
+
+          // Skip dissolved ephemeral messages
+          if (data.dissolved) return
+
           messagesData.push({
             id: doc.id,
             text: data.text,
@@ -44,6 +62,15 @@ export const ChatRoom = ({ user, onLogout }: ChatRoomProps) => {
             displayName: data.displayName,
             photoURL: data.photoURL,
             createdAt: data.createdAt ? data.createdAt.toDate() : new Date(),
+            // Mood fields
+            mood: data.mood,
+            moodEmoji: data.moodEmoji,
+            moodColor: data.moodColor,
+            moodConfidence: data.moodConfidence,
+            // Ephemeral fields
+            isEphemeral: data.isEphemeral || false,
+            ttl: data.ttl,
+            dissolved: data.dissolved || false,
           })
         })
         setMessages(messagesData)
@@ -56,19 +83,12 @@ export const ChatRoom = ({ user, onLogout }: ChatRoomProps) => {
     )
 
     return () => unsubscribe()
-  }, [])
+  }, [roomId])
 
   const handleSendMessage = async (text: string) => {
-    const messagesCollection = collection(db, 'chatRooms', ROOM_ID, 'messages')
-
     try {
-      await addDoc(messagesCollection, {
-        text,
-        uid: user.uid,
-        displayName: user.displayName || 'Anonymous',
-        photoURL: user.photoURL || null,
-        createdAt: serverTimestamp(),
-      })
+      // Send via backend (runs Gemini mood analysis)
+      await sendMessageToServer(roomId, text)
     } catch (error) {
       console.error('Error sending message:', error)
       throw error
@@ -79,8 +99,11 @@ export const ChatRoom = ({ user, onLogout }: ChatRoomProps) => {
     <div className="chat-room">
       <header className="chat-header">
         <div className="header-content">
-          <h1>General Chat</h1>
-          <p className="subtitle">Real-time messaging powered by Firebase</p>
+          <h1>
+            <span className="room-hash">#</span>
+            {roomName}
+          </h1>
+          <p className="subtitle">Real-time messaging powered by Firebase + AI</p>
         </div>
         <div className="user-section">
           <div className="user-info">
@@ -90,9 +113,6 @@ export const ChatRoom = ({ user, onLogout }: ChatRoomProps) => {
               <p className="user-id">{user.email}</p>
             </div>
           </div>
-          <button className="logout-btn" onClick={onLogout}>
-            Logout
-          </button>
         </div>
       </header>
 
