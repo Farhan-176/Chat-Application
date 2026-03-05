@@ -11,7 +11,6 @@ import { User, Message } from '../types'
 import { sendMessageToServer, setTypingStatus, updatePresence, setOffline } from '../api'
 import { MessageList } from './MessageList'
 import { MessageInput } from './MessageInput'
-import { MoodCore } from './MoodCore'
 import { TypingIndicator } from './TypingIndicator'
 import './ChatRoom.css'
 
@@ -123,7 +122,6 @@ export const ChatRoom = ({ user, roomId }: ChatRoomProps) => {
 
   const handleSendMessage = async (text: string, isGhostMode: boolean = false, ttl: number = 30) => {
     try {
-      // Send via backend (runs Gemini mood analysis + ephemeral scheduling)
       await sendMessageToServer(roomId, text, isGhostMode, ttl)
     } catch (error) {
       console.error('Error sending message:', error)
@@ -147,16 +145,7 @@ export const ChatRoom = ({ user, roomId }: ChatRoomProps) => {
             <span className="room-hash">#</span>
             {roomName}
           </h1>
-          <p className="subtitle">Real-time messaging powered by Firebase + AI</p>
-        </div>
-        <div className="user-section">
-          <div className="user-info">
-            {user.photoURL && <img src={user.photoURL} alt={user.displayName || 'User'} />}
-            <div className="user-details">
-              <p className="user-name">{user.displayName}</p>
-              <p className="user-id">{user.email}</p>
-            </div>
-          </div>
+          <p className="subtitle">{typingUsers.length + 1} Active Participants</p>
         </div>
       </header>
 
@@ -168,17 +157,14 @@ export const ChatRoom = ({ user, roomId }: ChatRoomProps) => {
               <p>Loading messages...</p>
             </div>
           ) : (
-            <>
-              <MessageList messages={messages} currentUserId={user.uid} />
-              <div className="chat-input-area">
-                <TypingIndicator typingUsers={typingUsers} />
-                <MessageInput onSendMessage={handleSendMessage} onTyping={handleTyping} />
-              </div>
-            </>
+            <MessageList messages={messages} currentUserId={user.uid} />
           )}
         </div>
+      </div>
 
-        <MoodCore messages={messages} />
+      <div className="chat-input-area">
+        <TypingIndicator typingUsers={typingUsers} />
+        <MessageInput onSendMessage={handleSendMessage} onTyping={handleTyping} />
       </div>
     </div>
   )

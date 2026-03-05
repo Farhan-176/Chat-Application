@@ -1,13 +1,28 @@
 .message-list {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-xl) var(--space-lg);
+  padding: 24px 32px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: 4px;
   scroll-behavior: smooth;
-  mask-image: linear-gradient(to top, black 95%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to top, black 95%, transparent 100%);
+}
+
+.message-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.message-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.message-list::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 10px;
+}
+
+.message-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.3);
 }
 
 .no-messages {
@@ -25,7 +40,9 @@
 .message-wrapper {
   display: flex;
   width: 100%;
-  margin-bottom: var(--space-unit);
+  margin-bottom: 16px;
+  gap: 12px;
+  align-items: flex-end;
 
   /* High-Fidelity Entry Animation */
   opacity: 0;
@@ -44,50 +61,73 @@
 
 .message-wrapper.own {
   justify-content: flex-end;
+  flex-direction: row-reverse;
 }
 
 .message-wrapper.other {
   justify-content: flex-start;
 }
 
-/* Organic Cluster Bubbles */
-.message-bubble {
+.message-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--glass-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.message-avatar.own {
+  border-color: var(--accent-indigo);
+}
+
+.message-content-wrapper {
+  display: flex;
+  flex-direction: column;
   max-width: 65%;
-  padding: 12px 20px;
+}
+
+/* Organic Cluster Bubbles (Project Obsidian Style) */
+.message-bubble {
+  width: 100%;
+  padding: 14px 18px;
   position: relative;
   font-size: 15px;
   font-weight: 500;
   line-height: 1.5;
-
-  /* Inner light border effect */
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  border-radius: 18px;
+  transition: all 0.3s var(--smooth-ease);
+  word-wrap: break-word;
 }
 
 .message-bubble.own {
-  background: linear-gradient(135deg, var(--accent-emerald), var(--accent-jade));
-  color: white;
-  border-radius: 20px 20px 4px 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);
+  color: var(--text-primary);
+  border-bottom-right-radius: 6px;
+  border: 1px solid var(--glass-border);
   box-shadow:
-    0 10px 20px -5px rgba(16, 185, 129, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    0 2px 8px rgba(99, 102, 241, 0.1),
+    0 1px 3px rgba(99, 102, 241, 0.08);
 }
 
 .message-bubble.other {
-  background: var(--glass-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
   color: var(--text-primary);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px 20px 20px 4px;
+  border-bottom-left-radius: 6px;
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  box-shadow:
+    0 2px 8px rgba(167, 139, 250, 0.12),
+    0 1px 35px rgba(167, 139, 250, 0.15),
+    0 8px 10px -6px rgba(167, 139, 250, 0.08);
 }
 
 .message-sender {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--text-secondary);
+  color: var(--accent-violet);
   margin-bottom: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
 }
 
 .message-content {
@@ -96,54 +136,47 @@
 
 .message-time {
   font-size: 10px;
-  opacity: 0.6;
-  margin-top: 6px;
+  opacity: 0.5;
+  margin-top: 4px;
   text-align: right;
-  font-weight: 600;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
 }
 
-.message-bubble.other .message-time {
-  color: var(--text-tertiary);
-}
-
-/* ─── AI Mood Rings ─── */
+/* ─── AI Mood Rings (Refined) ─── */
 [class^="mood-"] {
-  --glow-opacity: 0.15;
-  transition: box-shadow 0.4s ease;
+  --glow-opacity: 0.1;
+  transition: box-shadow 0.5s ease;
+}
+
+.message-bubble[class*="mood-"] {
+  border-color: var(--mood-color);
 }
 
 .message-bubble.own[class*="mood-"] {
   box-shadow:
-    0 10px 20px -5px rgba(16, 185, 129, 0.4),
-    0 0 20px 2px var(--mood-color),
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  animation: moodPulsateOwn 3s infinite alternate ease-in-out;
+    0 12px 24px -10px var(--mood-color),
+    0 4px 6px -4px var(--mood-color);
+  animation: moodSubtlePulse 4s infinite alternate ease-in-out;
 }
 
 .message-bubble.other[class*="mood-"] {
   box-shadow:
-    0 0 15px 1px var(--mood-color),
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  animation: moodPulsateOther 3s infinite alternate ease-in-out;
+    0 12px 24px -10px var(--mood-color),
+    0 4px 6px -4px var(--mood-color);
+  animation: moodSubtlePulse 4s infinite alternate ease-in-out;
 }
 
-@keyframes moodPulsateOwn {
+@keyframes moodSubtlePulse {
   0% {
-    box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4), 0 0 10px 1px var(--mood-color), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    transform: scale(1);
+    box-shadow: 0 10px 20px -10px var(--mood-color);
   }
 
   100% {
-    box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.5), 0 0 25px 5px var(--mood-color), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-  }
-}
-
-@keyframes moodPulsateOther {
-  0% {
-    box-shadow: 0 0 12px 1px var(--mood-color), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  }
-
-  100% {
-    box-shadow: 0 0 22px 4px var(--mood-color), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    transform: scale(1.01);
+    box-shadow: 0 15px 30px -8px var(--mood-color);
   }
 }
 
@@ -192,7 +225,7 @@
 }
 
 .message-bubble.ghostly.own {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.7), rgba(5, 150, 105, 0.7));
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.6), rgba(112, 0, 255, 0.6));
 }
 
 .message-bubble.ghostly.other {

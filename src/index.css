@@ -1,20 +1,36 @@
 :root {
-  /* Architectural Palette: The Viridian Void */
-  --bg-primary: #040707;
-  --bg-secondary: #08100f;
+  /* Project Obsidian Design System - Enhanced */
+  --bg-primary: #f0f4f8;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e8f1f7;
+
+  --accent-indigo: #6366f1;
+  --accent-mint: #a3e4d7;
+  --accent-lavender: #e879f9;
   --accent-emerald: #10b981;
-  --accent-jade: #059669;
-  --accent-glow: rgba(16, 185, 129, 0.4);
+  --accent-violet: #a78bfa;
+  --accent-rose: #f43f5e;
+  --accent-cyan: #06b6d4;
+  --obsidian-dark: #0f172a;
 
-  /* Refractive Tones */
-  --glass-bg: rgba(8, 16, 15, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-highlight: rgba(255, 255, 255, 0.04);
+  /* Glassmorphism Refraction (Project Obsidian Style) - More Opaque */
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(99, 102, 241, 0.2);
+  --glass-highlight: rgba(255, 255, 255, 0.98);
+  --glass-blur: blur(16px);
 
-  /* Text Spectrum */
-  --text-primary: #f0fdf4;
-  --text-secondary: #94a3b8;
-  --text-tertiary: #475569;
+  /* Text & Contrast (Better Readability) */
+  --text-primary: #0a0e27;
+  --text-secondary: #374151;
+  --text-tertiary: #6b7280;
+
+  /* Mood Spectrum (Soft Obsidian) */
+  --mood-joy: #fbbf24;
+  --mood-excitement: #10b981;
+  --mood-calm: #0ea5e9;
+  --mood-sadness: #8b5cf6;
+  --mood-anger: #ef4444;
+  --mood-neutral: #94a3b8;
 
   /* Spatial Metrics (4px precision grid) */
   --space-unit: 4px;
@@ -61,10 +77,15 @@ body::before {
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(circle at 20% 30%, #064e3b 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, #022c22 0%, transparent 50%);
+    radial-gradient(circle at 15% 50%, #d4e9f7 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, #f0e4ff 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, #d4f9f0 0%, transparent 50%),
+    linear-gradient(135deg, #f0f4f8 0%, #f8f5ff 100%);
+  background-attachment: fixed;
+  background-size: cover;
   z-index: -2;
-  animation: drift 30s ease-in-out infinite alternate;
+  /* Reduced animation for professional clarity */
+  animation: drift 60s ease-in-out infinite alternate;
 }
 
 @keyframes drift {

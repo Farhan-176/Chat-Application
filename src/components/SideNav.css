@@ -1,0 +1,113 @@
+.side-nav {
+    width: 96px;
+    flex-shrink: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(248, 248, 255, 0.8);
+    backdrop-filter: blur(8px);
+    border-right: 2px solid var(--glass-border);
+    padding: 32px 0;
+    z-index: 20;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.nav-logo-section {
+    margin-bottom: 48px;
+}
+
+.nav-logo {
+    width: 48px;
+    height: 48px;
+    background: var(--obsidian-dark);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.nav-links {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+}
+
+.nav-link {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.3s var(--spring-ease);
+}
+
+.nav-link-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--accent-mint);
+    border-radius: 14px;
+    transform: scale(0) rotate(-10deg);
+    transition: all 0.4s var(--spring-ease);
+    z-index: -1;
+}
+
+.nav-link.active .nav-link-bg {
+    transform: scale(1) rotate(0);
+}
+
+.nav-link.active {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.nav-link:hover {
+    color: var(--accent-indigo);
+    transform: translateY(-2px);
+}
+
+.nav-link:active {
+    transform: scale(0.95);
+}
+
+.nav-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.nav-footer {
+    margin-top: auto;
+}
+
+.nav-footer-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-footer-btn:hover {
+    color: var(--accent-rose);
+    transform: scale(1.1) rotate(8deg);
+}
+
+.nav-footer-btn:active {
+    transform: scale(0.95);
+}

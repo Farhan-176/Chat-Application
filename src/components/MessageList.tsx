@@ -38,26 +38,44 @@ export const MessageList = ({ messages, currentUserId }: MessageListProps) => {
               key={message.id}
               className={`message-wrapper ${message.uid === currentUserId ? 'own' : 'other'} ${message.isEphemeral ? 'ephemeral' : ''} ${message.dissolved ? 'dissolved' : ''}`}
             >
-              <div
-                className={`message-bubble ${message.uid === currentUserId ? 'own' : 'other'} ${message.mood ? `mood-${message.mood}` : ''} ${message.isEphemeral ? 'ghostly' : ''}`}
-                style={message.moodColor ? { '--mood-color': message.moodColor } as React.CSSProperties : {}}
-              >
-                {message.isEphemeral && !message.dissolved && (
-                  <div className="ghost-indicator" title="Self-destructing message">
-                    👻
-                  </div>
-                )}
-                {message.moodEmoji && (
-                  <div className="mood-emoji-badge" title={message.mood}>
-                    {message.moodEmoji}
-                  </div>
-                )}
-                {message.uid !== currentUserId && (
-                  <div className="message-sender">{message.displayName}</div>
-                )}
-                <div className="message-content">{message.text}</div>
-                <div className="message-time">{formatTime(message.createdAt)}</div>
+              {message.uid !== currentUserId && message.photoURL && (
+                <img 
+                  src={message.photoURL} 
+                  alt={message.displayName}
+                  className="message-avatar"
+                />
+              )}
+              
+              <div className="message-content-wrapper">
+                <div
+                  className={`message-bubble ${message.uid === currentUserId ? 'own' : 'other'} ${message.mood ? `mood-${message.mood}` : ''} ${message.isEphemeral ? 'ghostly' : ''}`}
+                  style={message.moodColor ? { '--mood-color': message.moodColor } as React.CSSProperties : {}}
+                >
+                  {message.isEphemeral && !message.dissolved && (
+                    <div className="ghost-indicator" title="Self-destructing message">
+                      👻
+                    </div>
+                  )}
+                  {message.moodEmoji && (
+                    <div className="mood-emoji-badge" title={message.mood}>
+                      {message.moodEmoji}
+                    </div>
+                  )}
+                  {message.uid !== currentUserId && (
+                    <div className="message-sender">{message.displayName}</div>
+                  )}
+                  <div className="message-content">{message.text}</div>
+                  <div className="message-time">{formatTime(message.createdAt)}</div>
+                </div>
               </div>
+
+              {message.uid === currentUserId && message.photoURL && (
+                <img 
+                  src={message.photoURL} 
+                  alt={message.displayName}
+                  className="message-avatar own"
+                />
+              )}
             </div>
           ))}
           <div ref={bottomRef} />

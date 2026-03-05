@@ -99,14 +99,14 @@ export const MessageInput = ({ onSendMessage, onTyping, disabled = false }: Mess
           </div>
         )}
 
-        <textarea
+        <input
+          type="text"
           className="message-input"
-          placeholder={isGhostMode ? "Whisper a secret..." : "Sync your thoughts..."}
+          placeholder={isGhostMode ? "Whisper a secret..." : "Type a message..."}
           value={message}
-          onChange={handleChange}
-          onKeyPress={handleKeyPress}
+          onChange={(e) => handleChange(e as any)}
+          onKeyDown={handleKeyPress}
           disabled={disabled || isLoading}
-          rows={1}
         />
         <button
           type="submit"

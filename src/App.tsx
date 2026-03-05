@@ -5,6 +5,8 @@ import { RoomSidebar } from './components/RoomSidebar'
 import { User } from './types'
 import './App.css'
 
+import { SideNav } from './components/SideNav'
+
 function App() {
   const [user, setUser] = useState<User | null>(null)
   const [activeRoomId, setActiveRoomId] = useState('general')
@@ -27,6 +29,8 @@ function App() {
     <>
       {user ? (
         <div className="app-layout">
+          <SideNav onLogout={handleLogout} />
+
           <RoomSidebar
             activeRoomId={activeRoomId}
             onSelectRoom={handleSelectRoom}
@@ -34,6 +38,7 @@ function App() {
             userDisplayName={user.displayName}
             onLogout={handleLogout}
           />
+
           <ChatRoom
             key={activeRoomId}
             user={user}

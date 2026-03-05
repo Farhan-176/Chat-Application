@@ -2,9 +2,9 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 16px;
-    margin-bottom: 8px;
-    background: rgba(255, 255, 255, 0.03);
+    padding: 6px 12px;
+    margin-bottom: 10px;
+    background: rgba(167, 139, 250, 0.1);
     border-radius: 12px;
     width: fit-content;
     animation: fadeIn 0.3s ease-out;
@@ -18,9 +18,9 @@
 .typing-dots span {
     width: 6px;
     height: 6px;
-    background: var(--accent-emerald, #10b981);
+    background: var(--accent-violet);
     border-radius: 50%;
-    opacity: 0.4;
+    opacity: 0.6;
     animation: typingBounce 1.4s infinite ease-in-out both;
 }
 
@@ -34,8 +34,8 @@
 
 .typing-text {
     font-size: 0.75rem;
-    color: var(--text-secondary);
-    font-weight: 500;
+    color: var(--accent-violet);
+    font-weight: 600;
     font-style: italic;
 }
 

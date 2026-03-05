@@ -6,7 +6,7 @@
   width: 100%;
   padding: var(--space-md);
   position: relative;
-  perspective: 1000px;
+  background: radial-gradient(circle at top left, #f3f4f6, #ffffff 50%, #f0fdf4);
 }
 
 /* The Refractive Prism Unit */
@@ -15,20 +15,14 @@
   width: 100%;
   max-width: 440px;
   background: var(--glass-bg);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-radius: 32px;
   padding: var(--space-xl);
-
-  /* Multi-layered Architectural Depth */
   border: 1px solid var(--glass-border);
   box-shadow:
-    0 0 0 1px var(--glass-highlight) inset,
-    0 1px 2px rgba(255, 255, 255, 0.1) inset,
-    0 20px 50px -10px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
-
+    0 25px 50px -12px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.4) inset;
   transition: transform 0.8s var(--spring-ease);
   overflow: hidden;
 }
@@ -42,9 +36,9 @@
   height: 200%;
   background: linear-gradient(45deg,
       transparent 45%,
-      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.4) 50%,
       transparent 55%);
-  animation: shine 10s infinite linear;
+  animation: shine 12s infinite linear;
 }
 
 @keyframes shine {
@@ -67,15 +61,15 @@
 }
 
 .prism-title {
-  font-size: 48px;
+  font-size: 40px;
+  font-weight: 800;
   margin-bottom: var(--space-xs);
   color: var(--text-primary);
-  /* Satin Text Treatment */
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.04em;
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--accent-emerald), var(--accent-jade));
+  background: linear-gradient(135deg, var(--accent-indigo), #a855f7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -83,84 +77,72 @@
 
 .prism-subtitle {
   color: var(--text-secondary);
-  font-size: 16px;
+  font-size: 15px;
   margin-bottom: var(--space-xl);
-  max-width: 300px;
+  max-width: 320px;
   font-weight: 500;
+  line-height: 1.5;
 }
 
 /* Architectural Button Design */
 .google-btn {
   width: 100%;
-  padding: var(--space-md);
-  background: rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  background: white;
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
+  gap: 12px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.3s var(--spring-ease);
 }
 
 .google-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--accent-emerald);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 15px rgba(16, 185, 129, 0.2);
+  background: #f8fafc;
+  border-color: var(--accent-indigo);
+  box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.1);
   transform: translateY(-2px);
 }
 
-.btn-shine {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.5s ease;
-}
-
-.google-btn:hover .btn-shine {
-  left: 100%;
-}
-
 .google-icon {
-  width: 20px;
-  height: 20px;
-  color: var(--accent-emerald);
+  width: 24px;
+  height: 24px;
 }
 
 .prism-footer {
-  margin-top: var(--space-xl);
+  margin-top: 48px;
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: 8px;
   color: var(--text-tertiary);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
 }
 
 .footer-dot {
-  width: 4px;
-  height: 4px;
-  background: var(--accent-jade);
+  width: 5px;
+  height: 5px;
+  background: var(--accent-indigo);
   border-radius: 50%;
-  box-shadow: 0 0 8px var(--accent-jade);
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
 }
 
 /* Loading Logic */
 .prism-loader {
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--glass-border);
-  border-top-color: var(--accent-emerald);
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--bg-tertiary);
+  border-top-color: var(--accent-indigo);
   border-radius: 50%;
   animation: spin 1s var(--smooth-ease) infinite;
 }

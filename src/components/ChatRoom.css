@@ -1,52 +1,57 @@
 .chat-room {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   flex: 1;
   min-width: 0;
   position: relative;
-  background: radial-gradient(circle at top right, var(--bg-secondary), var(--bg-primary));
+  background: linear-gradient(180deg, #f8f9ff 0%, #f5f3ff 100%);
   animation: fadeIn 0.8s var(--smooth-ease);
 }
 
 /* The Flow Header */
 .chat-header {
-  height: 80px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(24px) saturate(150%);
-  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  flex-shrink: 0;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--glass-border);
-  padding: 0 var(--space-lg);
+  padding: 0 32px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   z-index: 100;
+}
 
-  /* Gradient Blur Mask to blend into content */
-  -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+.header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .header-content h1 {
-  font-size: 24px;
+  font-size: 20px;
   color: var(--text-primary);
   margin: 0;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
 }
 
 .room-hash {
-  color: var(--accent-emerald, #10b981);
-  margin-right: 6px;
-  font-weight: 800;
-  opacity: 0.7;
+  margin-right: 4px;
+  font-weight: 900;
+  font-size: 18px;
+  opacity: 1;
 }
 
-.header-content .subtitle {
-  font-size: 13px;
-  color: var(--text-secondary);
+.subtitle {
+  font-size: 12px;
+  color: var(--text-tertiary);
   font-weight: 500;
+  margin: 0;
   opacity: 0.8;
 }
 
@@ -92,12 +97,14 @@
   flex: 1;
   overflow: hidden;
   position: relative;
+  min-height: 0;
 }
 
 .chat-messages-section {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0;
   min-width: 0;
   position: relative;
 }
@@ -135,9 +142,12 @@
     font-size: 20px;
   }
 }
+
 .chat-input-area {
-  padding: 16px;
-  background: rgba(0, 0, 0, 0.1);
-  border-top: 1px solid var(--border-primary, rgba(45, 85, 55, 0.15));
-  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+  padding: 20px 32px 24px;
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  z-index: 10;
 }

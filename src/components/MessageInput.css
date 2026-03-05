@@ -1,191 +1,138 @@
 .message-input-form {
-  padding: var(--space-md);
-  background: transparent;
-  display: flex;
-  justify-content: center;
-  z-index: 100;
+  position: relative;
+  width: 100%;
 }
 
-/* The Detached Frosted Pill */
 .message-input-container {
   display: flex;
+  align-items: center;
+  gap: 12px;
   width: 100%;
-  max-width: 800px;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  border: 1px solid var(--glass-border);
+  background: white;
+  border: 2px solid rgba(99, 102, 241, 0.15);
+  padding: 12px 18px;
   border-radius: 24px;
-  padding: 8px;
-  gap: 8px;
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
-
-  transition: all 0.4s var(--smooth-ease);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s var(--smooth-ease);
 }
 
 .message-input-container:focus-within {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--accent-emerald);
-  box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.8),
-    0 0 20px rgba(16, 185, 129, 0.2);
-  transform: translateY(-2px);
+  border-color: var(--accent-indigo);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: white;
 }
 
 .message-input {
   flex: 1;
-  background: transparent;
   border: none;
-  padding: 12px 20px;
+  background: transparent;
   color: var(--text-primary);
   font-size: 15px;
+  font-family: inherit;
   font-weight: 500;
-  resize: none;
-  max-height: 120px;
-  min-height: 48px;
+  outline: none;
+  padding: 10px 0;
 }
 
 .message-input::placeholder {
   color: var(--text-tertiary);
-  font-weight: 600;
-}
-
-.send-button {
-  width: 48px;
-  height: 48px;
-  background: var(--accent-emerald);
-  color: white;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-}
-
-.send-button:hover:not(:disabled) {
-  background: var(--accent-jade);
-  transform: scale(1.05) rotate(5deg);
-  box-shadow: 0 8px 16px rgba(5, 150, 105, 0.4);
-}
-
-.send-button:disabled {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-tertiary);
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
-.send-icon {
-  width: 20px;
-  height: 20px;
-  transition: transform 0.4s var(--spring-ease);
-}
-
-.send-button:hover .send-icon {
-  transform: translateX(2px) translateY(-2px);
-}
-
-.message-input-container.ghost-mode {
-  background: rgba(139, 92, 246, 0.05);
-  /* Subtle purple tint for ghost mode */
-  border-color: rgba(139, 92, 246, 0.3);
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(139, 92, 246, 0.1);
+  font-weight: 400;
 }
 
 .ghost-toggle {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
   background: transparent;
-  border: 1px solid transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s var(--smooth-ease);
-  opacity: 0.5;
-  filter: grayscale(1);
+  transition: all 0.2s ease;
+  font-size: 18px;
 }
 
 .ghost-toggle:hover {
-  background: rgba(255, 255, 255, 0.05);
-  opacity: 0.8;
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .ghost-toggle.active {
-  background: rgba(139, 92, 246, 0.15);
-  border-color: rgba(139, 92, 246, 0.3);
-  opacity: 1;
-  filter: grayscale(0);
-  animation: ghostFloat 3s infinite ease-in-out;
+  background: var(--accent-lavender);
+  animation: pulseGhost 2s infinite;
 }
 
-@keyframes ghostFloat {
-
-  0%,
-  100% {
-    transform: translateY(0);
+@keyframes pulseGhost {
+  0% {
+    transform: scale(1);
   }
 
   50% {
-    transform: translateY(-3px);
+    transform: scale(1.1);
   }
-}
 
-.ghost-icon {
-  font-size: 20px;
+  100% {
+    transform: scale(1);
+  }
 }
 
 .ttl-selector {
   display: flex;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.05);
   padding: 2px;
-  gap: 2px;
-  margin-left: 4px;
-  animation: slideInLeft 0.3s var(--spring-ease);
-}
-
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-10px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+  border-radius: 14px;
+  margin-right: 8px;
 }
 
 .ttl-option {
   padding: 4px 8px;
-  border-radius: 8px;
-  border: none;
-  background: transparent;
-  color: var(--text-tertiary);
   font-size: 11px;
   font-weight: 700;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
   cursor: pointer;
+  border-radius: 10px;
   transition: all 0.2s ease;
 }
 
-.ttl-option:hover {
-  color: var(--text-secondary);
-}
-
 .ttl-option.selected {
-  background: rgba(139, 92, 246, 0.2);
-  color: #a78bfa;
+  background: white;
+  color: var(--accent-indigo);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 768px) {
-  .message-input-form {
-    padding: var(--space-sm);
-  }
+.send-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--accent-indigo);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s var(--spring-ease);
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+
+.send-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4);
+}
+
+.send-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.send-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+.send-icon {
+  width: 18px;
+  height: 18px;
 }
