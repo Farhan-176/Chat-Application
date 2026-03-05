@@ -36,12 +36,17 @@ export const MessageList = ({ messages, currentUserId }: MessageListProps) => {
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`message-wrapper ${message.uid === currentUserId ? 'own' : 'other'}`}
+              className={`message-wrapper ${message.uid === currentUserId ? 'own' : 'other'} ${message.isEphemeral ? 'ephemeral' : ''} ${message.dissolved ? 'dissolved' : ''}`}
             >
               <div
-                className={`message-bubble ${message.uid === currentUserId ? 'own' : 'other'} ${message.mood ? `mood-${message.mood}` : ''}`}
+                className={`message-bubble ${message.uid === currentUserId ? 'own' : 'other'} ${message.mood ? `mood-${message.mood}` : ''} ${message.isEphemeral ? 'ghostly' : ''}`}
                 style={message.moodColor ? { '--mood-color': message.moodColor } as React.CSSProperties : {}}
               >
+                {message.isEphemeral && !message.dissolved && (
+                  <div className="ghost-indicator" title="Self-destructing message">
+                    👻
+                  </div>
+                )}
                 {message.moodEmoji && (
                   <div className="mood-emoji-badge" title={message.mood}>
                     {message.moodEmoji}

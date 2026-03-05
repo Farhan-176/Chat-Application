@@ -2,13 +2,15 @@ import { useState } from 'react'
 import './MessageInput.css'
 
 interface MessageInputProps {
-  onSendMessage: (text: string) => Promise<void>
+  onSendMessage: (text: string, isGhostMode?: boolean, ttl?: number) => Promise<void>
   disabled?: boolean
 }
 
 export const MessageInput = ({ onSendMessage, disabled = false }: MessageInputProps) => {
   const [message, setMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isGhostMode, setIsGhostMode] = useState(false)
+  const [ttl, setTtl] = useState(30) // Default 30s
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,8 +22,9 @@ export const MessageInput = ({ onSendMessage, disabled = false }: MessageInputPr
 
     try {
       setIsLoading(true)
-      await onSendMessage(trimmedMessage)
+      await onSendMessage(trimmedMessage, isGhostMode, ttl)
       setMessage('')
+      // Don't reset ghost mode, user might want to send multiple
     } catch (error) {
       console.error('Error sending message:', error)
       alert('Failed to send message. Please try again.')
@@ -39,10 +42,36 @@ export const MessageInput = ({ onSendMessage, disabled = false }: MessageInputPr
 
   return (
     <form className="message-input-form" onSubmit={handleSubmit}>
-      <div className="message-input-container">
+      <div className={`message-input-container ${isGhostMode ? 'ghost-mode' : ''}`}>
+        <button
+          type="button"
+          className={`ghost-toggle ${isGhostMode ? 'active' : ''}`}
+          onClick={() => setIsGhostMode(!isGhostMode)}
+          title={isGhostMode ? "Disable Ghost Mode" : "Enable Ghost Mode"}
+          disabled={disabled || isLoading}
+        >
+          <span className="ghost-icon">👻</span>
+        </button>
+
+        {isGhostMode && (
+          <div className="ttl-selector">
+            {[5, 30, 60].map((value) => (
+              <button
+                key={value}
+                type="button"
+                className={`ttl-option ${ttl === value ? 'selected' : ''}`}
+                onClick={() => setTtl(value)}
+                disabled={disabled || isLoading}
+              >
+                {value}s
+              </button>
+            ))}
+          </div>
+        )}
+
         <textarea
           className="message-input"
-          placeholder="Sync your thoughts..."
+          placeholder={isGhostMode ? "Whisper a secret..." : "Sync your thoughts..."}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}

@@ -88,6 +88,102 @@
   transform: translateX(2px) translateY(-2px);
 }
 
+.message-input-container.ghost-mode {
+  background: rgba(139, 92, 246, 0.05);
+  /* Subtle purple tint for ghost mode */
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(139, 92, 246, 0.1);
+}
+
+.ghost-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s var(--smooth-ease);
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+.ghost-toggle:hover {
+  background: rgba(255, 255, 255, 0.05);
+  opacity: 0.8;
+}
+
+.ghost-toggle.active {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.3);
+  opacity: 1;
+  filter: grayscale(0);
+  animation: ghostFloat 3s infinite ease-in-out;
+}
+
+@keyframes ghostFloat {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.ghost-icon {
+  font-size: 20px;
+}
+
+.ttl-selector {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 2px;
+  gap: 2px;
+  margin-left: 4px;
+  animation: slideInLeft 0.3s var(--spring-ease);
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.ttl-option {
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ttl-option:hover {
+  color: var(--text-secondary);
+}
+
+.ttl-option.selected {
+  background: rgba(139, 92, 246, 0.2);
+  color: #a78bfa;
+}
+
 @media (max-width: 768px) {
   .message-input-form {
     padding: var(--space-sm);

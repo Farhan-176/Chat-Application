@@ -182,6 +182,80 @@
   }
 }
 
+/* ─── Ephemeral Ghost Messages ─── */
+.message-bubble.ghostly {
+  opacity: 0.8;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  transition: all 0.5s ease;
+}
+
+.message-bubble.ghostly.own {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.7), rgba(5, 150, 105, 0.7));
+}
+
+.message-bubble.ghostly.other {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.message-wrapper.dissolved {
+  pointer-events: none;
+}
+
+.message-wrapper.dissolved .message-bubble {
+  animation: dissolveSmoke 2.5s forwards cubic-bezier(0.4, 0, 0.2, 1);
+  filter: blur(0);
+}
+
+@keyframes dissolveSmoke {
+  0% {
+    opacity: 0.8;
+    filter: blur(0);
+    transform: scale(1) translateY(0);
+  }
+
+  30% {
+    opacity: 0.6;
+    filter: blur(4px);
+    transform: scale(1.05) translateY(-5px);
+  }
+
+  100% {
+    opacity: 0;
+    filter: blur(20px);
+    transform: scale(1.2) translateY(-20px);
+  }
+}
+
+.ghost-indicator {
+  position: absolute;
+  bottom: -10px;
+  right: -5px;
+  font-size: 12px;
+  opacity: 0.6;
+  animation: ghostHover 2s infinite ease-in-out;
+}
+
+.message-bubble.other .ghost-indicator {
+  left: -5px;
+  right: auto;
+}
+
+@keyframes ghostHover {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateY(-4px) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
 @media (max-width: 768px) {
   .message-bubble {
     max-width: 85%;

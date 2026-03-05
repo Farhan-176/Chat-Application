@@ -52,9 +52,6 @@ export const ChatRoom = ({ user, roomId }: ChatRoomProps) => {
         snapshot.forEach((doc) => {
           const data = doc.data()
 
-          // Skip dissolved ephemeral messages
-          if (data.dissolved) return
-
           messagesData.push({
             id: doc.id,
             text: data.text,
@@ -85,10 +82,10 @@ export const ChatRoom = ({ user, roomId }: ChatRoomProps) => {
     return () => unsubscribe()
   }, [roomId])
 
-  const handleSendMessage = async (text: string) => {
+  const handleSendMessage = async (text: string, isGhostMode: boolean = false, ttl: number = 30) => {
     try {
-      // Send via backend (runs Gemini mood analysis)
-      await sendMessageToServer(roomId, text)
+      // Send via backend (runs Gemini mood analysis + ephemeral scheduling)
+      await sendMessageToServer(roomId, text, isGhostMode, ttl)
     } catch (error) {
       console.error('Error sending message:', error)
       throw error
