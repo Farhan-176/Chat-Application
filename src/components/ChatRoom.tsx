@@ -8,9 +8,11 @@ import {
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { User, Message } from '../types'
-import { sendMessageToServer } from '../api'
+import { sendMessageToServer, setTypingStatus, updatePresence, setOffline } from '../api'
 import { MessageList } from './MessageList'
 import { MessageInput } from './MessageInput'
+import { MoodCore } from './MoodCore'
+import { TypingIndicator } from './TypingIndicator'
 import './ChatRoom.css'
 
 const MESSAGES_LIMIT = 50
@@ -24,6 +26,7 @@ export const ChatRoom = ({ user, roomId }: ChatRoomProps) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [loading, setLoading] = useState(true)
   const [roomName, setRoomName] = useState(roomId)
+  const [typingUsers, setTypingUsers] = useState<string[]>([])
 
   // Fetch room name
   useEffect(() => {
@@ -82,6 +85,42 @@ export const ChatRoom = ({ user, roomId }: ChatRoomProps) => {
     return () => unsubscribe()
   }, [roomId])
 
+  // Real-time typing listener
+  useEffect(() => {
+    const typingCollection = collection(db, 'chatRooms', roomId, 'typing')
+
+    const unsubscribe = onSnapshot(typingCollection, (snapshot) => {
+      const users: string[] = []
+      snapshot.forEach(doc => {
+        const data = doc.data()
+        // Don't show ourselves in the typing list
+        if (doc.id !== user.uid) {
+          users.push(data.displayName || 'Anonymous')
+        }
+      })
+      setTypingUsers(users)
+    })
+
+    return () => unsubscribe()
+  }, [roomId, user.uid])
+
+  // Manage Online Presence
+  useEffect(() => {
+    const handleJoin = async () => {
+      try {
+        await updatePresence(roomId)
+      } catch (err) {
+        console.error('Presence error:', err)
+      }
+    }
+
+    handleJoin()
+
+    return () => {
+      setOffline(roomId).catch(err => console.error('Offline error:', err))
+    }
+  }, [roomId])
+
   const handleSendMessage = async (text: string, isGhostMode: boolean = false, ttl: number = 30) => {
     try {
       // Send via backend (runs Gemini mood analysis + ephemeral scheduling)
@@ -89,6 +128,14 @@ export const ChatRoom = ({ user, roomId }: ChatRoomProps) => {
     } catch (error) {
       console.error('Error sending message:', error)
       throw error
+    }
+  }
+
+  const handleTyping = async (isTyping: boolean) => {
+    try {
+      await setTypingStatus(roomId, isTyping)
+    } catch (error) {
+      console.error('Error updating typing status:', error)
     }
   }
 
@@ -113,17 +160,26 @@ export const ChatRoom = ({ user, roomId }: ChatRoomProps) => {
         </div>
       </header>
 
-      {loading ? (
-        <div className="loading-container">
-          <div className="spinner"></div>
-          <p>Loading messages...</p>
+      <div className="chat-main-container">
+        <div className="chat-messages-section">
+          {loading ? (
+            <div className="loading-container">
+              <div className="spinner"></div>
+              <p>Loading messages...</p>
+            </div>
+          ) : (
+            <>
+              <MessageList messages={messages} currentUserId={user.uid} />
+              <div className="chat-input-area">
+                <TypingIndicator typingUsers={typingUsers} />
+                <MessageInput onSendMessage={handleSendMessage} onTyping={handleTyping} />
+              </div>
+            </>
+          )}
         </div>
-      ) : (
-        <>
-          <MessageList messages={messages} currentUserId={user.uid} />
-          <MessageInput onSendMessage={handleSendMessage} />
-        </>
-      )}
+
+        <MoodCore messages={messages} />
+      </div>
     </div>
   )
 }

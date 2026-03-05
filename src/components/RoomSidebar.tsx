@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ChatRoom as ChatRoomType } from '../types'
+import { ChatRoom as ChatRoomType, UserPresence } from '../types'
 import { fetchRooms, createRoom } from '../api'
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
 import { db } from '../firebase'
@@ -26,6 +26,7 @@ export const RoomSidebar = ({
     const [newRoomDesc, setNewRoomDesc] = useState('')
     const [creating, setCreating] = useState(false)
     const [collapsed, setCollapsed] = useState(false)
+    const [presences, setPresences] = useState<UserPresence[]>([])
 
     // Real-time listener for rooms
     useEffect(() => {
@@ -53,6 +54,35 @@ export const RoomSidebar = ({
 
         return () => unsubscribe()
     }, [])
+
+    // Real-time listener for current room's presence
+    useEffect(() => {
+        if (!activeRoomId) return
+
+        const presenceRef = collection(db, 'chatRooms', activeRoomId, 'presence')
+        const q = query(presenceRef)
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const presenceData: UserPresence[] = snapshot.docs
+                .map(doc => {
+                    const data = doc.data()
+                    return {
+                        uid: doc.id,
+                        displayName: data.displayName || 'Anonymous',
+                        photoURL: data.photoURL || null,
+                        online: data.online ?? false,
+                        spatialX: data.spatialX ?? 0.5,
+                        spatialY: data.spatialY ?? 0.5,
+                        lastSeen: data.lastSeen?.toDate?.() || new Date(),
+                    } as UserPresence
+                })
+                .filter(p => p.online)
+
+            setPresences(presenceData)
+        })
+
+        return () => unsubscribe()
+    }, [activeRoomId])
 
     const handleCreateRoom = async () => {
         if (!newRoomName.trim()) return
@@ -111,7 +141,7 @@ export const RoomSidebar = ({
                                 <button onClick={() => setShowCreateModal(true)}>Create one</button>
                             </div>
                         ) : (
-                            rooms.map((room) => (
+                            rooms.map((room: ChatRoomType) => (
                                 <button
                                     key={room.id}
                                     className={`room-item ${room.id === activeRoomId ? 'active' : ''}`}
@@ -126,6 +156,27 @@ export const RoomSidebar = ({
                                     </div>
                                 </button>
                             ))
+                        )}
+                        {/* Presence List */}
+                        {presences.length > 0 && (
+                            <div className="presence-section">
+                                <h3 className="sidebar-subtitle">Members Online</h3>
+                                <div className="presence-list">
+                                    {presences.map((p: UserPresence) => (
+                                        <div key={p.uid} className="presence-item">
+                                            <div className="presence-avatar-container">
+                                                {p.photoURL ? (
+                                                    <img src={p.photoURL} alt="" className="presence-avatar" />
+                                                ) : (
+                                                    <div className="presence-avatar-placeholder">{p.displayName[0]}</div>
+                                                )}
+                                                <div className="online-indicator"></div>
+                                            </div>
+                                            <span className="presence-name">{p.displayName}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         )}
                     </div>
 

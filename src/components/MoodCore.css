@@ -1,0 +1,164 @@
+.mood-core-container {
+    width: 240px;
+    background: var(--bg-secondary, rgba(14, 22, 16, 0.4));
+    border-left: 1px solid var(--border-primary, rgba(45, 85, 55, 0.2));
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s var(--smooth-ease);
+    position: relative;
+    overflow: hidden;
+}
+
+.mood-core-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-primary, rgba(45, 85, 55, 0.15));
+}
+
+.mood-core-header h3 {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.mood-status-label {
+    font-size: 0.65rem;
+    color: var(--text-tertiary);
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+.mood-core-visualizer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 200px;
+}
+
+/* ─── The Orb ─── */
+.mood-orb-outer {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: orbPulse var(--pulse-duration, 2s) infinite ease-in-out;
+    background: radial-gradient(circle, var(--orb-color) 0%, transparent 70%);
+}
+
+.mood-orb-inner {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 20px var(--orb-color);
+    z-index: 2;
+}
+
+.mood-orb-plasma {
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(from 0deg,
+            transparent,
+            var(--orb-color),
+            transparent);
+    animation: plasmaRotate 4s infinite linear;
+    opacity: 0.6;
+    filter: blur(10px);
+}
+
+.mood-aura {
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(circle, var(--orb-color) 0%, transparent 60%);
+    opacity: 0.3;
+    filter: blur(30px);
+    z-index: 1;
+    animation: auraBreath var(--pulse-duration, 2s) infinite ease-in-out;
+}
+
+@keyframes orbPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+}
+
+@keyframes auraBreath {
+
+    0%,
+    100% {
+        transform: scale(0.8);
+        opacity: 0.2;
+    }
+
+    50% {
+        transform: scale(1.4);
+        opacity: 0.5;
+    }
+}
+
+@keyframes plasmaRotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ─── Stats ─── */
+.mood-core-stats {
+    padding: 16px;
+    border-top: 1px solid var(--border-primary, rgba(45, 85, 55, 0.15));
+}
+
+.stat-line {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stat-line span {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-tertiary);
+}
+
+.intensity-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.intensity-fill {
+    height: 100%;
+    width: 0%;
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 8px var(--orb-color);
+}
+
+@media (max-width: 1024px) {
+    .mood-core-container {
+        display: none;
+    }
+}

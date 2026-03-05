@@ -3,14 +3,16 @@ import './MessageInput.css'
 
 interface MessageInputProps {
   onSendMessage: (text: string, isGhostMode?: boolean, ttl?: number) => Promise<void>
+  onTyping?: (isTyping: boolean) => void
   disabled?: boolean
 }
 
-export const MessageInput = ({ onSendMessage, disabled = false }: MessageInputProps) => {
+export const MessageInput = ({ onSendMessage, onTyping, disabled = false }: MessageInputProps) => {
   const [message, setMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isGhostMode, setIsGhostMode] = useState(false)
   const [ttl, setTtl] = useState(30) // Default 30s
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,6 +24,14 @@ export const MessageInput = ({ onSendMessage, disabled = false }: MessageInputPr
 
     try {
       setIsLoading(true)
+
+      // Stop typing immediately when sending
+      if (typingTimeout) {
+        clearTimeout(typingTimeout)
+        setTypingTimeout(null)
+      }
+      onTyping?.(false)
+
       await onSendMessage(trimmedMessage, isGhostMode, ttl)
       setMessage('')
       // Don't reset ghost mode, user might want to send multiple
@@ -37,6 +47,26 @@ export const MessageInput = ({ onSendMessage, disabled = false }: MessageInputPr
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSubmit(e as any)
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = e.target.value
+    setMessage(val)
+
+    if (onTyping) {
+      if (!typingTimeout) {
+        onTyping(true)
+      } else {
+        clearTimeout(typingTimeout)
+      }
+
+      const timeout = setTimeout(() => {
+        onTyping(false)
+        setTypingTimeout(null)
+      }, 2500)
+
+      setTypingTimeout(timeout)
     }
   }
 
@@ -73,7 +103,7 @@ export const MessageInput = ({ onSendMessage, disabled = false }: MessageInputPr
           className="message-input"
           placeholder={isGhostMode ? "Whisper a secret..." : "Sync your thoughts..."}
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={handleChange}
           onKeyPress={handleKeyPress}
           disabled={disabled || isLoading}
           rows={1}

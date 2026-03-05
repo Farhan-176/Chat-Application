@@ -82,9 +82,24 @@
   margin: 0;
 }
 
-.user-id {
+.chat-id {
   display: none;
   /* Architectural minimalism */
+}
+
+.chat-main-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.chat-messages-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
 }
 
 .loading-container {
@@ -119,4 +134,10 @@
   .header-content h1 {
     font-size: 20px;
   }
+}
+.chat-input-area {
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--border-primary, rgba(45, 85, 55, 0.15));
+  backdrop-filter: blur(10px);
 }
