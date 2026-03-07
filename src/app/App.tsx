@@ -1,11 +1,10 @@
 import { useState, useCallback } from 'react'
-import { AuthScreen, logoutUser } from './components/AuthScreen'
-import { ChatRoom } from './components/ChatRoom'
-import { RoomSidebar } from './components/RoomSidebar'
-import { User } from './types'
+import { AuthScreen, logoutUser } from '../features/auth'
+import { ChatRoom } from '../features/chat'
+import { RoomSidebar } from '../features/rooms'
+import { User } from '../shared/types'
 import './App.css'
-
-import { SideNav } from './components/SideNav'
+import { SideNav } from '../features/navigation'
 
 function App() {
   const [user, setUser] = useState<User | null>(null)

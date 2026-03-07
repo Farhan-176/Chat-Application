@@ -1,4 +1,4 @@
-import { auth } from './firebase'
+import { auth } from '../config'
 
 const API_BASE = 'http://localhost:3001/api'
 

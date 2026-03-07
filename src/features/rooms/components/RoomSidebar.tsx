@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { ChatRoom as ChatRoomType, UserPresence } from '../types'
-import { fetchRooms, createRoom } from '../api'
+import { ChatRoom as ChatRoomType, UserPresence } from '../../../shared/types'
+import { fetchRooms, createRoom } from '../../../shared/api'
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore'
-import { db } from '../firebase'
+import { db } from '../../../shared/config'
 import './RoomSidebar.css'
 
 interface RoomSidebarProps {

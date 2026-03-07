@@ -1,6 +1,6 @@
 import { signInWithPopup, signOut, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth'
-import { auth, googleProvider } from '../firebase'
-import { User } from '../types'
+import { auth, googleProvider } from '../../../shared/config'
+import { User } from '../../../shared/types'
 import './AuthScreen.css'
 import { useEffect, useState } from 'react'
 

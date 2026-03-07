@@ -6,9 +6,9 @@ import {
   limit,
   onSnapshot,
 } from 'firebase/firestore'
-import { db } from '../firebase'
-import { User, Message } from '../types'
-import { sendMessageToServer, setTypingStatus, updatePresence, setOffline } from '../api'
+import { db } from '../../../shared/config'
+import { User, Message } from '../../../shared/types'
+import { sendMessageToServer, setTypingStatus, updatePresence, setOffline } from '../../../shared/api'
 import { MessageList } from './MessageList'
 import { MessageInput } from './MessageInput'
 import { TypingIndicator } from './TypingIndicator'
