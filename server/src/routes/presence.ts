@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { authMiddleware, AuthenticatedRequest } from '../middleware/auth.js'
-import { db } from '../index.js'
+import { db } from '../config/firebaseAdmin.js'
 import { FieldValue } from 'firebase-admin/firestore'
 
 export const presenceRouter = Router()
