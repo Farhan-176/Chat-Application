@@ -38,12 +38,26 @@ export const MessageList = ({ messages, currentUserId }: MessageListProps) => {
               key={message.id}
               className={`message-wrapper ${message.uid === currentUserId ? 'own' : 'other'} ${message.isEphemeral ? 'ephemeral' : ''} ${message.dissolved ? 'dissolved' : ''}`}
             >
-              {message.uid !== currentUserId && message.photoURL && (
-                <img 
-                  src={message.photoURL} 
-                  alt={message.displayName}
-                  className="message-avatar"
-                />
+              {message.uid !== currentUserId && (
+                <div className="message-avatar-wrapper">
+                  {message.photoURL ? (
+                    <img 
+                      src={message.photoURL} 
+                      alt={message.displayName}
+                      className="message-avatar"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        const fallback = target.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div className="message-avatar-fallback" style={message.photoURL ? { display: 'none' } : {}}>
+                    {message.displayName?.[0]?.toUpperCase() || '?'}
+                  </div>
+                </div>
               )}
               
               <div className="message-content-wrapper">
@@ -69,12 +83,26 @@ export const MessageList = ({ messages, currentUserId }: MessageListProps) => {
                 </div>
               </div>
 
-              {message.uid === currentUserId && message.photoURL && (
-                <img 
-                  src={message.photoURL} 
-                  alt={message.displayName}
-                  className="message-avatar own"
-                />
+              {message.uid === currentUserId && (
+                <div className="message-avatar-wrapper">
+                  {message.photoURL ? (
+                    <img 
+                      src={message.photoURL} 
+                      alt={message.displayName}
+                      className="message-avatar own"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        const fallback = target.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div className="message-avatar-fallback own" style={message.photoURL ? { display: 'none' } : {}}>
+                    {message.displayName?.[0]?.toUpperCase() || '?'}
+                  </div>
+                </div>
               )}
             </div>
           ))}

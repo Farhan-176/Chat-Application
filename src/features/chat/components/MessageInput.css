@@ -8,18 +8,18 @@
   align-items: center;
   gap: 12px;
   width: 100%;
-  background: white;
-  border: 2px solid rgba(99, 102, 241, 0.15);
-  padding: 12px 18px;
+  background: #f0f2f5;
+  border: 2px solid transparent;
+  padding: 10px 16px;
   border-radius: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: none;
   transition: all 0.3s var(--smooth-ease);
 }
 
 .message-input-container:focus-within {
-  border-color: var(--accent-indigo);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), 0 2px 8px rgba(0, 0, 0, 0.08);
-  background: white;
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .message-input {
@@ -53,7 +53,7 @@
 }
 
 .ghost-toggle:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--bg-tertiary);
 }
 
 .ghost-toggle.active {
@@ -78,7 +78,7 @@
 .ttl-selector {
   display: flex;
   gap: 4px;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--bg-tertiary);
   padding: 2px;
   border-radius: 14px;
   margin-right: 8px;
@@ -97,16 +97,16 @@
 }
 
 .ttl-option.selected {
-  background: white;
+  background: var(--bg-secondary);
   color: var(--accent-indigo);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
 }
 
 .send-button {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 12px;
-  background: var(--accent-indigo);
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: white;
   border: none;
   cursor: pointer;
@@ -114,12 +114,12 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s var(--spring-ease);
-  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
 .send-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
 }
 
 .send-button:active:not(:disabled) {

@@ -1,16 +1,14 @@
 .side-nav {
-    width: 96px;
+    width: 72px;
     flex-shrink: 0;
     height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(248, 248, 255, 0.8);
-    backdrop-filter: blur(8px);
-    border-right: 2px solid var(--glass-border);
-    padding: 32px 0;
+    background: var(--sidebar-darker);
+    border-right: 1px solid var(--sidebar-border);
+    padding: 24px 0;
     z-index: 20;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
 }
 
 .nav-logo-section {
@@ -18,17 +16,17 @@
 }
 
 .nav-logo {
-    width: 48px;
-    height: 48px;
-    background: var(--obsidian-dark);
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--accent-indigo), #6366f1);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 900;
-    font-size: 20px;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    font-size: 18px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 .nav-links {
@@ -41,23 +39,23 @@
 
 .nav-link {
     position: relative;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: transparent;
     border: none;
     cursor: pointer;
-    color: var(--text-secondary);
+    color: var(--sidebar-text-muted);
     transition: all 0.3s var(--spring-ease);
 }
 
 .nav-link-bg {
     position: absolute;
     inset: 0;
-    background: var(--accent-mint);
-    border-radius: 14px;
+    background: var(--sidebar-active);
+    border-radius: 12px;
     transform: scale(0) rotate(-10deg);
     transition: all 0.4s var(--spring-ease);
     z-index: -1;
@@ -68,12 +66,12 @@
 }
 
 .nav-link.active {
-    color: var(--text-primary);
+    color: #ffffff;
     font-weight: 600;
 }
 
 .nav-link:hover {
-    color: var(--accent-indigo);
+    color: var(--sidebar-text-bright);
     transform: translateY(-2px);
 }
 
@@ -98,13 +96,15 @@
     justify-content: center;
     background: transparent;
     border: none;
-    color: var(--text-secondary);
+    color: var(--sidebar-text-muted);
     cursor: pointer;
     transition: all 0.2s ease;
+    border-radius: 10px;
 }
 
 .nav-footer-btn:hover {
-    color: var(--accent-rose);
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
     transform: scale(1.1) rotate(8deg);
 }
 

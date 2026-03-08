@@ -1,28 +1,42 @@
 :root {
-  /* Project Obsidian Design System - Enhanced */
-  --bg-primary: #f0f4f8;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #e8f1f7;
+  /* ── Dark sidebar surfaces ── */
+  --sidebar-dark: #1b2538;
+  --sidebar-darker: #141c2b;
+  --sidebar-hover: #243047;
+  --sidebar-active: #2d3b54;
+  --sidebar-text: #c2cde0;
+  --sidebar-text-bright: #f0f4fa;
+  --sidebar-text-muted: #7889a4;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
 
-  --accent-indigo: #6366f1;
-  --accent-mint: #a3e4d7;
-  --accent-lavender: #e879f9;
+  /* ── Light chat surfaces ── */
+  --bg-primary: #f0f2f5;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e4e6eb;
+  --bg-chat: #ffffff;
+
+  /* ── Brand accents ── */
+  --accent-indigo: #3b82f6;
+  --accent-mint: #c8f1e6;
+  --accent-lavender: #dbeafe;
   --accent-emerald: #10b981;
-  --accent-violet: #a78bfa;
-  --accent-rose: #f43f5e;
+  --accent-violet: #6366f1;
+  --accent-rose: #ef4444;
   --accent-cyan: #06b6d4;
   --obsidian-dark: #0f172a;
 
-  /* Glassmorphism Refraction (Project Obsidian Style) - More Opaque */
-  --glass-bg: rgba(255, 255, 255, 0.95);
-  --glass-border: rgba(99, 102, 241, 0.2);
-  --glass-highlight: rgba(255, 255, 255, 0.98);
+  /* ── Borders ── */
+  --glass-bg: #ffffff;
+  --glass-border: #e2e8f0;
+  --glass-highlight: #f8fafc;
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
   --glass-blur: blur(16px);
 
-  /* Text & Contrast (Better Readability) */
-  --text-primary: #0a0e27;
-  --text-secondary: #374151;
-  --text-tertiary: #6b7280;
+  /* ── Text hierarchy ── */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
 
   /* Mood Spectrum (Soft Obsidian) */
   --mood-joy: #fbbf24;
@@ -76,16 +90,8 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background:
-    radial-gradient(circle at 15% 50%, #d4e9f7 0%, transparent 50%),
-    radial-gradient(circle at 85% 30%, #f0e4ff 0%, transparent 50%),
-    radial-gradient(circle at 50% 80%, #d4f9f0 0%, transparent 50%),
-    linear-gradient(135deg, #f0f4f8 0%, #f8f5ff 100%);
-  background-attachment: fixed;
-  background-size: cover;
+  background: #f0f2f5;
   z-index: -2;
-  /* Reduced animation for professional clarity */
-  animation: drift 60s ease-in-out infinite alternate;
 }
 
 @keyframes drift {
@@ -106,8 +112,7 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.03) 1px, transparent 0);
-  background-size: 24px 24px;
+  background: transparent;
   z-index: -1;
   pointer-events: none;
 }

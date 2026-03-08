@@ -166,7 +166,7 @@ export const RoomSidebar = ({
                                         <div key={p.uid} className="presence-item">
                                             <div className="presence-avatar-container">
                                                 {p.photoURL ? (
-                                                    <img src={p.photoURL} alt="" className="presence-avatar" />
+                                                    <img src={p.photoURL} alt="" className="presence-avatar" referrerPolicy="no-referrer" />
                                                 ) : (
                                                     <div className="presence-avatar-placeholder">{p.displayName[0]}</div>
                                                 )}
@@ -183,7 +183,7 @@ export const RoomSidebar = ({
                     {/* User section at bottom */}
                     <div className="sidebar-user">
                         <div className="sidebar-user-info">
-                            {userPhotoURL && <img src={userPhotoURL} alt="" className="sidebar-user-avatar" />}
+                            {userPhotoURL && <img src={userPhotoURL} alt="" className="sidebar-user-avatar" referrerPolicy="no-referrer" />}
                             <span className="sidebar-user-name">{userDisplayName || 'User'}</span>
                         </div>
                         <button className="sidebar-logout-btn" onClick={onLogout} title="Logout">

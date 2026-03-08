@@ -4,7 +4,7 @@
     gap: 10px;
     padding: 6px 12px;
     margin-bottom: 10px;
-    background: rgba(167, 139, 250, 0.1);
+    background: #f0f2f5;
     border-radius: 12px;
     width: fit-content;
     animation: fadeIn 0.3s ease-out;
@@ -18,7 +18,7 @@
 .typing-dots span {
     width: 6px;
     height: 6px;
-    background: var(--accent-violet);
+    background: #3b82f6;
     border-radius: 50%;
     opacity: 0.6;
     animation: typingBounce 1.4s infinite ease-in-out both;
@@ -34,7 +34,7 @@
 
 .typing-text {
     font-size: 0.75rem;
-    color: var(--accent-violet);
+    color: #64748b;
     font-weight: 600;
     font-style: italic;
 }

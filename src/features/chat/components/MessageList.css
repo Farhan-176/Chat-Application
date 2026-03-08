@@ -17,12 +17,12 @@
 }
 
 .message-list::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.2);
+  background: var(--border-strong);
   border-radius: 10px;
 }
 
 .message-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.3);
+  background: color-mix(in srgb, var(--accent-indigo) 28%, var(--border-strong));
 }
 
 .no-messages {
@@ -74,12 +74,39 @@
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  border: 2px solid var(--glass-border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: #e5e7eb;
 }
 
 .message-avatar.own {
-  border-color: var(--accent-indigo);
+  border-color: #3b82f6;
+}
+
+.message-avatar-wrapper {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+}
+
+.message-avatar-fallback {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  border: 2px solid #e5e7eb;
+}
+
+.message-avatar-fallback.own {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-color: #3b82f6;
 }
 
 .message-content-wrapper {
@@ -102,30 +129,27 @@
 }
 
 .message-bubble.own {
-  background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);
-  color: var(--text-primary);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: #ffffff;
   border-bottom-right-radius: 6px;
-  border: 1px solid var(--glass-border);
+  border: none;
   box-shadow:
-    0 2px 8px rgba(99, 102, 241, 0.1),
-    0 1px 3px rgba(99, 102, 241, 0.08);
+    0 4px 14px rgba(37, 99, 235, 0.35),
+    0 1px 3px rgba(37, 99, 235, 0.2);
 }
 
 .message-bubble.other {
-  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
-  color: var(--text-primary);
+  background: #f0f2f5;
+  color: #1e293b;
   border-bottom-left-radius: 6px;
-  border: 1px solid rgba(167, 139, 250, 0.3);
-  box-shadow:
-    0 2px 8px rgba(167, 139, 250, 0.12),
-    0 1px 35px rgba(167, 139, 250, 0.15),
-    0 8px 10px -6px rgba(167, 139, 250, 0.08);
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .message-sender {
   font-size: 12px;
   font-weight: 700;
-  color: var(--accent-violet);
+  color: #3b82f6;
   margin-bottom: 4px;
   letter-spacing: 0.02em;
 }
@@ -136,12 +160,12 @@
 
 .message-time {
   font-size: 10px;
-  opacity: 0.5;
+  opacity: 0.78;
   margin-top: 4px;
   text-align: right;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: var(--text-secondary);
+  color: inherit;
 }
 
 /* ─── AI Mood Rings (Refined) ─── */
@@ -193,7 +217,7 @@
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
   z-index: 5;
   animation: badgePop 0.4s var(--spring-ease);
 }
@@ -220,16 +244,17 @@
   opacity: 0.8;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border: 1px dashed var(--border-strong);
   transition: all 0.5s ease;
 }
 
 .message-bubble.ghostly.own {
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.6), rgba(112, 0, 255, 0.6));
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.2));
+  color: #1e293b;
 }
 
 .message-bubble.ghostly.other {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .message-wrapper.dissolved {
