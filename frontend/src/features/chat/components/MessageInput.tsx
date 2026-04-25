@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Ghost, Send, Paperclip, X, Lock, Wand2 } from 'lucide-react'
+import TextareaAutosize from 'react-textarea-autosize'
 import { featureFlags } from '../../../core/shared/config'
 import { rewriteMessageTone, ToneStyle } from '../../../core/shared/api/geminiService'
 import './MessageInput.css'
@@ -56,15 +57,6 @@ export const MessageInput = ({
 
   const textareaRef  = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  // Auto-resize textarea
-  useEffect(() => {
-    const textarea = textareaRef.current
-    if (textarea) {
-      textarea.style.height = 'auto'
-      textarea.style.height = `${textarea.scrollHeight}px`
-    }
-  }, [message])
 
   // Populate textarea when editing
   useEffect(() => {
@@ -198,7 +190,7 @@ export const MessageInput = ({
     : null
 
   return (
-    <form className="message-input-form" onSubmit={handleSubmit}>
+    <form className="chat-input-area" onSubmit={handleSubmit}>
 
       {/* Edit Banner */}
       {editingMessage && (
@@ -239,7 +231,7 @@ export const MessageInput = ({
         </div>
       )}
 
-      <div className={`message-input-container ${isGhostMode ? 'ghost-mode' : ''} ${isCapsuleMode ? 'capsule-mode' : ''}`}>
+      <div className={`input-island ${isGhostMode ? 'ghost-mode' : ''} ${isCapsuleMode ? 'capsule-mode' : ''}`}>
         {/* Hidden file input */}
         <input
           type="file"
@@ -357,9 +349,9 @@ export const MessageInput = ({
         )}
 
         {/* ── Textarea ── */}
-        <textarea
+        <TextareaAutosize
           ref={textareaRef}
-          className="message-input"
+          className="chat-textarea"
           value={message}
           onChange={handleChange}
           onKeyDown={handleKeyPress}
@@ -370,7 +362,8 @@ export const MessageInput = ({
                                'Type a message...'
           }
           disabled={disabled || isLoading || isRewriting}
-          rows={1}
+          minRows={1}
+          maxRows={8}
         />
 
         {/* ── Tone Rewriter button ── */}

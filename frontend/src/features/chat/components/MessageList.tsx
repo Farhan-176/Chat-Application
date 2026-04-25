@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
 import { File as FileIcon, ExternalLink, MoreHorizontal, Pencil, Trash2, Flag, ShieldAlert, SmilePlus } from 'lucide-react'
 import { Message } from '../../../core/shared/types'
 import { isMessageSealed } from '../utils/sealUtils'
@@ -47,53 +48,16 @@ export const MessageList = ({
   onRemoveFromVault,
   targetLanguage = 'English',
 }: MessageListProps) => {
-  const listRef = useRef<HTMLDivElement>(null)
-  const bottomRef = useRef<HTMLDivElement>(null)
-  const previousLastMessageId = useRef<string | null>(null)
-  const firstVisibleMessageId = messages[0]?.id || null
+  const virtuosoRef = useRef<VirtuosoHandle>(null)
   const [busyActionId, setBusyActionId] = useState<string | null>(null)
   const [pickerMessageId, setPickerMessageId] = useState<string | null>(null)
   const [actionMenuMessageId, setActionMenuMessageId] = useState<string | null>(null)
 
   useEffect(() => {
-    const currentLastMessageId = messages[messages.length - 1]?.id || null
-    const didReceiveNewBottomMessage =
-      currentLastMessageId !== null && previousLastMessageId.current !== null && currentLastMessageId !== previousLastMessageId.current
-
-    if (previousLastMessageId.current === null || didReceiveNewBottomMessage) {
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }
-
-    previousLastMessageId.current = currentLastMessageId
-  }, [messages])
-
-  useEffect(() => {
-    const container = listRef.current
-    if (!container || !onLoadOlder) {
-      return
-    }
-
-    const handleScroll = () => {
-      const nearTop = container.scrollTop <= 40
-      if (nearTop && hasMoreMessages && !loadingOlder) {
-        onLoadOlder().catch((error) => {
-          console.error('Failed to load older messages:', error)
-        })
-      }
-    }
-
-    container.addEventListener('scroll', handleScroll)
-    return () => container.removeEventListener('scroll', handleScroll)
-  }, [hasMoreMessages, loadingOlder, onLoadOlder])
-
-  useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
-      const container = listRef.current
-      if (!container) {
-        return
-      }
-
-      if (!container.contains(event.target as Node)) {
+      const target = event.target as Element
+      // Ensure clicks outside of actions menu close the popups
+      if (!target.closest('.message-actions-menu') && !target.closest('.message-actions-trigger') && !target.closest('.reaction-picker')) {
         setActionMenuMessageId(null)
         setPickerMessageId(null)
       }
@@ -160,12 +124,30 @@ export const MessageList = ({
   }
 
   const sequenceMeta = useMemo(() => {
-    return messages.map((message, index) => {
-      const previous = messages[index - 1]
-      const isFirstInSequence = !previous || previous.uid !== message.uid
+    return messages.map((msg, index) => {
+      const prevMsg = messages[index - 1]
+      const nextMsg = messages[index + 1]
+
+      const TIME_THRESHOLD = 5 * 60 * 1000 // 5 minutes
+
+      const isSameUserAsPrev = prevMsg && prevMsg.uid === msg.uid
+      const isSameUserAsNext = nextMsg && nextMsg.uid === msg.uid
+
+      const timeDiffPrev = prevMsg ? new Date(msg.createdAt).getTime() - new Date(prevMsg.createdAt).getTime() : Infinity
+      const timeDiffNext = nextMsg ? new Date(nextMsg.createdAt).getTime() - new Date(msg.createdAt).getTime() : Infinity
+
+      const isGroupedWithPrev = isSameUserAsPrev && timeDiffPrev < TIME_THRESHOLD
+      const isGroupedWithNext = isSameUserAsNext && timeDiffNext < TIME_THRESHOLD
+
+      let position: 'top' | 'middle' | 'bottom' | 'standalone' = 'standalone'
+      if (!isGroupedWithPrev && isGroupedWithNext) position = 'top'
+      if (isGroupedWithPrev && isGroupedWithNext) position = 'middle'
+      if (isGroupedWithPrev && !isGroupedWithNext) position = 'bottom'
+
       return {
-        message,
-        isFirstInSequence,
+        message: { ...msg, clusterPosition: position },
+        position,
+        isFirstInSequence: !isGroupedWithPrev,
       }
     })
   }, [messages])
@@ -190,24 +172,38 @@ export const MessageList = ({
   }
 
   return (
-    <div className="message-list" ref={listRef}>
+    <div className="message-list-container" style={{ flex: 1, height: '100%', minHeight: 0, width: '100%' }}>
       {messages.length === 0 ? (
-        <div className="no-messages">
-          <p>No messages yet. Start the conversation!</p>
+        <div className="no-messages message-list">
+          <p>This is the beginning of your legendary conversation.</p>
         </div>
       ) : (
-        <>
-          {loadingOlder && (
-            <div className="older-loader" role="status" aria-live="polite">
-              Loading older messages...
-            </div>
-          )}
-
-          {!hasMoreMessages && firstVisibleMessageId && (
-            <div className="older-loader done">Start of conversation</div>
-          )}
-
-          {sequenceMeta.map(({ message, isFirstInSequence }) => {
+        <Virtuoso
+          ref={virtuosoRef}
+          data={sequenceMeta}
+          className="message-list"
+          initialTopMostItemIndex={sequenceMeta.length - 1}
+          followOutput="smooth"
+          startReached={() => {
+            if (hasMoreMessages && !loadingOlder && onLoadOlder) {
+              onLoadOlder().catch(console.error)
+            }
+          }}
+          components={{
+            Header: () => (
+              <>
+                {loadingOlder && (
+                  <div className="older-loader" role="status" aria-live="polite">
+                    Loading older messages...
+                  </div>
+                )}
+                {!hasMoreMessages && messages[0]?.id && (
+                  <div className="older-loader done">Start of conversation</div>
+                )}
+              </>
+            )
+          }}
+          itemContent={(_index, { message, position, isFirstInSequence }) => {
             // Check if message is sealed
             const messageIsSealed = isMessageSealed(message.sealedUntil);
             
@@ -226,33 +222,39 @@ export const MessageList = ({
             return (
               <div
                 key={message.id}
-                className={`message-wrapper ${message.uid === currentUserId ? 'own' : 'other'} ${message.isEphemeral ? 'ephemeral' : ''} ${message.dissolved ? 'dissolved' : ''} ${isFirstInSequence ? '' : 'continued'}`}
+                className={`message-wrapper ${message.uid === currentUserId ? 'own' : 'other'} cluster-${position} ${message.isEphemeral ? 'ephemeral' : ''} ${message.dissolved ? 'dissolved' : ''} ${isFirstInSequence ? '' : 'continued'} new-message ${message.isOptimistic ? 'optimistic-sending' : ''}`}
               >
               {message.uid !== currentUserId && (
                 <div className="message-avatar-wrapper">
-                  {isFirstInSequence && message.photoURL ? (
-                    <img 
-                      src={message.photoURL} 
-                      alt={message.displayName}
-                      className="message-avatar"
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        const target = e.currentTarget;
-                        target.style.display = 'none';
-                        const fallback = target.nextElementSibling as HTMLElement;
-                        if (fallback) fallback.style.display = 'flex';
-                      }}
-                    />
-                  ) : null}
-                  <div className="message-avatar-fallback" style={isFirstInSequence ? (message.photoURL ? { display: 'none' } : {}) : { visibility: 'hidden' }}>
-                    {message.displayName?.[0]?.toUpperCase() || '?'}
-                  </div>
+                  {isFirstInSequence ? (
+                    <>
+                      {message.photoURL ? (
+                        <img 
+                          src={message.photoURL} 
+                          alt={message.displayName}
+                          className="message-avatar"
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            target.style.display = 'none';
+                            const fallback = target.nextElementSibling as HTMLElement;
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div className="message-avatar-fallback" style={message.photoURL ? { display: 'none' } : {}}>
+                        {message.displayName?.[0]?.toUpperCase() || '?'}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="message-avatar-placeholder" />
+                  )}
                 </div>
               )}
               
               <div className="message-content-wrapper">
                 <div
-                  className={`message-bubble ${message.uid === currentUserId ? 'own' : 'other'} ${message.mood ? `mood-${message.mood}` : ''} ${message.isEphemeral ? 'ghostly' : ''}`}
+                  className={`message-bubble bubble-${position} ${message.uid === currentUserId ? 'own' : 'other'} ${message.mood ? `mood-${message.mood}` : ''} ${message.isEphemeral ? 'ghostly' : ''}`}
                   style={message.moodColor ? { '--mood-color': message.moodColor } as React.CSSProperties : {}}
                 >
                   {message.isEphemeral && !message.dissolved && (
@@ -489,29 +491,35 @@ export const MessageList = ({
 
               {message.uid === currentUserId && (
                 <div className="message-avatar-wrapper">
-                  {isFirstInSequence && message.photoURL ? (
-                    <img 
-                      src={message.photoURL} 
-                      alt={message.displayName}
-                      className="message-avatar own"
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        const target = e.currentTarget;
-                        target.style.display = 'none';
-                        const fallback = target.nextElementSibling as HTMLElement;
-                        if (fallback) fallback.style.display = 'flex';
-                      }}
-                    />
-                  ) : null}
-                  <div className="message-avatar-fallback own" style={isFirstInSequence ? (message.photoURL ? { display: 'none' } : {}) : { visibility: 'hidden' }}>
-                    {message.displayName?.[0]?.toUpperCase() || '?'}
-                  </div>
+                  {isFirstInSequence ? (
+                    <>
+                      {message.photoURL ? (
+                        <img 
+                          src={message.photoURL} 
+                          alt={message.displayName}
+                          className="message-avatar own"
+                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            target.style.display = 'none';
+                            const fallback = target.nextElementSibling as HTMLElement;
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div className="message-avatar-fallback own" style={message.photoURL ? { display: 'none' } : {}}>
+                        {message.displayName?.[0]?.toUpperCase() || '?'}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="message-avatar-placeholder" />
+                  )}
                 </div>
               )}
             </div>
             );
-          })}          <div ref={bottomRef} />
-        </>
+          }}
+        />
       )}
     </div>
   )

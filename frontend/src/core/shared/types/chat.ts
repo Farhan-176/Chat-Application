@@ -157,6 +157,8 @@ export interface Message {
   translatedText?: string
   translatedFromLanguage?: string
   translatedToLanguage?: string
+  isOptimistic?: boolean // Zero-latency messaging flag
+  clusterPosition?: 'top' | 'middle' | 'bottom' | 'standalone'
 }
 
 export interface ModerationReport {

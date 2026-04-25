@@ -322,6 +322,7 @@ export const useChatRoom = (roomId: string, user: User) => {
 
   return {
     messages,
+    setMessages,
     loading,
     loadingOlder,
     hasMoreMessages,

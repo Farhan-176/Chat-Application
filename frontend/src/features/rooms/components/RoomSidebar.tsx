@@ -69,7 +69,7 @@ export const RoomSidebar = ({
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [nearbyRooms, setNearbyRooms] = useState<any[]>([])
   const [isLoadingNearby, setIsLoadingNearby] = useState(false)
-  const [discoveryRadius, setDiscoveryRadius] = useState(5) // km
+  const [discoveryRadius] = useState(5) // km
 
   const currentUserId = auth.currentUser?.uid || ''
   useEffect(() => {

@@ -1,8 +1,14 @@
-.message-input-form {
+.chat-input-area {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 64px);
+  max-width: 900px;
+  z-index: 100;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 100%;
 }
 
 .edit-banner {
@@ -28,32 +34,32 @@
   font-weight: 700;
 }
 
-.message-input-container {
+.input-island {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+  background: var(--surface-layer-float);
+  backdrop-filter: var(--glass-blur-lg);
+  border: var(--glass-border);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3), var(--glass-highlight);
+  border-radius: var(--radius-lg);
+  padding: 8px 12px;
+  transition: all var(--transition-med);
   gap: 8px;
-  padding: 9px 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  transition: all var(--transition-base);
-  position: relative;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.message-input-container:focus-within {
-  border-color: rgba(99, 102, 241, 0.5);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+.input-island:focus-within {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 2px var(--accent-primary);
+  transform: translateY(-2px);
 }
 
 /* Ghost Mode Visuals */
-.message-input-container.ghost-mode {
+.input-island.ghost-mode {
   border-color: rgba(167, 139, 250, 0.4);
   box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
   background: rgba(167, 139, 250, 0.05);
 }
 
-.message-input-container.capsule-mode {
+.input-island.capsule-mode {
   border-color: rgba(251, 191, 36, 0.5);
   box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.08);
   background: rgba(251, 191, 36, 0.04);
@@ -116,20 +122,21 @@
 }
 
 /* Textarea */
-.message-input {
+.chat-textarea {
   flex: 1;
   background: transparent;
   border: none;
+  color: var(--text-display);
+  padding: 12px;
+  max-height: 200px;
   resize: none;
-  padding: 8px 2px;
-  max-height: 180px;
+  font-family: inherit;
   font-size: var(--text-sm);
   line-height: var(--lh-base);
-  color: #e2e8f0;
 }
 
-.message-input::placeholder {
-  color: #475569;
+.chat-textarea::placeholder {
+  color: var(--text-tertiary);
 }
 
 /* ─── Capsule Toggle Button ─────────────────────────── */
@@ -570,11 +577,12 @@
 }
 
 @media (max-width: 768px) {
-  .message-input-container {
-    padding: 6px;
+  .chat-input-area {
+    width: calc(100% - 32px);
+    bottom: 16px;
   }
   
-  .message-input {
+  .chat-textarea {
     font-size: 16px; /* Prevent iOS zoom */
   }
 }

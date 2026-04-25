@@ -10,6 +10,8 @@ import { User, UserProfile, VibeType } from '../shared/types'
 import { ProfileModal } from '../shared/components/ProfileModal'
 import { LandingPage } from '../../features/marketing/LandingPage'
 import { ProtectedRoute } from './ProtectedRoute'
+import { SideNav } from './SideNav'
+import { CommandPalette } from '../../features/navigation/components/CommandPalette'
 import { loadBaseVibeCss, initializeVibe } from '../../features/chat/utils/vibeUtils'
 import './App.css'
 
@@ -194,49 +196,55 @@ function App() {
         element={
           <ProtectedRoute user={user}>
             <div className="app-layout">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="feature-container"
-              >
-                <RoomSidebar
-                  activeRoomId={activeRoomId}
-                  onSelectRoom={setActiveRoomId}
-                  userPhotoURL={user?.photoURL || null}
-                  userDisplayName={user?.displayName || null}
-                  onLogout={handleLogout}
-                  onOpenProfile={() => setIsProfileOpen(true)}
-                  onRoomVibeChange={(vibe, expiresAt) => {
-                    setActiveRoomVibe(vibe)
-                    setActiveRoomExpiresAt(expiresAt)
-                  }}
-                />
+              <SideNav onLogout={handleLogout} />
+            
+              <RoomSidebar
+                activeRoomId={activeRoomId}
+                onSelectRoom={setActiveRoomId}
+                userPhotoURL={user?.photoURL || null}
+                userDisplayName={user?.displayName || null}
+                onLogout={handleLogout}
+                onOpenProfile={() => setIsProfileOpen(true)}
+                onRoomVibeChange={(vibe, expiresAt) => {
+                  setActiveRoomVibe(vibe)
+                  setActiveRoomExpiresAt(expiresAt)
+                }}
+              />
+            
+              {/* Wrap the ChatRoom in the new canvas */}
+              <main className="chat-canvas">
+                {user && (
+                  <ChatRoom
+                    key={activeRoomId}
+                    user={user}
+                    roomId={activeRoomId}
+                    vibe={activeRoomVibe}
+                    expiresAt={activeRoomExpiresAt}
+                  />
+                )}
+              </main>
 
-                <main className="main-content">
-                  {user && (
-                    <ChatRoom
-                      key={activeRoomId}
-                      user={user}
-                      roomId={activeRoomId}
-                      vibe={activeRoomVibe}
-                      expiresAt={activeRoomExpiresAt}
-                    />
-                  )}
-                </main>
-              </motion.div>
-
-              {user && (
-                <ProfileModal
-                  isOpen={isProfileOpen}
-                  user={user}
-                  profile={profile}
-                  identityNotice={identityNotice}
-                  onClose={() => setIsProfileOpen(false)}
-                  onProfileSaved={handleProfileSaved}
-                  onLogout={handleLogout}
-                />
-              )}
+              <CommandPalette 
+                rooms={[
+                  { id: 'general', name: 'General Chat' },
+                  { id: 'tech', name: 'Engineering' },
+                  { id: 'design', name: 'UI/UX Design' }
+                ]} 
+                onSelectRoom={setActiveRoomId} 
+              />
             </div>
+
+            {user && (
+              <ProfileModal
+                isOpen={isProfileOpen}
+                user={user}
+                profile={profile}
+                identityNotice={identityNotice}
+                onClose={() => setIsProfileOpen(false)}
+                onProfileSaved={handleProfileSaved}
+                onLogout={handleLogout}
+              />
+            )}
           </ProtectedRoute>
         }
       />

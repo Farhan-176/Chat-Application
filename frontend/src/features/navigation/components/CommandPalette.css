@@ -1,0 +1,106 @@
+.palette-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 17, 21, 0.6);
+  backdrop-filter: var(--glass-blur-md);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+  animation: fadeInFast 0.2s var(--spring-fluid);
+}
+
+.palette-container {
+  width: 100%;
+  max-width: 550px;
+  background: var(--surface-layer-float);
+  border: var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  overflow: hidden;
+  transform-origin: top center;
+  animation: slideDownScale 0.2s var(--spring-fluid);
+}
+
+.palette-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.palette-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-display);
+  font-size: 18px;
+  font-weight: 500;
+  outline: none;
+}
+
+.palette-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.palette-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-tertiary);
+  background: var(--surface-layer-1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: var(--glass-border);
+}
+
+.palette-results {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.palette-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  font-weight: 500;
+}
+
+.palette-hash {
+  color: var(--text-tertiary);
+  font-weight: 700;
+  opacity: 0.5;
+}
+
+.palette-item.selected {
+  background: var(--accent-primary);
+  color: #ffffff;
+}
+
+.palette-item.selected .palette-hash {
+  color: rgba(255,255,255,0.7);
+  opacity: 1;
+}
+
+.palette-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+@keyframes fadeInFast {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDownScale {
+  from { opacity: 0; transform: scale(0.98) translateY(-10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

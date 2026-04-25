@@ -1,0 +1,33 @@
+.app-viewport {
+  display: grid;
+  grid-template-columns: 72px 280px 1fr auto;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--surface-base);
+  color: var(--text-primary);
+}
+
+.chat-canvas {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-layer-2);
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.side-nav-placeholder {
+  width: 72px;
+  background: var(--surface-layer-1);
+  border-right: var(--glass-border);
+}
+
+.context-panel-placeholder {
+  width: 0px; /* Optional right sidebar, can be expanded to 300px when active */
+  background: var(--surface-layer-1);
+  border-left: var(--glass-border);
+  transition: width var(--transition-med);
+}

@@ -25,7 +25,7 @@ import { AIPanel } from './AIPanel'
 import { RoomExpiryBanner } from '../../../features/rooms/components/RoomExpiryBanner'
 import { VaultInterface } from './VaultInterface'
 import { useChatRoom } from '../hooks/useChatRoom'
-import { ModerationReport, RoomDigest, User, VibeType } from '../../../core/shared/types'
+import { ModerationReport, RoomDigest, User, VibeType, Message } from '../../../core/shared/types'
 import './ChatRoom.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Sparkles, Timer } from 'lucide-react'
@@ -43,6 +43,7 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
 
   const {
     messages,
+    setMessages,
     roomName,
     roomVisibility,
     roomTranslationMode,
@@ -57,11 +58,9 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
     onlineCount,
     error,
     vaultMessages,
-    loadingVault,
     loadOlderMessages,
     saveToVault,
     removeFromVault,
-    refreshVault,
   } = useChatRoom(roomId, user)
   const [editingMessage, setEditingMessage] = useState<{ id: string; text: string } | null>(null)
   const [isInviteOpen, setIsInviteOpen] = useState(false)
@@ -413,6 +412,37 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
     sealedUntil?: Date | null,
     capsuleLabel?: string
   ) => {
+    // 1. Generate a temporary ID
+    const tempId = `temp-${Date.now()}`
+
+    // 2. Construct the Optimistic Message instantly
+    const optimisticMsg: Message = {
+      id: tempId,
+      text,
+      uid: user.uid,
+      displayName: user.displayName || 'Me',
+      photoURL: user.photoURL,
+      createdAt: new Date(),
+      isEphemeral: isGhostMode,
+      ttl: ttl,
+      dissolved: false,
+      isOptimistic: true, // Flag it as pending
+      sealedUntil: sealedUntil || null,
+      capsuleLabel: capsuleLabel || '',
+      attachments: attachments?.map(a => ({
+        name: a.name || 'Attachment',
+        url: a.url || '',
+        type: a.type || 'application/octet-stream',
+        size: a.size || 0
+      })) || []
+    }
+
+    // 3. Inject it into the UI immediately (Zero Latency)
+    // Don't inject if we are editing an existing message to avoid weird UI jumps
+    if (!editingMessage) {
+      setMessages((prev) => [...prev, optimisticMsg])
+    }
+
     try {
       if (editingMessage) {
         await editMessage(roomId, editingMessage.id, text)
@@ -445,7 +475,10 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
       })
     } catch (error) {
       console.error('Error sending message:', error)
-
+      // 5. If it fails, roll back the optimistic update
+      if (!editingMessage) {
+        setMessages((prev) => prev.filter((m) => m.id !== tempId))
+      }
       throw error
     }
   }
