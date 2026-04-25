@@ -1,0 +1,231 @@
+/* ═══════════════════════════════════════════════════════════════
+   CHILL VIBE — 🌿 Earthy Relaxed Aesthetic
+   Earthy greens, calm gradients, gentle motion, cozy feeling
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Earthy color palette */
+  --vibe-primary: #15803d;           /* Forest green */
+  --vibe-secondary: #dcfce7;         /* Light green */
+  --vibe-accent: #4ade80;            /* Bright green */
+  --vibe-bg: #f0fdf4;                /* Very light green background */
+  --vibe-text: #1b4332;              /* Dark forest text */
+  --vibe-text-secondary: #2d6a4f;    /* Medium forest text */
+  --vibe-border: #86efac;            /* Soft green border */
+  --vibe-hover: #e8f5e9;             /* Hover background */
+  
+  /* Message styling */
+  --vibe-message-bg-self: #4ade80;   /* Green sent */
+  --vibe-message-bg-other: #e8f5e9;  /* Light green received */
+  --vibe-message-text-self: #f0fdf4; /* Light text on green */
+  --vibe-message-text-other: #1b4332; /* Dark text on light */
+  
+  /* Gentle, relaxed animations */
+  --vibe-animation-speed: 0.5s;
+  --vibe-animation-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  /* Soft natural glow */
+  --vibe-glow: rgba(74, 222, 128, 0.15);
+  --vibe-shadow: 0 2px 8px rgba(21, 128, 61, 0.1);
+  --vibe-shadow-lg: 0 10px 20px rgba(21, 128, 61, 0.15);
+}
+
+/* Chill-specific styling */
+.chat-container {
+  background: linear-gradient(135deg, #f0fdf4 0%, #e8f5e9 100%);
+}
+
+.chat-header {
+  background: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
+  color: #f0fdf4;
+  border-bottom: 2px solid #4ade80;
+  box-shadow: var(--vibe-shadow-lg);
+}
+
+.message-bubble.self {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: #f0fdf4;
+  box-shadow: var(--vibe-shadow-lg);
+  border: none;
+}
+
+.message-bubble.other {
+  background-color: #e8f5e9;
+  color: #1b4332;
+  border: 1px solid #c6f6d5;
+  box-shadow: var(--vibe-shadow);
+}
+
+.message-input {
+  background: linear-gradient(180deg, #f0fdf4 0%, #e8f5e9 100%);
+  border-top: 2px solid #86efac;
+}
+
+.message-input input {
+  background-color: #ffffff;
+  color: #1b4332;
+  border: 2px solid #c6f6d5;
+}
+
+.message-input input::placeholder {
+  color: #86efac;
+}
+
+.message-input input:focus {
+  outline: none;
+  border-color: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.2);
+  background-color: #f0fdf4;
+}
+
+.vibe-button {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: #f0fdf4;
+  box-shadow: var(--vibe-shadow-lg);
+  border: none;
+}
+
+.vibe-button:hover {
+  opacity: 0.9;
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
+  transform: translateY(-2px);
+}
+
+.vibe-button:active {
+  transform: translateY(0);
+}
+
+/* Chill room sidebar with nature vibes */
+.room-sidebar {
+  background: linear-gradient(180deg, #15803d 0%, #1b4332 100%);
+  border-right: 2px solid #4ade80;
+}
+
+.room-item {
+  color: #c6f6d5;
+  padding: 12px;
+  margin: 4px 0;
+  border-radius: 8px;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.room-item:hover {
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(34, 197, 94, 0.1) 100%);
+  color: #f0fdf4;
+  border-left: 3px solid #4ade80;
+}
+
+.room-item.active {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: #1b4332;
+  font-weight: 600;
+  box-shadow: var(--vibe-shadow-lg);
+}
+
+/* Relaxing AI Panel */
+.ai-panel {
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.08) 0%, rgba(34, 197, 94, 0.08) 100%);
+  border: 2px solid #c6f6d5;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--vibe-shadow-lg);
+}
+
+.ai-panel-tab {
+  color: #2d6a4f;
+  padding: 10px 14px;
+  border-radius: 8px;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-bottom: 2px solid transparent;
+}
+
+.ai-panel-tab:hover {
+  background-color: rgba(74, 222, 128, 0.1);
+  color: #1b4332;
+}
+
+.ai-panel-tab.active {
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: #f0fdf4;
+  border-bottom-color: #1b4332;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+}
+
+/* Gentle animations for chill vibe */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.message-bubble.self,
+.message-bubble.other {
+  animation: slideInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Soft mood badge */
+.mood-badge {
+  filter: drop-shadow(0 2px 4px rgba(21, 128, 61, 0.2));
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Gentle typing indicator */
+.typing-indicator {
+  color: #4ade80;
+  font-size: 13px;
+}
+
+.typing-indicator span {
+  animation: float 1.4s ease-in-out infinite;
+  margin: 0 2px;
+}
+
+/* Soft hover glow */
+.chat-container:hover .ai-panel {
+  box-shadow: 0 15px 30px rgba(21, 128, 61, 0.2);
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0fdf4;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #86efac;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4ade80;
+}

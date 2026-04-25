@@ -1,0 +1,230 @@
+/* ═══════════════════════════════════════════════════════════════
+   FOCUS VIBE — 🔥 Minimal Distraction-Free Aesthetic
+   Dark background, amber highlights, clean UI, professional
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Minimal color palette */
+  --vibe-primary: #1a1a1a;           /* Near black */
+  --vibe-secondary: #2d2d2d;         /* Dark gray */
+  --vibe-accent: #fbbf24;            /* Amber highlight */
+  --vibe-bg: #0f0f0f;                /* Pure black */
+  --vibe-text: #e5e5e5;              /* Light gray text */
+  --vibe-text-secondary: #a3a3a3;    /* Medium gray text */
+  --vibe-border: #3f3f3f;            /* Dark border */
+  --vibe-hover: #262626;             /* Subtle hover */
+  
+  /* Message styling */
+  --vibe-message-bg-self: #2d2d2d;   /* Dark sent */
+  --vibe-message-bg-other: #1a1a1a;  /* Darker received */
+  --vibe-message-text-self: #fbbf24; /* Amber text on dark */
+  --vibe-message-text-other: #e5e5e5; /* Light gray text */
+  
+  /* Smooth, unobtrusive animations */
+  --vibe-animation-speed: 0.4s;
+  --vibe-animation-timing: ease-in-out;
+  
+  /* Minimal glow */
+  --vibe-glow: rgba(251, 191, 36, 0.1);
+  --vibe-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --vibe-shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Focus-specific styling */
+.chat-container {
+  background-color: #0f0f0f;
+}
+
+.chat-header {
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #3f3f3f;
+  box-shadow: none;
+  padding: 16px;
+}
+
+.chat-header h2 {
+  color: #fbbf24;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.message-bubble.self {
+  background-color: #2d2d2d;
+  color: #fbbf24;
+  border: 1px solid #3f3f3f;
+  box-shadow: none;
+}
+
+.message-bubble.other {
+  background-color: #1a1a1a;
+  color: #e5e5e5;
+  border: 1px solid #2d2d2d;
+}
+
+.message-input {
+  background-color: #0f0f0f;
+  border-top: 1px solid #2d2d2d;
+}
+
+.message-input input {
+  background-color: #1a1a1a;
+  color: #e5e5e5;
+  border: 1px solid #3f3f3f;
+}
+
+.message-input input::placeholder {
+  color: #666666;
+}
+
+.message-input input:focus {
+  outline: none;
+  border-color: #fbbf24;
+  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.1);
+  background-color: #262626;
+}
+
+.vibe-button {
+  background-color: #fbbf24;
+  color: #0f0f0f;
+  border: none;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.vibe-button:hover {
+  background-color: #f59e0b;
+  opacity: 1;
+  box-shadow: none;
+}
+
+.vibe-button:active {
+  background-color: #d97706;
+}
+
+/* Minimal focus room sidebar */
+.room-sidebar {
+  background-color: #1a1a1a;
+  border-right: 1px solid #2d2d2d;
+}
+
+.room-item {
+  color: #a3a3a3;
+  padding: 10px 12px;
+  margin: 2px 0;
+  border-radius: 4px;
+  transition: all 0.4s ease-in-out;
+}
+
+.room-item:hover {
+  background-color: #262626;
+  color: #e5e5e5;
+}
+
+.room-item.active {
+  background-color: #2d2d2d;
+  color: #fbbf24;
+  border-left: 3px solid #fbbf24;
+  padding-left: 9px;
+  font-weight: 600;
+}
+
+/* Minimal AI Panel */
+.ai-panel {
+  background-color: #1a1a1a;
+  border-left: 2px solid #fbbf24;
+  border-radius: 4px;
+  padding: 12px;
+  margin: 8px 0;
+  box-shadow: none;
+}
+
+.ai-panel-tab {
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out;
+  color: #a3a3a3;
+  background-color: transparent;
+  border-bottom: 2px solid transparent;
+}
+
+.ai-panel-tab:hover {
+  background-color: #262626;
+  color: #e5e5e5;
+}
+
+.ai-panel-tab.active {
+  background-color: #2d2d2d;
+  color: #fbbf24;
+  border-bottom-color: #fbbf24;
+  font-weight: 600;
+}
+
+/* Clean animations for focus */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.message-bubble.self,
+.message-bubble.other {
+  animation: slideInRight 0.4s ease-in-out;
+}
+
+/* Subtle mood badge */
+.mood-badge {
+  color: #fbbf24;
+  font-size: 12px;
+  filter: none;
+}
+
+/* Minimal typing indicator */
+.typing-indicator {
+  color: #a3a3a3;
+  font-size: 12px;
+}
+
+.typing-indicator span {
+  animation: none;
+}
+
+/* No intense hover effects - keep focus clean */
+.chat-container:hover .ai-panel {
+  box-shadow: none;
+}
+
+/* Subtle scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f0f0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3f3f3f;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #5a5a5a;
+}

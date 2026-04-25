@@ -1,26 +1,86 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    
+    // ─── UTILITIES ───
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user is a member of the workspace with an active status
+    function isWorkspaceMember(workspaceId) {
+      let memberPath = /databases/$(database)/documents/workspace-members/$(workspaceId)/$(request.auth.uid);
+      return exists(memberPath) && get(memberPath).data.inviteStatus == 'active';
+    }
+
+    // Check if user is an admin or owner of the workspace
+    function isWorkspaceAdmin(workspaceId) {
+      let memberPath = /databases/$(database)/documents/workspace-members/$(workspaceId)/$(request.auth.uid);
+      return exists(memberPath) && get(memberPath).data.role in ['owner', 'admin'];
+    }
+
+    // Check if user is member of the room via its workspace
+    function isRoomMember(roomId) {
+      let room = get(/databases/$(database)/documents/chatRooms/$(roomId));
+      return isAuthenticated() && isWorkspaceMember(room.data.workspaceId);
+    }
+
+    // ─── USER PROFILES ───
+    
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && request.auth.uid == userId;
+      allow delete: if false; 
+    }
+
+    // ─── WORKSPACES ───
+    
+    match /workspaces/{workspaceId} {
+      allow read: if isAuthenticated() && isWorkspaceMember(workspaceId);
+      allow create: if isAuthenticated(); 
+      allow update: if isAuthenticated() && isWorkspaceAdmin(workspaceId);
+      allow delete: if isAuthenticated() && get(/databases/$(database)/documents/workspaces/$(workspaceId)).data.ownerId == request.auth.uid;
+    }
+
+    match /workspace-members/{workspaceId}/{userId} {
+      allow read: if isAuthenticated() && isWorkspaceMember(workspaceId);
+      // Writes are generally handled by secure backend functions (Phase 1)
+      allow write: if false; 
+    }
+
+    // ─── CHAT ROOMS & MESSAGES ───
+    
     match /chatRooms/{roomId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null;
+      allow read: if isAuthenticated() && isWorkspaceMember(resource.data.workspaceId);
+      // Hardened: Verify workspace membership before creation
+      allow create: if isAuthenticated() && isWorkspaceMember(request.resource.data.workspaceId);
+      allow update: if isAuthenticated() && isWorkspaceAdmin(resource.data.workspaceId);
+      allow delete: if isAuthenticated() && isWorkspaceAdmin(resource.data.workspaceId);
 
       match /messages/{messageId} {
-        allow read: if request.auth != null;
-        allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
-        allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
-        allow update: if request.auth != null;
+        allow read: if isRoomMember(roomId);
+        // Hardened: UID must match authenticated user
+        allow create: if isRoomMember(roomId) && request.resource.data.uid == request.auth.uid;
+        // Hardened: Only author can update/delete their own messages
+        allow update, delete: if isAuthenticated() && resource.data.uid == request.auth.uid;
       }
       
       match /presence/{userId} {
-        allow read: if request.auth != null;
-        allow write: if request.auth != null && userId == request.auth.uid;
+        allow read: if isRoomMember(roomId);
+        allow write: if isAuthenticated() && userId == request.auth.uid && isRoomMember(roomId);
       }
       
       match /typing/{userId} {
-        allow read: if request.auth != null;
-        allow write: if request.auth != null && userId == request.auth.uid;
+        allow read: if isRoomMember(roomId);
+        allow write: if isAuthenticated() && userId == request.auth.uid && isRoomMember(roomId);
       }
+    }
+
+    // Public/Shared Invitations
+    match /workspace-invitations/{inviteId} {
+      allow read: if isAuthenticated() && request.resource.data.email == request.auth.token.email;
+      allow write: if false;
     }
   }
 }

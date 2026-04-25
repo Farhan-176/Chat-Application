@@ -1,0 +1,246 @@
+/* ═══════════════════════════════════════════════════════════════
+   MIDNIGHT VIBE — 🌌 Deep Moody Late-Night Aesthetic
+   Deep blues, purple accents, mystical glow, mysterious vibes
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Deep moody color palette */
+  --vibe-primary: #0f0d27;           /* Very deep purple-blue */
+  --vibe-secondary: #27205f;         /* Deep purple */
+  --vibe-accent: #a78bfa;            /* Mystical purple */
+  --vibe-bg: #0a0816;                /* Almost black purple */
+  --vibe-text: #e9d5ff;              /* Pale purple text */
+  --vibe-text-secondary: #c4b5fd;    /* Medium purple text */
+  --vibe-border: #6d28d9;            /* Deep purple border */
+  --vibe-hover: #1f1840;             /* Hover effect */
+  
+  /* Message styling */
+  --vibe-message-bg-self: #6d28d9;   /* Deep purple sent */
+  --vibe-message-bg-other: #27205f;  /* Medium purple received */
+  --vibe-message-text-self: #f3e8ff; /* Light text on purple */
+  --vibe-message-text-other: #c4b5fd; /* Purple text */
+  
+  /* Smooth, mysterious animations */
+  --vibe-animation-speed: 0.7s;
+  --vibe-animation-timing: cubic-bezier(0.4, 0.0, 0.2, 1);
+  
+  /* Mystical glow */
+  --vibe-glow: rgba(167, 139, 250, 0.25);
+  --vibe-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  --vibe-shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Midnight-specific styling */
+.chat-container {
+  background: linear-gradient(135deg, #0a0816 0%, #1f1840 100%);
+}
+
+.chat-header {
+  background: linear-gradient(135deg, #0f0d27 0%, #27205f 100%);
+  border-bottom: 2px solid #a78bfa;
+  box-shadow: 0 0 30px rgba(167, 139, 250, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.chat-header h2 {
+  color: #a78bfa;
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+}
+
+.message-bubble.self {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+  color: #f3e8ff;
+  box-shadow: 0 8px 20px rgba(109, 40, 217, 0.4);
+  border: 1px solid #a78bfa;
+}
+
+.message-bubble.other {
+  background: linear-gradient(135deg, #27205f 0%, #1f1840 100%);
+  color: #c4b5fd;
+  border: 1px solid #6d28d9;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.message-input {
+  background: linear-gradient(180deg, #0a0816 0%, #1f1840 100%);
+  border-top: 2px solid #6d28d9;
+  box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.message-input input {
+  background-color: #27205f;
+  color: #c4b5fd;
+  border: 2px solid #6d28d9;
+}
+
+.message-input input::placeholder {
+  color: #a78bfa;
+  opacity: 0.7;
+}
+
+.message-input input:focus {
+  outline: none;
+  border-color: #a78bfa;
+  background-color: #1f1840;
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+}
+
+.vibe-button {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+  color: #f3e8ff;
+  box-shadow: 0 8px 20px rgba(109, 40, 217, 0.4);
+  border: 1px solid #a78bfa;
+}
+
+.vibe-button:hover {
+  box-shadow: 0 12px 30px rgba(167, 139, 250, 0.4);
+  transform: translateY(-2px);
+}
+
+.vibe-button:active {
+  transform: translateY(0);
+}
+
+/* Midnight room sidebar with mystique */
+.room-sidebar {
+  background: linear-gradient(180deg, #0f0d27 0%, #1f1840 100%);
+  border-right: 2px solid #6d28d9;
+  box-shadow: inset 4px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.room-item {
+  color: #c4b5fd;
+  padding: 12px;
+  margin: 4px 0;
+  border-radius: 8px;
+  transition: all 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  border-left: 3px solid transparent;
+}
+
+.room-item:hover {
+  background: linear-gradient(135deg, rgba(109, 40, 217, 0.15) 0%, rgba(167, 139, 250, 0.1) 100%);
+  color: #e9d5ff;
+  border-left-color: #a78bfa;
+  box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
+}
+
+.room-item.active {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+  color: #f3e8ff;
+  border-left-color: #a78bfa;
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+}
+
+/* Mystical AI Panel */
+.ai-panel {
+  background: linear-gradient(135deg, rgba(109, 40, 217, 0.1) 0%, rgba(167, 139, 250, 0.05) 100%);
+  border: 2px solid #6d28d9;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.ai-panel-tab {
+  color: #c4b5fd;
+  padding: 10px 14px;
+  border-radius: 8px;
+  transition: all 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  border-bottom: 2px solid transparent;
+}
+
+.ai-panel-tab:hover {
+  background: linear-gradient(135deg, rgba(109, 40, 217, 0.2) 0%, rgba(167, 139, 250, 0.1) 100%);
+  color: #e9d5ff;
+}
+
+.ai-panel-tab.active {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+  color: #f3e8ff;
+  border-bottom-color: #a78bfa;
+  font-weight: 600;
+  box-shadow: 0 0 15px rgba(167, 139, 250, 0.3);
+}
+
+/* Smooth, mysterious animations */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(167, 139, 250, 0.5);
+  }
+}
+
+.message-bubble.self,
+.message-bubble.other {
+  animation: slideInRight 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Ethereal mood badge */
+.mood-badge {
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.6));
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Mysterious typing indicator */
+.typing-indicator {
+  color: #a78bfa;
+}
+
+.typing-indicator span {
+  animation: shimmer 1.4s ease-in-out infinite;
+  display: inline-block;
+  margin: 0 3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6d28d9 0%, #a78bfa 100%);
+}
+
+/* Mystical hover effects */
+.chat-container:hover .ai-panel {
+  box-shadow: 0 12px 40px rgba(167, 139, 250, 0.4);
+}
+
+/* Smooth scrollbar with purple tint */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(180deg, #0a0816 0%, #1f1840 100%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6d28d9 0%, #a78bfa 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
+}

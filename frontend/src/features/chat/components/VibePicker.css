@@ -1,0 +1,209 @@
+/* VibePicker Component Styling */
+
+.vibe-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.vibe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  padding: 8px;
+}
+
+.vibe-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  user-select: none;
+}
+
+.vibe-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px);
+}
+
+.vibe-card.selected {
+  border-color: #3b82f6;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.02));
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+}
+
+.vibe-card.hovered {
+  border-color: #3b82f6;
+}
+
+/* Color Preview */
+.vibe-preview {
+  display: flex;
+  gap: 2px;
+  height: 20px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.preview-stripe {
+  flex: 1;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.vibe-card:hover .preview-stripe {
+  flex-grow: 1.1;
+}
+
+/* Vibe Content */
+.vibe-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.vibe-emoji {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.vibe-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.vibe-description {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Selection Indicator */
+.selection-checkmark {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #3b82f6;
+  border-radius: 50%;
+  color: white;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+}
+
+.vibe-card.selected .selection-checkmark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Vibe Info */
+.vibe-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.info-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.info-label::before {
+  content: '✓';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .vibe-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .vibe-card {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .vibe-emoji {
+    font-size: 24px;
+  }
+
+  .vibe-label {
+    font-size: 12px;
+  }
+
+  .vibe-description {
+    font-size: 10px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .vibe-card {
+    background: #1f2937;
+    border-color: #4b5563;
+    color: #f3f4f6;
+  }
+
+  .vibe-card:hover {
+    border-color: #60a5fa;
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.15);
+  }
+
+  .vibe-card.selected {
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(96, 165, 250, 0.05));
+  }
+
+  .vibe-label {
+    color: #f3f4f6;
+  }
+
+  .vibe-description {
+    color: #9ca3af;
+  }
+
+  .vibe-info {
+    background: #111827;
+    border-color: #374151;
+    color: #d1d5db;
+  }
+
+  .info-label {
+    color: #f3f4f6;
+  }
+}

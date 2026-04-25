@@ -1,0 +1,75 @@
+.app-layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  gap: 12px;
+  padding: 12px;
+  background:
+    radial-gradient(1080px 680px at 8% 0%, rgba(31, 95, 255, 0.22), transparent 58%),
+    radial-gradient(760px 520px at 100% 100%, rgba(14, 166, 106, 0.1), transparent 52%),
+    linear-gradient(180deg, #0b1527 0%, #111f37 31%, #e6edf6 31%, #f4f8fc 100%);
+}
+
+.feature-container {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.985), rgba(245, 249, 253, 0.985));
+  border: 1px solid rgba(122, 138, 162, 0.26);
+  box-shadow:
+    0 28px 74px rgba(7, 16, 31, 0.26),
+    0 8px 16px rgba(7, 16, 31, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.feature-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), transparent 16%);
+  z-index: 0;
+}
+
+.feature-container > * {
+  position: relative;
+  z-index: 1;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  position: relative;
+  background: linear-gradient(180deg, #f9fbfe 0%, #f1f6fb 100%);
+}
+
+@media (max-width: 1024px) {
+  .app-layout {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .feature-container {
+    border-radius: 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-layout {
+    padding: 0;
+    gap: 0;
+  }
+
+  .feature-container {
+    border-radius: 0;
+    border: none;
+  }
+}

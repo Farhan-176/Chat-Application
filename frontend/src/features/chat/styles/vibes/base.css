@@ -1,0 +1,257 @@
+/* ═══════════════════════════════════════════════════════════════
+   FlameChat Vibe System — Base Variables & Structure
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Default fallback (if no vibe selected) */
+  --vibe-primary: #1f2937;           /* Dark gray */
+  --vibe-secondary: #e5e7eb;         /* Light gray */
+  --vibe-accent: #3b82f6;            /* Blue */
+  --vibe-bg: #ffffff;                /* White background */
+  --vibe-text: #1f2937;              /* Dark text */
+  --vibe-text-secondary: #6b7280;    /* Medium gray text */
+  --vibe-border: #e5e7eb;            /* Light border */
+  --vibe-hover: #f3f4f6;             /* Hover background */
+  
+  /* Message styling */
+  --vibe-message-bg-self: #3b82f6;   /* Sent message bg */
+  --vibe-message-bg-other: #f3f4f6;  /* Received message bg */
+  --vibe-message-text-self: #ffffff; /* Sent message text */
+  --vibe-message-text-other: #1f2937; /* Received message text */
+  
+  /* Animation speeds */
+  --vibe-animation-speed: 0.3s;      /* Default: medium speed */
+  --vibe-animation-timing: ease-out; /* Default: ease-out */
+  
+  /* Glow & depth effects */
+  --vibe-glow: rgba(59, 130, 246, 0.1);
+  --vibe-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --vibe-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  --vibe-transition: all var(--vibe-animation-speed) var(--vibe-animation-timing);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Global Vibe Styling (Applied to chat container)
+   ═══════════════════════════════════════════════════════════════ */
+
+.chat-container {
+  background-color: var(--vibe-bg);
+  color: var(--vibe-text);
+  transition: var(--vibe-transition);
+}
+
+.chat-header {
+  background: linear-gradient(135deg, var(--vibe-primary), var(--vibe-secondary));
+  color: var(--vibe-text);
+  border-bottom: 1px solid var(--vibe-border);
+  transition: var(--vibe-transition);
+  box-shadow: var(--vibe-shadow);
+}
+
+.message-list {
+  background-color: var(--vibe-bg);
+  transition: var(--vibe-transition);
+}
+
+/* Self-sent messages */
+.message-bubble.self {
+  background-color: var(--vibe-message-bg-self);
+  color: var(--vibe-message-text-self);
+  border-radius: 12px 2px 12px 12px;
+  padding: 8px 12px;
+  max-width: 70%;
+  word-wrap: break-word;
+  animation: slideInRight var(--vibe-animation-speed) var(--vibe-animation-timing);
+}
+
+/* Other's messages */
+.message-bubble.other {
+  background-color: var(--vibe-message-bg-other);
+  color: var(--vibe-message-text-other);
+  border-radius: 2px 12px 12px 12px;
+  padding: 8px 12px;
+  max-width: 70%;
+  word-wrap: break-word;
+  animation: slideInLeft var(--vibe-animation-speed) var(--vibe-animation-timing);
+}
+
+/* Message input styling */
+.message-input {
+  background-color: var(--vibe-bg);
+  border-top: 1px solid var(--vibe-border);
+  border-radius: 0;
+  padding: 12px;
+  transition: var(--vibe-transition);
+}
+
+.message-input input {
+  background-color: var(--vibe-hover);
+  color: var(--vibe-text);
+  border: 1px solid var(--vibe-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  transition: var(--vibe-transition);
+}
+
+.message-input input:focus {
+  outline: none;
+  border-color: var(--vibe-accent);
+  box-shadow: 0 0 0 3px var(--vibe-glow);
+}
+
+/* Buttons */
+.vibe-button {
+  background-color: var(--vibe-accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: var(--vibe-transition);
+  font-weight: 500;
+}
+
+.vibe-button:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+  box-shadow: var(--vibe-shadow-lg);
+}
+
+.vibe-button:active {
+  transform: translateY(0);
+}
+
+/* Room sidebar */
+.room-sidebar {
+  background-color: var(--vibe-primary);
+  color: var(--vibe-text);
+  transition: var(--vibe-transition);
+}
+
+.room-item {
+  padding: 12px;
+  margin: 4px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--vibe-transition);
+}
+
+.room-item:hover {
+  background-color: var(--vibe-hover);
+}
+
+.room-item.active {
+  background-color: var(--vibe-accent);
+  color: white;
+  font-weight: 600;
+}
+
+/* AI Panel styling */
+.ai-panel {
+  background-color: var(--vibe-secondary);
+  border-left: 2px solid var(--vibe-accent);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 8px 0;
+  transition: var(--vibe-transition);
+  box-shadow: var(--vibe-shadow);
+}
+
+.ai-panel-tab {
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--vibe-transition);
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+}
+
+.ai-panel-tab:hover {
+  background-color: var(--vibe-hover);
+}
+
+.ai-panel-tab.active {
+  background-color: var(--vibe-accent);
+  color: white;
+  border-bottom-color: var(--vibe-accent);
+}
+
+/* Mood emoji badge */
+.mood-badge {
+  display: inline-block;
+  font-size: 14px;
+  margin-left: 4px;
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--vibe-glow);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--vibe-glow);
+  }
+}

@@ -1,0 +1,498 @@
+/* Create Geofenced Room Modal Styling */
+
+.geofence-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.geofence-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.geofence-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #f3f4f6 0%, #ffffff 100%);
+}
+
+.geofence-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.geofence-close {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 28px;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.geofence-close:hover {
+  background: white;
+  color: #1f2937;
+}
+
+/* Form */
+.geofence-form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #1f2937;
+  background: white;
+  transition: all 0.2s;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-input:disabled,
+.form-textarea:disabled,
+.form-select:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.form-textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.char-count {
+  font-size: 11px;
+  color: #9ca3af;
+  text-align: right;
+}
+
+.help-text {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 4px 0 0 0;
+}
+
+/* Location */
+.location-display {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.location-badge {
+  display: inline-block;
+  padding: 8px 12px;
+  background: #dbeafe;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0c4a6e;
+  font-family: monospace;
+}
+
+.location-change-btn {
+  padding: 8px 12px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.location-change-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.location-change-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-get-location {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #dbeafe;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0c4a6e;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-get-location:hover:not(:disabled) {
+  background: #bfdbfe;
+  border-color: #93c5fd;
+}
+
+.btn-get-location:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-get-location .spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Errors */
+.form-errors {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+}
+
+.error-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #b91c1c;
+  font-weight: 500;
+}
+
+.error-item svg {
+  flex-shrink: 0;
+}
+
+/* Success */
+.form-success {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #166534;
+}
+
+/* Summary */
+.room-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.summary-row span {
+  color: #6b7280;
+}
+
+.summary-row strong {
+  color: #3b82f6;
+  font-weight: 700;
+}
+
+/* Buttons */
+.form-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  color: #1f2937;
+  border: 1px solid #d1d5db;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #e5e7eb;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .geofence-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .geofence-modal {
+    background: #1f2937;
+  }
+
+  .geofence-header {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+    border-bottom-color: #374151;
+  }
+
+  .geofence-header h2 {
+    color: #f3f4f6;
+  }
+
+  .geofence-close {
+    color: #9ca3af;
+  }
+
+  .geofence-close:hover {
+    background: #374151;
+    color: #f3f4f6;
+  }
+
+  .form-group label {
+    color: #f3f4f6;
+  }
+
+  .form-input,
+  .form-textarea,
+  .form-select {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f3f4f6;
+  }
+
+  .form-input:focus,
+  .form-textarea:focus,
+  .form-select:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+  }
+
+  .form-input:disabled,
+  .form-textarea:disabled,
+  .form-select:disabled {
+    background: #4b5563;
+    color: #9ca3af;
+  }
+
+  .char-count,
+  .help-text {
+    color: #9ca3af;
+  }
+
+  .location-badge {
+    background: rgba(30, 64, 175, 0.2);
+    border-color: rgba(30, 64, 175, 0.3);
+    color: #93c5fd;
+  }
+
+  .location-change-btn {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f3f4f6;
+  }
+
+  .location-change-btn:hover:not(:disabled) {
+    background: #4b5563;
+  }
+
+  .btn-get-location {
+    background: rgba(30, 64, 175, 0.2);
+    border-color: rgba(30, 64, 175, 0.3);
+    color: #93c5fd;
+  }
+
+  .btn-get-location:hover:not(:disabled) {
+    background: rgba(30, 64, 175, 0.3);
+  }
+
+  .form-errors {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+  }
+
+  .error-item {
+    color: #fca5a5;
+  }
+
+  .form-success {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #86efac;
+  }
+
+  .room-summary {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  .summary-row span {
+    color: #9ca3af;
+  }
+
+  .summary-row strong {
+    color: #60a5fa;
+  }
+
+  .btn-secondary {
+    background: #374151;
+    color: #f3f4f6;
+    border-color: #4b5563;
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background: #4b5563;
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .geofence-modal {
+    max-width: 100%;
+    border-radius: 12px 12px 0 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 80vh;
+  }
+
+  .geofence-form {
+    padding: 16px;
+  }
+}

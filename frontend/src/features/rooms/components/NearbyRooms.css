@@ -1,0 +1,506 @@
+/* Nearby Rooms Component Styling */
+
+.nearby-rooms {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+}
+
+.nearby-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.nearby-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.refresh-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.refresh-btn .spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error */
+.nearby-error {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.nearby-error strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.retry-btn {
+  margin-top: 6px;
+  background: none;
+  border: none;
+  color: #b91c1c;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 0;
+  text-decoration: underline;
+  font-family: inherit;
+}
+
+.retry-btn:hover {
+  opacity: 0.7;
+}
+
+/* Location Status */
+.location-status {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #dbeafe;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #0c4a6e;
+}
+
+.location-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  font-family: monospace;
+}
+
+/* Distance Filter */
+.distance-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.distance-filter label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.filter-btn:hover {
+  border-color: #9ca3af;
+  background: #e5e7eb;
+}
+
+.filter-btn.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+/* Nearby List */
+.nearby-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 200px;
+}
+
+.loading-state,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.spinner-large {
+  color: #3b82f6;
+  animation: spin 1s linear infinite;
+}
+
+.empty-state p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.empty-state .btn-primary {
+  margin-top: 8px;
+}
+
+/* Nearby Room Card */
+.nearby-room-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid #3b82f6;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.nearby-room-card.very-close {
+  border-left-color: #dc2626;
+  background: #fef2f2;
+}
+
+.nearby-room-card.close {
+  border-left-color: #f97316;
+  background: #fef3c7;
+}
+
+.nearby-room-card.medium {
+  border-left-color: #eab308;
+  background: #fefce8;
+}
+
+.nearby-room-card.far {
+  border-left-color: #06b6d4;
+  background: #f0f9fa;
+}
+
+.nearby-room-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Room Card Header */
+.room-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.room-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 4px 0;
+}
+
+.room-description {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.distance-badge {
+  padding: 4px 8px;
+  background: white;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.distance-badge.very-close {
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+.distance-badge.close {
+  color: #f97316;
+  border: 1px solid #fed7aa;
+}
+
+.distance-badge.medium {
+  color: #eab308;
+  border: 1px solid #fef3c7;
+}
+
+.distance-badge.far {
+  color: #06b6d4;
+  border: 1px solid #a5f3fc;
+}
+
+/* Distance Info */
+.distance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+}
+
+.distance-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.distance-row .label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.distance-value,
+.direction-value {
+  color: #1f2937;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+/* Room Stats */
+.room-stats {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.stat {
+  color: #6b7280;
+}
+
+/* Action Button */
+.btn-join {
+  padding: 8px 12px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-join:hover {
+  background: #2563eb;
+  transform: translateX(2px);
+}
+
+.btn-join:active {
+  transform: translateX(0);
+}
+
+/* Info Footer */
+.nearby-info {
+  padding: 8px 12px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #0c4a6e;
+  text-align: center;
+}
+
+.nearby-info p {
+  margin: 0;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .nearby-rooms {
+    background: #1f2937;
+  }
+
+  .nearby-header h2 {
+    color: #f3f4f6;
+  }
+
+  .refresh-btn {
+    background: #374151;
+    border-color: #4b5563;
+    color: #9ca3af;
+  }
+
+  .refresh-btn:hover:not(:disabled) {
+    background: #4b5563;
+    color: #f3f4f6;
+  }
+
+  .nearby-error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+  }
+
+  .location-status {
+    background: rgba(30, 64, 175, 0.2);
+    border-color: rgba(30, 64, 175, 0.3);
+    color: #93c5fd;
+  }
+
+  .distance-filter label {
+    color: #9ca3af;
+  }
+
+  .filter-btn {
+    background: #374151;
+    border-color: #4b5563;
+    color: #9ca3af;
+  }
+
+  .filter-btn:hover {
+    border-color: #6b7280;
+    background: #4b5563;
+  }
+
+  .filter-btn.active {
+    background: #60a5fa;
+  }
+
+  .empty-state p {
+    color: #9ca3af;
+  }
+
+  .nearby-room-card {
+    background: #374151;
+    border-color: #4b5563;
+  }
+
+  .nearby-room-card.very-close {
+    background: rgba(220, 38, 38, 0.1);
+  }
+
+  .nearby-room-card.close {
+    background: rgba(249, 115, 22, 0.1);
+  }
+
+  .nearby-room-card.medium {
+    background: rgba(234, 179, 8, 0.1);
+  }
+
+  .nearby-room-card.far {
+    background: rgba(6, 182, 212, 0.1);
+  }
+
+  .room-name {
+    color: #f3f4f6;
+  }
+
+  .room-description {
+    color: #d1d5db;
+  }
+
+  .distance-badge {
+    background: #4b5563;
+  }
+
+  .distance-info {
+    background: #4b5563;
+  }
+
+  .distance-row .label {
+    color: #d1d5db;
+  }
+
+  .distance-value,
+  .direction-value {
+    color: #f3f4f6;
+  }
+
+  .stat {
+    color: #d1d5db;
+  }
+
+  .nearby-info {
+    background: rgba(30, 64, 175, 0.1);
+    border-color: rgba(30, 64, 175, 0.3);
+    color: #93c5fd;
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .nearby-rooms {
+    padding: 12px;
+  }
+
+  .filter-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .room-card-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .distance-badge {
+    align-self: flex-start;
+  }
+
+  .distance-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

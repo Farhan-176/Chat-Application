@@ -1,0 +1,251 @@
+.profile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 8, 20, 0.58);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  z-index: 1200;
+  padding: 16px;
+}
+
+.profile-modal {
+  width: 100%;
+  max-width: 520px;
+  border-radius: 20px;
+  border: 1px solid rgba(143, 168, 212, 0.44);
+  background: linear-gradient(180deg, #0f1f39 0%, #102543 56%, #10203a 100%);
+  box-shadow: 0 32px 80px rgba(3, 11, 24, 0.6);
+  color: #eff6ff;
+  padding: 20px;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.profile-header h2 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+
+.profile-close {
+  border: none;
+  background: transparent;
+  color: #9fb5d9;
+  font-size: 28px;
+  line-height: 1;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.profile-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.profile-avatar-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.profile-avatar-button {
+  width: 108px;
+  height: 108px;
+  border-radius: 20px;
+  border: 1px solid rgba(143, 168, 212, 0.45);
+  background: rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.profile-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-avatar-fallback {
+  font-size: 38px;
+  font-weight: 800;
+}
+
+.profile-avatar-edit {
+  position: absolute;
+  inset: auto 0 0 0;
+  background: rgba(3, 11, 24, 0.72);
+  color: #d2e5ff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.profile-file-input {
+  display: none;
+}
+
+.profile-fields {
+  display: grid;
+  gap: 8px;
+}
+
+.profile-fields label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9db3d4;
+}
+
+.profile-fields input,
+.profile-fields select,
+.profile-fields textarea {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(143, 168, 212, 0.44);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f4f8ff;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.profile-fields textarea {
+  resize: vertical;
+  min-height: 84px;
+}
+
+.profile-handle-helper {
+  margin: -2px 0 2px;
+  font-size: 11px;
+}
+
+.profile-handle-helper.idle,
+.profile-handle-helper.checking {
+  color: #9db3d4;
+}
+
+.profile-handle-helper.available {
+  color: #86efac;
+}
+
+.profile-handle-helper.taken,
+.profile-handle-helper.invalid {
+  color: #ffb4bf;
+}
+
+.profile-bio-counter {
+  text-align: right;
+  color: #90a7cb;
+  font-size: 11px;
+  margin-top: -2px;
+}
+
+.profile-error {
+  margin-top: 10px;
+  margin-bottom: 0;
+  color: #ff9eaa;
+  font-size: 13px;
+}
+
+.profile-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.profile-signout,
+.profile-save {
+  border-radius: 10px;
+  min-height: 38px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.profile-signout {
+  background: transparent;
+  color: #c5d8f5;
+  border-color: rgba(143, 168, 212, 0.44);
+}
+
+.profile-save {
+  background: linear-gradient(135deg, #1f5fff, #2f83ff);
+  color: #fff;
+}
+
+.profile-danger-zone {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(143, 168, 212, 0.2);
+}
+
+.profile-delete-trigger {
+  border: none;
+  background: transparent;
+  color: #ff9fa9;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.profile-delete-confirm {
+  margin-top: 10px;
+  border: 1px solid rgba(255, 120, 136, 0.46);
+  border-radius: 12px;
+  background: rgba(63, 13, 23, 0.5);
+  padding: 10px;
+}
+
+.profile-delete-confirm p {
+  margin: 0;
+  font-size: 13px;
+  color: #ffd8de;
+}
+
+.profile-delete-confirm div {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.profile-delete-confirm button {
+  border-radius: 8px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.profile-delete-confirm button.danger {
+  border-color: rgba(255, 132, 146, 0.62);
+  background: rgba(255, 78, 101, 0.22);
+  color: #ffd3da;
+}
+
+@media (max-width: 640px) {
+  .profile-modal {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .profile-header h2 {
+    font-size: 20px;
+  }
+}

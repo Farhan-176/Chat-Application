@@ -31,9 +31,10 @@ npm install
 
 1. Go to [Firebase Console](https://console.firebase.google.com)
 2. Create a new project or select existing one
-3. Enable Google Authentication:
+3. Enable Authentication providers:
    - Go to **Authentication > Sign-in method**
    - Enable **Google** provider
+  - Enable **Email/Password** provider (required for "Create account" with email)
 4. Create Firestore Database:
    - Go to **Firestore Database**
    - Create database in **production mode**

@@ -1,0 +1,182 @@
+/* ═══════════════════════════════════════════════════════════════
+   LOFI VIBE — 🌙 Calm Study Aesthetic
+   Dark indigo, soft purples, nostalgic vibes, slow animations
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Color palette */
+  --vibe-primary: #4c1d95;           /* Deep purple */
+  --vibe-secondary: #e9d5ff;         /* Light purple */
+  --vibe-accent: #c4b5fd;            /* Medium purple */
+  --vibe-bg: #1e1b2b;                /* Dark background */
+  --vibe-text: #f3e8ff;              /* Light text */
+  --vibe-text-secondary: #d8b4fe;    /* Medium purple text */
+  --vibe-border: #5b21b6;            /* Dark purple border */
+  --vibe-hover: #2d1f3f;             /* Hover effect */
+  
+  /* Message styling */
+  --vibe-message-bg-self: #7c3aed;   /* Purple sent */
+  --vibe-message-bg-other: #2d1f3f;  /* Dark received */
+  --vibe-message-text-self: #f3e8ff; /* Light text on purple */
+  --vibe-message-text-other: #d8b4fe; /* Light purple text */
+  
+  /* Slow, smooth animations for study vibe */
+  --vibe-animation-speed: 0.6s;
+  --vibe-animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Soft glow effect */
+  --vibe-glow: rgba(196, 181, 253, 0.2);
+  --vibe-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --vibe-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* Lofi-specific styling */
+.chat-container {
+  background: linear-gradient(135deg, #1e1b2b 0%, #2d1f3f 100%);
+}
+
+.chat-header {
+  background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #5b21b6;
+}
+
+.message-bubble.self {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  box-shadow: 0 8px 16px rgba(124, 58, 237, 0.3);
+}
+
+.message-bubble.other {
+  background-color: #2d1f3f;
+  border: 1px solid #5b21b6;
+}
+
+.message-input {
+  background: linear-gradient(135deg, #1e1b2b 0%, #2d1f3f 100%);
+  border-top: 1px solid #5b21b6;
+}
+
+.message-input input {
+  background-color: #3d2957;
+  color: #f3e8ff;
+  border: 1px solid #5b21b6;
+}
+
+.message-input input::placeholder {
+  color: #a78bfa;
+}
+
+.message-input input:focus {
+  box-shadow: 0 0 0 3px rgba(196, 181, 253, 0.3);
+  border-color: #c4b5fd;
+}
+
+.vibe-button {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+}
+
+.vibe-button:hover {
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.6);
+}
+
+/* Lofi room sidebar with dark theme */
+.room-sidebar {
+  background: linear-gradient(180deg, #4c1d95 0%, #2d1f3f 100%);
+}
+
+.room-item {
+  color: #d8b4fe;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.room-item:hover {
+  background-color: rgba(124, 58, 237, 0.1);
+  color: #f3e8ff;
+}
+
+.room-item.active {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: #f3e8ff;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+/* AI Panel with lofi styling */
+.ai-panel {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(109, 40, 217, 0.1) 100%);
+  border: 1px solid #5b21b6;
+  backdrop-filter: blur(10px);
+}
+
+.ai-panel-tab {
+  color: #d8b4fe;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-panel-tab:hover {
+  background-color: rgba(124, 58, 237, 0.2);
+  color: #f3e8ff;
+}
+
+.ai-panel-tab.active {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: #f3e8ff;
+}
+
+/* Lofi-specific animations (slower, more elegant) */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-bubble.self,
+.message-bubble.other {
+  animation: slideInRight var(--vibe-animation-speed) var(--vibe-animation-timing);
+}
+
+/* Mood badge with gentle glow */
+.mood-badge {
+  filter: drop-shadow(0 0 2px rgba(196, 181, 253, 0.5));
+}
+
+/* Subtle typing indicator */
+.typing-indicator {
+  color: #d8b4fe;
+}
+
+.typing-indicator span {
+  animation: pulse 1.4s infinite;
+}
+
+/* Hover glow effect */
+.chat-container:hover .ai-panel {
+  box-shadow: 0 0 20px rgba(196, 181, 253, 0.2);
+}

@@ -1,0 +1,193 @@
+/* Star Button Styling */
+
+.star-button-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.star-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+  font-family: inherit;
+}
+
+.star-button:hover:not(.loading) {
+  background: #f3f4f6;
+  color: #fbbf24;
+  border-color: #fbbf24;
+  transform: scale(1.1);
+}
+
+.star-button:active:not(.loading) {
+  transform: scale(0.95);
+}
+
+.star-button.saved {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
+  border-color: #fbbf24;
+}
+
+.star-button.saved:hover {
+  background: rgba(251, 191, 36, 0.2);
+  color: #f59e0b;
+  border-color: #f59e0b;
+}
+
+.star-button.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.star-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.star-button .spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Saved indicator tooltip */
+.star-saved-indicator {
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: fadeInDown 0.3s ease-out;
+}
+
+.star-saved-indicator::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: #1f2937;
+}
+
+/* Error tooltip */
+.star-error-tooltip {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: slideUp 0.3s ease-out;
+}
+
+.star-error-tooltip button {
+  background: none;
+  border: none;
+  color: #b91c1c;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.star-error-tooltip button:hover {
+  opacity: 0.7;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .star-button {
+    color: #9ca3af;
+  }
+
+  .star-button:hover:not(.loading) {
+    background: #374151;
+    color: #fbbf24;
+    border-color: #fbbf24;
+  }
+
+  .star-button.saved {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.15);
+  }
+
+  .star-button.saved:hover {
+    background: rgba(251, 191, 36, 0.25);
+  }
+
+  .star-saved-indicator {
+    background: #f3f4f6;
+    color: #1f2937;
+  }
+
+  .star-saved-indicator::after {
+    border-top-color: #f3f4f6;
+  }
+
+  .star-error-tooltip {
+    background: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  .star-error-tooltip button {
+    color: #fca5a5;
+  }
+}
