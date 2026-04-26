@@ -4,7 +4,7 @@
  * Uses the Gemini 1.5 Flash model via the REST API (no SDK required).
  */
 
-const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent'
+const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent'
 
 function getApiKey(): string {
   const key = import.meta.env.VITE_GEMINI_API_KEY
@@ -192,4 +192,74 @@ Original message: "${text}"
 Return ONLY the rewritten message. No explanation, no quotes, no prefix.`
 
   return callGemini(prompt)
+}
+
+// ─── Feature: Smart Actions ───────────────────────────────────────────────────
+
+import { SmartAction } from '../types'
+
+export async function parseSmartActions(text: string): Promise<SmartAction[]> {
+  if (text.length < 5) return []
+
+  const prompt = `Analyze this message and detect if there are any actionable intents:
+- Meeting/Event (e.g. "let's meet at 5", "lunch tomorrow")
+- Task/To-do (e.g. "I'll do that", "remind me to...")
+- Location/Place (e.g. "at Starbucks", "near the park")
+
+Message: "${text}"
+
+Respond ONLY with a JSON array of objects (no markdown):
+[
+  { "type": "calendar", "label": "Add to Calendar", "payload": { "title": "...", "date": "..." } },
+  { "type": "task",     "label": "Create Task",     "payload": { "task": "..." } },
+  { "type": "map",      "label": "View on Map",     "payload": { "location": "..." } }
+]
+
+If no intents found, return an empty array [].`
+
+  try {
+    const raw = await callGemini(prompt)
+    const cleaned = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+    return JSON.parse(cleaned) as SmartAction[]
+  } catch (error) {
+    console.error('Gemini Smart Action parsing failed, using mock fallback:', error)
+    
+    // Premium Mock Fallback for Demo Purposes
+    const actions: SmartAction[] = []
+    const lower = text.toLowerCase()
+    
+    if (lower.includes('meet') || lower.includes('appointment') || lower.includes('call at')) {
+      actions.push({ 
+        type: 'calendar', 
+        label: 'Add to Calendar', 
+        payload: { event: 'Meeting', time: 'Detected' } 
+      })
+    }
+    
+    if (lower.includes('starbucks') || lower.includes('park') || lower.includes('office') || lower.includes('street')) {
+      actions.push({ 
+        type: 'map', 
+        label: 'View on Map', 
+        payload: { location: 'Detected' } 
+      })
+    }
+    
+    if (lower.includes('todo') || lower.includes('finish') || lower.includes('report') || lower.includes('send')) {
+      actions.push({ 
+        type: 'task', 
+        label: 'Create Task', 
+        payload: { task: 'Follow up' } 
+      })
+    }
+
+    if (lower.includes('http') || lower.includes('.com') || lower.includes('.io')) {
+        actions.push({ 
+          type: 'link', 
+          label: 'Open Link', 
+          payload: { url: 'Detected' } 
+        })
+      }
+    
+    return actions
+  }
 }

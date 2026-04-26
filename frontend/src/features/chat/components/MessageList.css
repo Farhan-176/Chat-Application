@@ -2,11 +2,12 @@
   flex: 1;
   min-height: 0; /* Critical flexbox fix to prevent overflow */
   width: 100%;
+  background-color: var(--surface-layer-2);
 }
 
 .message-list {
   height: 100% !important; /* Let Virtuoso manage height */
-  padding: 24px 32px;
+  padding: 20px 24px;
 }
 
 .message-list::-webkit-scrollbar {
@@ -52,7 +53,7 @@
 .message-wrapper {
   display: flex;
   width: 100%;
-  gap: 12px;
+  gap: 10px;
   align-items: flex-end;
   margin-bottom: 16px;
 }
@@ -64,17 +65,17 @@
 /* Squeeze grouped messages tightly together */
 .message-wrapper.cluster-top { margin-bottom: 2px; }
 .message-wrapper.cluster-middle { margin-bottom: 2px; }
-.message-wrapper.cluster-bottom { margin-bottom: 16px; }
+.message-wrapper.cluster-bottom { margin-bottom: 10px; }
 
 /* Keep avatars aligned even when hidden */
 .message-avatar-placeholder {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
 }
 
 .message-wrapper.continued {
-  margin-top: -6px;
+  margin-top: -4px;
 }
 
 @keyframes messageSlideUp {
@@ -94,13 +95,14 @@
 .message-avatar-fallback {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
-  border: 1px solid rgba(166, 184, 209, 0.65);
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
 }
 
-.message-avatar {
-  object-fit: cover;
+.message-avatar:hover {
+  transform: scale(1.05);
 }
 
 .message-avatar-fallback {
@@ -109,16 +111,16 @@
   justify-content: center;
   color: white;
   font-size: 14px;
-  font-weight: 700;
-  background: linear-gradient(145deg, #315fcb, #173f90);
+  font-weight: 800;
+  background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
 }
 
 .message-avatar-fallback.own {
-  background: linear-gradient(145deg, #1f5fff, #2146a6);
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
 }
 
 .message-content-wrapper {
-  max-width: min(66%, 640px);
+  max-width: min(72%, 700px);
 }
 
 /* ─── Bubble Morphing (The Obsidian Aesthetic) ─── */
@@ -135,26 +137,28 @@
 /* The actual bubble styling */
 .message-bubble {
   position: relative;
-  padding: 12px 16px;
-  background: var(--surface-layer-1);
-  border: var(--glass-border);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  backdrop-filter: var(--glass-blur-sm);
-  transition: transform var(--transition-fast);
-  line-height: 1.35;
+  padding: 10px 14px;
+  background: #1e222d;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(12px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  line-height: 1.4;
   border-radius: 18px;
+  max-width: fit-content;
 }
 
 .message-bubble.other {
-  background: var(--surface-layer-1);
-  color: var(--text-primary);
+  background: #1e222d;
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .message-bubble.own {
-  color: var(--text-display);
-  background: var(--accent-primary);
-  box-shadow: 0 8px 20px var(--accent-glow);
-  border-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Hover effect on messages for actions (reply, react) */
@@ -166,19 +170,19 @@
 }
 
 .message-sender {
-  margin-bottom: 3px;
+  margin-bottom: 4px;
+  margin-left: 4px;
   color: #818cf8;
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-size: 12px;
   font-weight: 700;
+  opacity: 0.9;
 }
 
 .message-original-text {
   margin-top: 4px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
-  color: #475569;
+  color: #7b8ea8;
 }
 
 .message-content {
@@ -443,15 +447,15 @@
 
 .message-time {
   font-size: 10px;
-  opacity: 0.6;
+  opacity: 0.86;
   font-variant-numeric: tabular-nums;
-  color: #94a3b8;
+  color: #b3c2d7;
 }
 
 .message-edited {
   font-size: 10px;
   font-style: italic;
-  color: #475569;
+  color: #90a2ba;
 }
 
 .message-bubble.own .message-time {
@@ -588,4 +592,55 @@
 @keyframes pulseSending {
   from { box-shadow: 0 0 0 rgba(59, 130, 246, 0); }
   to { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+}
+
+/* Smart Actions Container */
+.smart-actions-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.smart-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: #cbd5e1;
+}
+
+.smart-action-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.smart-action-btn.action-calendar {
+  color: #fbbf24; /* Amber */
+  border-color: rgba(251, 191, 36, 0.2);
+}
+
+.smart-action-btn.action-task {
+  color: #34d399; /* Emerald */
+  border-color: rgba(52, 211, 153, 0.2);
+}
+
+.smart-action-btn.action-map {
+  color: #60a5fa; /* Blue */
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+.smart-action-btn.action-link {
+  color: #f472b6; /* Pink */
+  border-color: rgba(244, 114, 182, 0.2);
 }

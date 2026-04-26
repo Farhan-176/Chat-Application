@@ -96,10 +96,7 @@ body {
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background:
-    radial-gradient(980px 620px at -12% -10%, rgba(31, 95, 255, 0.14), transparent 58%),
-    radial-gradient(740px 460px at 108% 0%, rgba(14, 166, 106, 0.08), transparent 56%),
-    linear-gradient(180deg, #0a1425 0%, #111e35 32%, #eaf0f7 32%, #f6f9fd 100%);
+  background: var(--surface-base);
 }
 
 body::before {

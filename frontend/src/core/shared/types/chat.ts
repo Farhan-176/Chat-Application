@@ -159,6 +159,14 @@ export interface Message {
   translatedToLanguage?: string
   isOptimistic?: boolean // Zero-latency messaging flag
   clusterPosition?: 'top' | 'middle' | 'bottom' | 'standalone'
+  smartActions?: SmartAction[]
+}
+
+export interface SmartAction {
+  type: 'calendar' | 'task' | 'map' | 'link'
+  label: string
+  payload: any
+  icon?: string
 }
 
 export interface ModerationReport {

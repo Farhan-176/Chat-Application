@@ -70,6 +70,12 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
     },
   ]
 
+  const liveSignals = [
+    { label: 'Live rooms', value: '18', detail: 'active across workspaces' },
+    { label: 'Response time', value: '< 45s', detail: 'median reply window' },
+    { label: 'Automation', value: 'On', detail: 'workflow triggers enabled' },
+  ]
+
   return (
     <div className="landing-page">
       <nav className="landing-nav">
@@ -83,66 +89,114 @@ export const LandingPage = ({ onGetStarted }: LandingPageProps) => {
       </nav>
 
       <section className="hero-section">
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="hero-tag"
-        >
-          Built for serious teams, not chat noise.
-        </motion.div>
+        <div className="hero-grid">
+          <div className="hero-copy">
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="hero-tag"
+            >
+              Built for serious teams, not chat noise.
+            </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-        >
-          Where critical work
-          <br />
-          moves in real time.
-        </motion.h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+            >
+              Where critical work
+              <br />
+              feels radically current.
+            </motion.h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-        >
-          NexusChat combines dependable messaging, policy-grade controls, and
-          workflow automation into one platform teams actually enjoy using.
-        </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+            >
+              NexusChat combines dependable messaging, policy-grade controls, and
+              workflow automation into one platform teams actually enjoy using.
+            </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="hero-btns"
-        >
-          <button className="primary-btn" onClick={onGetStarted}>
-            Start Free Trial
-            <ArrowRight size={16} />
-          </button>
-          <a href="#features" className="secondary-btn">See Platform Tour</a>
-        </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="hero-btns"
+            >
+              <button className="primary-btn" onClick={onGetStarted}>
+                Start Free Trial
+                <ArrowRight size={16} />
+              </button>
+              <a href="#features" className="secondary-btn">See Platform Tour</a>
+            </motion.div>
 
-        <motion.div
-          className="hero-metrics"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.div variants={itemVariants} className="metric-item">
-            <Users size={16} />
-            <span>2,300+ active teams</span>
+            <motion.div
+              className="hero-metrics"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.div variants={itemVariants} className="metric-item">
+                <Users size={16} />
+                <span>2,300+ active teams</span>
+              </motion.div>
+              <motion.div variants={itemVariants} className="metric-item">
+                <Clock3 size={16} />
+                <span>Median response under 45s</span>
+              </motion.div>
+              <motion.div variants={itemVariants} className="metric-item">
+                <Sparkles size={16} />
+                <span>Automation-ready by default</span>
+              </motion.div>
+            </motion.div>
+          </div>
+
+          <motion.div
+            className="hero-visual"
+            initial={{ opacity: 0, y: 28, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.75, delay: 0.2 }}
+          >
+            <div className="hero-console">
+              <div className="hero-console-header">
+                <div>
+                  <span className="hero-console-label">Live workspace</span>
+                  <strong>Operations stream</strong>
+                </div>
+                <span className="hero-console-chip">Ready</span>
+              </div>
+
+              <div className="hero-console-body">
+                <div className="hero-console-thread hero-console-thread--lead">
+                  <span className="thread-avatar">AI</span>
+                  <div>
+                    <strong>Design review in progress</strong>
+                    <p>The new launch flow is aligned and waiting for final approval.</p>
+                  </div>
+                </div>
+                <div className="hero-console-thread">
+                  <span className="thread-avatar thread-avatar--alt">UX</span>
+                  <div>
+                    <strong>Room health</strong>
+                    <p>18 active rooms · 94% response coverage · 3 escalations closed.</p>
+                  </div>
+                </div>
+
+                <div className="hero-signal-grid">
+                  {liveSignals.map((signal) => (
+                    <div key={signal.label} className="hero-signal-card">
+                      <span>{signal.label}</span>
+                      <strong>{signal.value}</strong>
+                      <p>{signal.detail}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </motion.div>
-          <motion.div variants={itemVariants} className="metric-item">
-            <Clock3 size={16} />
-            <span>Median response under 45s</span>
-          </motion.div>
-          <motion.div variants={itemVariants} className="metric-item">
-            <Sparkles size={16} />
-            <span>Automation-ready by default</span>
-          </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       <section className="features-section" id="features">

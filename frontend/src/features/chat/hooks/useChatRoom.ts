@@ -151,6 +151,7 @@ export const useChatRoom = (roomId: string, user: User) => {
             reactions: data.reactions || {},
             sealedUntil: data.sealedUntil ? data.sealedUntil.toDate() : null,
             capsuleLabel: data.capsuleLabel || '',
+            smartActions: data.smartActions || [],
           })
         })
 
@@ -211,6 +212,7 @@ export const useChatRoom = (roomId: string, user: User) => {
             reactions: data.reactions || {},
             sealedUntil: data.sealedUntil ? data.sealedUntil.toDate() : null,
             capsuleLabel: data.capsuleLabel || '',
+            smartActions: data.smartActions || [],
           }
         })
 

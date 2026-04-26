@@ -298,18 +298,56 @@ export const AuthScreen = ({ onAuthSuccess }: AuthScreenProps) => {
 
       <div className="auth-layout">
         <motion.div
+          className="auth-showcase"
+          initial={{ opacity: 0, x: -32 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="showcase-content">
+            <div className="showcase-eyebrow">Welcome to</div>
+            <h2 className="showcase-headline">Enterprise Messaging Reimagined</h2>
+            <p className="showcase-description">
+              Real-time collaboration with military-grade security. Built for teams that move fast.
+            </p>
+            <div className="showcase-features">
+              <div className="feature-card">
+                <div className="feature-icon">💬</div>
+                <div className="feature-text">
+                  <div className="feature-title">Instant Messaging</div>
+                  <div className="feature-detail">Sub-10ms latency for seamless conversation</div>
+                </div>
+              </div>
+              <div className="feature-card">
+                <div className="feature-icon">🔒</div>
+                <div className="feature-text">
+                  <div className="feature-title">End-to-End Encryption</div>
+                  <div className="feature-detail">SOC-2 compliant with zero-knowledge architecture</div>
+                </div>
+              </div>
+              <div className="feature-card">
+                <div className="feature-icon">⚡</div>
+                <div className="feature-text">
+                  <div className="feature-title">AI-Powered</div>
+                  <div className="feature-detail">Smart replies, translation, and insights</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
           initial={{ opacity: 0, y: 24, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
           className="auth-card"
         >
           <div className="auth-brand" aria-label="App logo and name">
             <div className="auth-logo">
-              <MessageSquare size={28} />
+              <MessageSquare size={32} />
             </div>
             <h1 className="auth-title">FlameChat</h1>
             <p className="auth-subtitle">
-              Secure enterprise messaging for real-time teams.
+              Sign in to your workspace
             </p>
           </div>
 

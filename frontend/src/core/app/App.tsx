@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { AuthScreen, logoutUser } from '../../features/auth'
@@ -25,6 +25,15 @@ function App() {
   const [identityNotice, setIdentityNotice] = useState('')
   const [activeRoomVibe, setActiveRoomVibe] = useState<VibeType>('default')
   const [activeRoomExpiresAt, setActiveRoomExpiresAt] = useState<Date | null>(null)
+  const roomDirectory = useMemo(
+    () => [
+      { id: 'general', name: 'General' },
+      { id: 'tech', name: 'Engineering' },
+      { id: 'design', name: 'Design Lab' },
+    ],
+    []
+  )
+  const activeRoomLabel = roomDirectory.find((room) => room.id === activeRoomId)?.name ?? activeRoomId
 
   const handleAuthSuccess = useCallback((authenticatedUser: User) => {
     setUser(authenticatedUser)
@@ -195,42 +204,55 @@ function App() {
         path="/chat"
         element={
           <ProtectedRoute user={user}>
-            <div className="app-layout">
-              <SideNav onLogout={handleLogout} />
-            
-              <RoomSidebar
-                activeRoomId={activeRoomId}
-                onSelectRoom={setActiveRoomId}
-                userPhotoURL={user?.photoURL || null}
-                userDisplayName={user?.displayName || null}
-                onLogout={handleLogout}
-                onOpenProfile={() => setIsProfileOpen(true)}
-                onRoomVibeChange={(vibe, expiresAt) => {
-                  setActiveRoomVibe(vibe)
-                  setActiveRoomExpiresAt(expiresAt)
-                }}
-              />
-            
-              {/* Wrap the ChatRoom in the new canvas */}
-              <main className="chat-canvas">
-                {user && (
-                  <ChatRoom
-                    key={activeRoomId}
-                    user={user}
-                    roomId={activeRoomId}
-                    vibe={activeRoomVibe}
-                    expiresAt={activeRoomExpiresAt}
-                  />
-                )}
-              </main>
+            <div className="app-shell">
+              <header className="app-topbar">
+                <div className="app-brand">
+                  <div className="app-brand-mark">FC</div>
+                  <div className="app-brand-copy">
+                    <span className="app-brand-kicker">FlameChat</span>
+                    <strong>Workspace Command Center</strong>
+                  </div>
+                </div>
 
-              <CommandPalette 
-                rooms={[
-                  { id: 'general', name: 'General Chat' },
-                  { id: 'tech', name: 'Engineering' },
-                  { id: 'design', name: 'UI/UX Design' }
-                ]} 
-                onSelectRoom={setActiveRoomId} 
+                <div className="app-topbar-meta">
+                  <span className="app-topbar-pill">Room · {activeRoomLabel}</span>
+                  <span className="app-topbar-pill app-topbar-pill--accent">Live</span>
+                  <span className="app-topbar-pill">Signed in · {user?.displayName || 'User'}</span>
+                </div>
+              </header>
+
+              <div className="app-layout">
+                <SideNav onLogout={handleLogout} />
+
+                <RoomSidebar
+                  activeRoomId={activeRoomId}
+                  onSelectRoom={setActiveRoomId}
+                  userPhotoURL={user?.photoURL || null}
+                  userDisplayName={user?.displayName || null}
+                  onLogout={handleLogout}
+                  onOpenProfile={() => setIsProfileOpen(true)}
+                  onRoomVibeChange={(vibe, expiresAt) => {
+                    setActiveRoomVibe(vibe)
+                    setActiveRoomExpiresAt(expiresAt)
+                  }}
+                />
+
+                <main className="chat-canvas">
+                  {user && (
+                    <ChatRoom
+                      key={activeRoomId}
+                      user={user}
+                      roomId={activeRoomId}
+                      vibe={activeRoomVibe}
+                      expiresAt={activeRoomExpiresAt}
+                    />
+                  )}
+                </main>
+              </div>
+
+              <CommandPalette
+                rooms={roomDirectory}
+                onSelectRoom={setActiveRoomId}
               />
             </div>
 

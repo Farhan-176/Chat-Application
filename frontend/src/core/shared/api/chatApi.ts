@@ -199,7 +199,8 @@ export async function sendMessageToServer(
     ttl: number = 30,
     attachments?: any[],
     sealedUntil?: Date | string | null,
-    capsuleLabel?: string
+    capsuleLabel?: string,
+    smartActions?: any[]
 ) {
     return apiFetch(`/messages/${roomId}`, {
         method: 'POST',
@@ -209,7 +210,8 @@ export async function sendMessageToServer(
             ttl, 
             attachments,
             sealedUntil: sealedUntil instanceof Date ? sealedUntil.toISOString() : sealedUntil,
-            capsuleLabel
+            capsuleLabel,
+            smartActions
         }),
     })
 }

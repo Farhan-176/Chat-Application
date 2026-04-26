@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
-import { File as FileIcon, ExternalLink, MoreHorizontal, Pencil, Trash2, Flag, ShieldAlert, SmilePlus } from 'lucide-react'
+import { File as FileIcon, ExternalLink, MoreHorizontal, Pencil, Trash2, Flag, ShieldAlert, SmilePlus, Calendar, CheckCircle, MapPin, AlertTriangle } from 'lucide-react'
 import { Message } from '../../../core/shared/types'
 import { isMessageSealed } from '../utils/sealUtils'
 import SealedMessageBubble from './SealedMessageBubble'
@@ -253,6 +253,9 @@ export const MessageList = ({
               )}
               
               <div className="message-content-wrapper">
+                {message.uid !== currentUserId && isFirstInSequence && (
+                  <div className="message-sender">{message.displayName}</div>
+                )}
                 <div
                   className={`message-bubble bubble-${position} ${message.uid === currentUserId ? 'own' : 'other'} ${message.mood ? `mood-${message.mood}` : ''} ${message.isEphemeral ? 'ghostly' : ''}`}
                   style={message.moodColor ? { '--mood-color': message.moodColor } as React.CSSProperties : {}}
@@ -266,9 +269,6 @@ export const MessageList = ({
                     <div className="mood-emoji-badge" title={message.mood}>
                       {message.moodEmoji}
                     </div>
-                  )}
-                  {message.uid !== currentUserId && isFirstInSequence && (
-                    <div className="message-sender">{message.displayName}</div>
                   )}
                   <div className="message-content-row">
                     <div className="message-content">
@@ -287,6 +287,25 @@ export const MessageList = ({
                       </div>
                     )}
                   </div>
+
+                  {/* Smart Actions */}
+                  {message.smartActions && message.smartActions.length > 0 && (
+                    <div className="smart-actions-container">
+                      {message.smartActions.map((action, idx) => (
+                        <button 
+                          key={idx} 
+                          className={`smart-action-btn action-${action.type}`}
+                          onClick={() => console.log(`Triggered ${action.type}:`, action.payload)}
+                        >
+                          {action.type === 'calendar' && <Calendar size={12} />}
+                          {action.type === 'task' && <CheckCircle size={12} />}
+                          {action.type === 'map' && <MapPin size={12} />}
+                          {action.type === 'link' && <ExternalLink size={12} />}
+                          <span>{action.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
 
                   {message.attachments && message.attachments.length > 0 && (
                     <div className="message-attachments">

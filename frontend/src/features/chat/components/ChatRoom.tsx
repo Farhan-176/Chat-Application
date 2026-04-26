@@ -15,6 +15,7 @@ import {
   markRoomRead,
   fetchMessageTranslations,
   prewarmMessageTranslations,
+  parseSmartActions,
 } from '../../../core/shared/api'
 import { FileUploader } from '../../../core/shared/api/fileUploader'
 import { featureFlags } from '../../../core/shared/config'
@@ -28,7 +29,7 @@ import { useChatRoom } from '../hooks/useChatRoom'
 import { ModerationReport, RoomDigest, User, VibeType, Message } from '../../../core/shared/types'
 import './ChatRoom.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Sparkles, Timer } from 'lucide-react'
+import { Sparkles, Timer, MoreVertical } from 'lucide-react'
 import { loadVibe } from '../utils/vibeUtils'
 
 interface ChatRoomProps {
@@ -95,11 +96,13 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
   const [isAIPanelOpen, setIsAIPanelOpen] = useState(false)
   const [isVaultOpen, setIsVaultOpen] = useState(false)
   const [ephemeralCountdown, setEphemeralCountdown] = useState<string | null>(null)
+  const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false)
 
   const inviteCardRef = useRef<HTMLDivElement>(null)
   const searchCardRef = useRef<HTMLDivElement>(null)
   const moderationCardRef = useRef<HTMLDivElement>(null)
   const digestCardRef = useRef<HTMLDivElement>(null)
+  const headerMenuRef = useRef<HTMLDivElement>(null)
   const readSyncTimerRef = useRef<number | null>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
 
@@ -125,11 +128,14 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
       if (isDigestOpen && digestCardRef.current && !digestCardRef.current.contains(target)) {
         setIsDigestOpen(false)
       }
+      if (isHeaderMenuOpen && headerMenuRef.current && !headerMenuRef.current.contains(target)) {
+        setIsHeaderMenuOpen(false)
+      }
     }
 
     document.addEventListener('mousedown', handlePointerDown)
     return () => document.removeEventListener('mousedown', handlePointerDown)
-  }, [isDigestOpen, isInviteOpen, isModerationOpen, isSearchOpen])
+  }, [isDigestOpen, isInviteOpen, isModerationOpen, isSearchOpen, isHeaderMenuOpen])
 
   // Ephemeral room countdown ticker
   useEffect(() => {
@@ -467,7 +473,21 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
         }
       }
 
-      await sendMessageToServer(roomId, text, isGhostMode, ttl, uploadedAttachments, sealedUntil, capsuleLabel)
+      // 4. Async Smart Action Detection
+      let detectedActions: any[] = []
+      if (text.trim().length > 5) {
+        parseSmartActions(text).then((actions) => {
+          if (actions && actions.length > 0) {
+            detectedActions = actions
+            // Update the optimistic message in state with the detected actions
+            setMessages((prev) => 
+              prev.map((m) => m.id === tempId ? { ...m, smartActions: actions } : m)
+            )
+          }
+        }).catch(err => console.error("Smart action detection failed", err))
+      }
+
+      await sendMessageToServer(roomId, text, isGhostMode, ttl, uploadedAttachments, sealedUntil, capsuleLabel, detectedActions)
       await trackAnalyticsEvent('message_sent', {
         has_attachments: uploadedAttachments.length > 0,
         ghost_mode: isGhostMode,
@@ -721,60 +741,134 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
             </button>
           )}
 
-          <button
-            type="button"
-            className={`quick-invite-btn ${isVaultOpen ? 'active' : ''}`}
-            onClick={() => setIsVaultOpen(true)}
-            title="Message Vault"
-          >
-            Vault
-          </button>
-
-          {featureFlags.roomDigest && (
+          {/* Header Menu Button */}
+          <div className="header-menu-wrapper" ref={headerMenuRef}>
             <button
               type="button"
-              className="quick-invite-btn"
-              onClick={() => {
-                handleLoadDigest().catch((digestLoadError) => {
-                  console.error('Digest generation failed:', digestLoadError)
-                })
-              }}
-              disabled={isLoadingDigest}
+              className="header-menu-btn"
+              onClick={() => setIsHeaderMenuOpen((prev) => !prev)}
+              title="More options"
             >
-              {isLoadingDigest ? 'Catching up...' : 'Catch up'}
+              <MoreVertical size={16} />
             </button>
-          )}
 
-          {featureFlags.roomTranslationToggle && (
-            <button
-              type="button"
-              className="quick-invite-btn"
-              disabled={roomTranslationMode === 'off'}
-              onClick={() => {
-                handleToggleTranslation().catch((toggleError) => {
-                  console.error('Translation toggle tracking failed:', toggleError)
-                })
-              }}
-            >
-              {translationEnabled ? 'Translate: On' : 'Translate: Off'}
-            </button>
-          )}
+            {isHeaderMenuOpen && (
+              <div className="header-menu-dropdown">
+                {/* Vault */}
+                <button
+                  type="button"
+                  className="header-menu-item"
+                  onClick={() => {
+                    setIsVaultOpen(true)
+                    setIsHeaderMenuOpen(false)
+                  }}
+                >
+                  Vault
+                </button>
 
-          {featureFlags.roomTranslationToggle && canModerateRoom && (
-            <button
-              type="button"
-              className="quick-invite-btn"
-              onClick={() => {
-                handlePrewarmTranslations().catch((prewarmError) => {
-                  console.error('Prewarm action failed:', prewarmError)
-                })
-              }}
-              disabled={isPrewarmingTranslations}
-            >
-              {isPrewarmingTranslations ? 'Prewarming...' : 'Pre-warm'}
-            </button>
-          )}
+                {/* Catch up / Digest */}
+                {featureFlags.roomDigest && (
+                  <button
+                    type="button"
+                    className="header-menu-item"
+                    onClick={() => {
+                      handleLoadDigest().catch((digestLoadError) => {
+                        console.error('Digest generation failed:', digestLoadError)
+                      })
+                      setIsHeaderMenuOpen(false)
+                    }}
+                    disabled={isLoadingDigest}
+                  >
+                    {isLoadingDigest ? 'Catching up...' : 'Catch up'}
+                  </button>
+                )}
 
+                {/* Divider */}
+                <div className="header-menu-divider" />
+
+                {/* Translate Toggle */}
+                {featureFlags.roomTranslationToggle && (
+                  <button
+                    type="button"
+                    className="header-menu-item"
+                    disabled={roomTranslationMode === 'off'}
+                    onClick={() => {
+                      handleToggleTranslation().catch((toggleError) => {
+                        console.error('Translation toggle tracking failed:', toggleError)
+                      })
+                      setIsHeaderMenuOpen(false)
+                    }}
+                  >
+                    {translationEnabled ? 'Translate: On' : 'Translate: Off'}
+                  </button>
+                )}
+
+                {/* Pre-warm */}
+                {featureFlags.roomTranslationToggle && canModerateRoom && (
+                  <button
+                    type="button"
+                    className="header-menu-item"
+                    onClick={() => {
+                      handlePrewarmTranslations().catch((prewarmError) => {
+                        console.error('Prewarm action failed:', prewarmError)
+                      })
+                      setIsHeaderMenuOpen(false)
+                    }}
+                    disabled={isPrewarmingTranslations}
+                  >
+                    {isPrewarmingTranslations ? 'Prewarming...' : 'Pre-warm'}
+                  </button>
+                )}
+
+                {/* Search */}
+                <button
+                  type="button"
+                  className="header-menu-item"
+                  onClick={() => {
+                    setIsSearchOpen((prev) => !prev)
+                    setIsHeaderMenuOpen(false)
+                  }}
+                >
+                  Search
+                </button>
+
+                {/* Divider */}
+                <div className="header-menu-divider" />
+
+                {/* Moderation */}
+                {canModerateRoom && (
+                  <button
+                    type="button"
+                    className="header-menu-item"
+                    onClick={() => {
+                      setModerationError('')
+                      setIsModerationOpen((prev) => !prev)
+                      setIsHeaderMenuOpen(false)
+                    }}
+                  >
+                    Moderation
+                  </button>
+                )}
+
+                {/* Quick Invite */}
+                {roomVisibility === 'private' && isRoomCreator && (
+                  <button
+                    type="button"
+                    className="header-menu-item"
+                    onClick={() => {
+                      setInviteMessage('')
+                      setIsInviteOpen((prev) => !prev)
+                      setIsHeaderMenuOpen(false)
+                    }}
+                  >
+                    Quick Invite
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Translation status pills */}
           {featureFlags.roomTranslationToggle && isTranslating && <span className="translation-status-pill">Translating...</span>}
           {featureFlags.roomTranslationToggle && translationError && <span className="translation-status-pill error">{translationError}</span>}
           {featureFlags.roomTranslationToggle && prewarmMessage && (
@@ -783,14 +877,7 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
             </span>
           )}
 
-          <button
-            type="button"
-            className="quick-invite-btn"
-            onClick={() => setIsSearchOpen((prev) => !prev)}
-          >
-            Search
-          </button>
-
+          {/* Digest Card (Catch-up) */}
           {featureFlags.roomDigest && isDigestOpen && (
             <div className="quick-invite-card digest-card" ref={digestCardRef}>
               <div className="moderation-card-header">
@@ -836,6 +923,7 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
             </div>
           )}
 
+          {/* Search Card */}
           {isSearchOpen && (
             <div className="quick-invite-card search-card" ref={searchCardRef}>
               <label htmlFor="messageSearch">Search messages</label>
@@ -879,19 +967,7 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
             </div>
           )}
 
-          {canModerateRoom && (
-            <button
-              type="button"
-              className="quick-invite-btn"
-              onClick={() => {
-                setModerationError('')
-                setIsModerationOpen((prev) => !prev)
-              }}
-            >
-              Moderation
-            </button>
-          )}
-
+          {/* Moderation Card */}
           {isModerationOpen && canModerateRoom && (
             <div className="quick-invite-card moderation-card" ref={moderationCardRef}>
               <div className="moderation-card-header">
@@ -928,19 +1004,7 @@ export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoom
             </div>
           )}
 
-          {roomVisibility === 'private' && isRoomCreator && (
-            <button
-              type="button"
-              className="quick-invite-btn"
-              onClick={() => {
-                setInviteMessage('')
-                setIsInviteOpen((prev) => !prev)
-              }}
-            >
-              Quick Invite
-            </button>
-          )}
-
+          {/* Invite Card */}
           {isInviteOpen && (
             <div className="quick-invite-card" ref={inviteCardRef}>
               <label htmlFor="quickInviteEmail">Invite by email</label>
