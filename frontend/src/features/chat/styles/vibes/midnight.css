@@ -38,8 +38,8 @@
 .chat-header {
   background: linear-gradient(135deg, #0f0d27 0%, #27205f 100%);
   border-bottom: 2px solid #a78bfa;
-  box-shadow: 0 0 30px rgba(167, 139, 250, 0.2);
-  backdrop-filter: blur(10px);
+  box-shadow: none;
+  
 }
 
 .chat-header h2 {
@@ -50,7 +50,7 @@
 .message-bubble.self {
   background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
   color: #f3e8ff;
-  box-shadow: 0 8px 20px rgba(109, 40, 217, 0.4);
+  box-shadow: none;
   border: 1px solid #a78bfa;
 }
 
@@ -58,13 +58,13 @@
   background: linear-gradient(135deg, #27205f 0%, #1f1840 100%);
   color: #c4b5fd;
   border: 1px solid #6d28d9;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 
 .message-input {
   background: linear-gradient(180deg, #0a0816 0%, #1f1840 100%);
   border-top: 2px solid #6d28d9;
-  box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 
 .message-input input {
@@ -82,18 +82,18 @@
   outline: none;
   border-color: #a78bfa;
   background-color: #1f1840;
-  box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+  box-shadow: none;
 }
 
 .vibe-button {
   background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
   color: #f3e8ff;
-  box-shadow: 0 8px 20px rgba(109, 40, 217, 0.4);
+  box-shadow: none;
   border: 1px solid #a78bfa;
 }
 
 .vibe-button:hover {
-  box-shadow: 0 12px 30px rgba(167, 139, 250, 0.4);
+  box-shadow: none;
   transform: translateY(-2px);
 }
 
@@ -105,7 +105,7 @@
 .room-sidebar {
   background: linear-gradient(180deg, #0f0d27 0%, #1f1840 100%);
   border-right: 2px solid #6d28d9;
-  box-shadow: inset 4px 0 20px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 
 .room-item {
@@ -121,7 +121,7 @@
   background: linear-gradient(135deg, rgba(109, 40, 217, 0.15) 0%, rgba(167, 139, 250, 0.1) 100%);
   color: #e9d5ff;
   border-left-color: #a78bfa;
-  box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
+  box-shadow: none;
 }
 
 .room-item.active {
@@ -129,7 +129,7 @@
   color: #f3e8ff;
   border-left-color: #a78bfa;
   font-weight: 700;
-  box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+  box-shadow: none;
 }
 
 /* Mystical AI Panel */
@@ -138,8 +138,8 @@
   border: 2px solid #6d28d9;
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
+  box-shadow: none;
+  
 }
 
 .ai-panel-tab {
@@ -160,7 +160,7 @@
   color: #f3e8ff;
   border-bottom-color: #a78bfa;
   font-weight: 600;
-  box-shadow: 0 0 15px rgba(167, 139, 250, 0.3);
+  box-shadow: none;
 }
 
 /* Smooth, mysterious animations */
@@ -188,10 +188,10 @@
 
 @keyframes shimmer {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+    box-shadow: none;
   }
   50% {
-    box-shadow: 0 0 40px rgba(167, 139, 250, 0.5);
+    box-shadow: none;
   }
 }
 
@@ -223,7 +223,7 @@
 
 /* Mystical hover effects */
 .chat-container:hover .ai-panel {
-  box-shadow: 0 12px 40px rgba(167, 139, 250, 0.4);
+  box-shadow: none;
 }
 
 /* Smooth scrollbar with purple tint */
@@ -238,9 +238,10 @@
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #6d28d9 0%, #a78bfa 100%);
   border-radius: 4px;
-  box-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+  box-shadow: none;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  box-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
+  box-shadow: none;
 }
+

@@ -38,25 +38,25 @@
 .chat-header {
   background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
   border-bottom: 2px solid #06b6d4;
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+  box-shadow: none;
 }
 
 .message-bubble.self {
   background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+  box-shadow: none;
   border: 1px solid #7dd3fc;
 }
 
 .message-bubble.other {
   background-color: #164e63;
   border: 2px solid #0ea5e9;
-  box-shadow: inset 0 0 10px rgba(6, 182, 212, 0.2);
+  box-shadow: none;
 }
 
 .message-input {
   background: linear-gradient(135deg, #0c2340 0%, #164e63 100%);
   border-top: 2px solid #0ea5e9;
-  box-shadow: 0 -4px 15px rgba(6, 182, 212, 0.2);
+  box-shadow: none;
 }
 
 .message-input input {
@@ -70,19 +70,19 @@
 }
 
 .message-input input:focus {
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+  box-shadow: none;
   border-color: #06b6d4;
   background-color: #164e63;
 }
 
 .vibe-button {
   background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+  box-shadow: none;
   border: 1px solid #7dd3fc;
 }
 
 .vibe-button:hover {
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.7);
+  box-shadow: none;
   transform: scale(1.05);
 }
 
@@ -110,7 +110,7 @@
 .room-item.active {
   background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: #0c2340;
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+  box-shadow: none;
   font-weight: 700;
 }
 
@@ -118,7 +118,7 @@
 .ai-panel {
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(14, 165, 233, 0.15) 100%);
   border: 2px solid #0ea5e9;
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+  box-shadow: none;
 }
 
 .ai-panel-tab {
@@ -137,7 +137,7 @@
   background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
   color: #0c2340;
   border-bottom-color: #ecf0f1;
-  box-shadow: 0 4px 10px rgba(6, 182, 212, 0.4);
+  box-shadow: none;
 }
 
 /* Fast animations for hype vibe */
@@ -165,10 +165,10 @@
 
 @keyframes pulse {
   0%, 100% {
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+    box-shadow: none;
   }
   50% {
-    box-shadow: 0 0 25px rgba(6, 182, 212, 0.6);
+    box-shadow: none;
   }
 }
 
@@ -209,5 +209,6 @@
 
 /* Intense hover effects */
 .chat-container:hover .ai-panel {
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
+  box-shadow: none;
 }
+

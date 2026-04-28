@@ -27,7 +27,7 @@
 .create-channel-modal {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
@@ -120,7 +120,7 @@
 .form-select:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: none;
 }
 
 .form-input:disabled,
@@ -348,7 +348,7 @@
   .form-textarea:focus,
   .form-select:focus {
     border-color: #60a5fa;
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+    box-shadow: none;
   }
 
   .form-input:disabled,
@@ -431,3 +431,4 @@
     padding: 16px;
   }
 }
+

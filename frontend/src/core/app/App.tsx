@@ -1,279 +1,167 @@
-import { useState, useCallback, useEffect, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { AuthScreen, logoutUser } from '../../features/auth'
-import { ChatRoom } from '../../features/chat'
-import { RoomSidebar } from '../../features/rooms'
-import { backfillRoomReadState } from '../shared/api'
-import { fetchCurrentUserProfile } from '../shared/api'
-import { User, UserProfile, VibeType } from '../shared/types'
-import { ProfileModal } from '../shared/components/ProfileModal'
-import { LandingPage } from '../../features/marketing/LandingPage'
-import { ProtectedRoute } from './ProtectedRoute'
-import { SideNav } from './SideNav'
-import { CommandPalette } from '../../features/navigation/components/CommandPalette'
-import { loadBaseVibeCss, initializeVibe } from '../../features/chat/utils/vibeUtils'
-import './App.css'
+import React, { useState } from 'react';
+import { AppModeProvider } from './AppModeContext';
+import { VaultIdentityProvider } from './VaultIdentityContext';
+import { RadarIdentityProvider } from './RadarIdentityContext';
+import { AuthProvider, useAuth } from '../auth/AuthContext';
+import { usePrivateChats } from '../shared/hooks/usePrivateChats';
+import { useRadarRooms } from '../shared/hooks/useRadarRooms';
+import { ChatRoom } from '../../features/chat/components/ChatRoom';
+import { AuthScreen } from '../../features/auth/components/AuthScreen';
+import './AppLayout.css';
+import './App.css';
 
-function App() {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [user, setUser] = useState<User | null>(null)
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [activeRoomId, setActiveRoomId] = useState('general')
-  const [isProfileOpen, setIsProfileOpen] = useState(false)
-  const [identityNotice, setIdentityNotice] = useState('')
-  const [activeRoomVibe, setActiveRoomVibe] = useState<VibeType>('default')
-  const [activeRoomExpiresAt, setActiveRoomExpiresAt] = useState<Date | null>(null)
-  const roomDirectory = useMemo(
-    () => [
-      { id: 'general', name: 'General' },
-      { id: 'tech', name: 'Engineering' },
-      { id: 'design', name: 'Design Lab' },
-    ],
-    []
-  )
-  const activeRoomLabel = roomDirectory.find((room) => room.id === activeRoomId)?.name ?? activeRoomId
+// Using Lucide-React icons for better UI
+import { MessageSquare, Radio, Settings, LogOut } from 'lucide-react';
+import { signOut } from 'firebase/auth';
+import { auth } from '../shared/config/firebase';
 
-  const handleAuthSuccess = useCallback((authenticatedUser: User) => {
-    setUser(authenticatedUser)
-    navigate('/chat', { replace: true })
-    
-    setProfile({
-      uid: authenticatedUser.uid,
-      displayName: authenticatedUser.displayName || 'User',
-      email: authenticatedUser.email || '',
-      photoURL: authenticatedUser.photoURL,
-      status: 'online',
-      workspaceIds: [],
-      createdAt: new Date(),
-      updatedAt: new Date()
-    })
+const WhatsAppShell = () => {
+  const { currentUser } = useAuth();
+  const { chats, loading: chatsLoading } = usePrivateChats();
+  const { rooms: radarRooms, loading: radarLoading } = useRadarRooms();
+  const [activeTab, setActiveTab] = useState<'chats' | 'radar'>('chats');
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
 
-    fetchCurrentUserProfile()
-      .then((serverProfile) => {
-        setProfile((prev) => {
-          const base = prev || {
-            uid: authenticatedUser.uid,
-            displayName: authenticatedUser.displayName || 'User',
-            email: authenticatedUser.email || '',
-            photoURL: authenticatedUser.photoURL,
-            workspaceIds: [],
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          }
+  // Reset chat selection when switching tabs
+  React.useEffect(() => {
+    setActiveChatId(null);
+  }, [activeTab]);
 
-          return {
-            ...base,
-            displayName: serverProfile.displayName || base.displayName,
-            email: serverProfile.email || base.email,
-            handle: serverProfile.handle || base.handle,
-            photoURL: serverProfile.photoURL ?? base.photoURL,
-            bio: serverProfile.bio ?? base.bio,
-            status: serverProfile.status ?? base.status,
-            workspaceIds: Array.isArray(serverProfile.workspaceIds) ? serverProfile.workspaceIds : base.workspaceIds,
-            updatedAt: new Date(),
-          }
-        })
+  const currentList = activeTab === 'chats' ? chats : radarRooms;
+  const activeChat = [...chats, ...radarRooms].find(c => c.id === activeChatId);
+  const isLoading = activeTab === 'chats' ? chatsLoading : radarLoading;
 
-        const identity = serverProfile.identity
-        if (identity && !identity.isProfileComplete) {
-          setIdentityNotice('Please complete your identity profile before continuing.')
-          setIsProfileOpen(true)
-        } else {
-          setIdentityNotice('')
-        }
-      })
-      .catch((error) => {
-        console.warn('Profile hydration skipped:', error)
-      })
-  }, [navigate])
+  const handleLogout = () => {
+    signOut(auth);
+    window.location.reload();
+  };
 
-  const handleLogout = useCallback(async () => {
-    await logoutUser()
-    setUser(null)
-    setProfile(null)
-    setActiveRoomId('general')
-    setIsProfileOpen(false)
-    navigate('/login', { replace: true })
-  }, [navigate])
-
-  const handleProfileSaved = useCallback((updated: Partial<User> & Partial<UserProfile>) => {
-    setUser((prev) => {
-      if (!prev) {
-        return prev
-      }
-
-      return {
-        ...prev,
-        displayName: updated.displayName ?? prev.displayName,
-        photoURL: updated.photoURL ?? prev.photoURL,
-      }
-    })
-
-    setProfile((prev) => {
-      if (!prev) {
-        return prev
-      }
-
-      return {
-        ...prev,
-        displayName: updated.displayName ?? prev.displayName,
-        handle: updated.handle ?? prev.handle,
-        photoURL: updated.photoURL ?? prev.photoURL,
-        status: updated.status ?? prev.status,
-        bio: updated.bio ?? prev.bio,
-        updatedAt: new Date(),
-      }
-    })
-
-    setIdentityNotice('')
-  }, [])
-
-  useEffect(() => {
-    // Initialize vibe system on app startup
-    loadBaseVibeCss()
-    initializeVibe()
-  }, [])
-
-  useEffect(() => {
-    const onEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsProfileOpen(false)
-      }
-    }
-    window.addEventListener('keydown', onEscape)
-    return () => window.removeEventListener('keydown', onEscape)
-  }, [])
-
-  useEffect(() => {
-    if (!user?.uid) {
-      return
-    }
-
-    backfillRoomReadState().catch((error) => {
-      console.warn('Room read-state backfill skipped:', error)
-    })
-  }, [user?.uid])
-
-  useEffect(() => {
-    const root = document.getElementById('root')
-    const isLandingRoute = location.pathname === '/'
-
-    document.documentElement.style.overflow = isLandingRoute ? 'auto' : 'hidden'
-    document.body.style.overflow = isLandingRoute ? 'auto' : 'hidden'
-
-    if (root) {
-      root.style.overflow = isLandingRoute ? 'auto' : 'hidden'
-    }
-
-    return () => {
-      document.documentElement.style.overflow = ''
-      document.body.style.overflow = ''
-      if (root) {
-        root.style.overflow = ''
-      }
-    }
-  }, [location.pathname])
 
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage onGetStarted={() => navigate('/login')} />} />
-
-      <Route
-        path="/login"
-        element={
-          user ? (
-            <Navigate to="/chat" replace />
-          ) : (
-            <AnimatePresence>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                style={{ width: '100%', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              >
-                <AuthScreen onAuthSuccess={handleAuthSuccess} />
-              </motion.div>
-            </AnimatePresence>
-          )
-        }
-      />
-
-      <Route
-        path="/chat"
-        element={
-          <ProtectedRoute user={user}>
-            <div className="app-shell">
-              <header className="app-topbar">
-                <div className="app-brand">
-                  <div className="app-brand-mark">FC</div>
-                  <div className="app-brand-copy">
-                    <span className="app-brand-kicker">FlameChat</span>
-                    <strong>Workspace Command Center</strong>
-                  </div>
-                </div>
-
-                <div className="app-topbar-meta">
-                  <span className="app-topbar-pill">Room · {activeRoomLabel}</span>
-                  <span className="app-topbar-pill app-topbar-pill--accent">Live</span>
-                  <span className="app-topbar-pill">Signed in · {user?.displayName || 'User'}</span>
-                </div>
-              </header>
-
-              <div className="app-layout">
-                <SideNav onLogout={handleLogout} />
-
-                <RoomSidebar
-                  activeRoomId={activeRoomId}
-                  onSelectRoom={setActiveRoomId}
-                  userPhotoURL={user?.photoURL || null}
-                  userDisplayName={user?.displayName || null}
-                  onLogout={handleLogout}
-                  onOpenProfile={() => setIsProfileOpen(true)}
-                  onRoomVibeChange={(vibe, expiresAt) => {
-                    setActiveRoomVibe(vibe)
-                    setActiveRoomExpiresAt(expiresAt)
-                  }}
-                />
-
-                <main className="chat-canvas">
-                  {user && (
-                    <ChatRoom
-                      key={activeRoomId}
-                      user={user}
-                      roomId={activeRoomId}
-                      vibe={activeRoomVibe}
-                      expiresAt={activeRoomExpiresAt}
-                    />
-                  )}
-                </main>
-              </div>
-
-              <CommandPalette
-                rooms={roomDirectory}
-                onSelectRoom={setActiveRoomId}
-              />
-            </div>
-
-            {user && (
-              <ProfileModal
-                isOpen={isProfileOpen}
-                user={user}
-                profile={profile}
-                identityNotice={identityNotice}
-                onClose={() => setIsProfileOpen(false)}
-                onProfileSaved={handleProfileSaved}
-                onLogout={handleLogout}
-              />
+    <div className="whatsapp-master-layout">
+      {/* PANE 1: Left Navigation Hub */}
+      <aside className="left-hub-pane">
+        <header className="hub-header">
+          <div className="hub-avatar" title={currentUser?.displayName || 'User'}>
+            {currentUser?.photoURL ? (
+              <img src={currentUser.photoURL} alt="User" style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+            ) : (
+              currentUser?.displayName?.charAt(0) || 'U'
             )}
-          </ProtectedRoute>
-        }
-      />
+          </div>
+          <div className="hub-actions">
+            <span 
+              className={`action-icon ${activeTab === 'chats' ? 'active' : ''}`} 
+              onClick={() => setActiveTab('chats')}
+              title="Chats"
+            >
+              <MessageSquare size={20} />
+            </span>
+            <span 
+              className={`action-icon ${activeTab === 'radar' ? 'active' : ''}`} 
+              onClick={() => setActiveTab('radar')}
+              title="Radar"
+            >
+              <Radio size={20} />
+            </span>
+            <span className="action-icon" onClick={handleLogout} title="Logout">
+              <LogOut size={20} />
+            </span>
+          </div>
+        </header>
 
-      <Route path="*" element={<Navigate to={user ? '/chat' : '/login'} replace />} />
-    </Routes>
-  )
+        <div className="search-container">
+          <div className="search-pill">
+            <input type="text" placeholder="Search or start new chat" />
+          </div>
+        </div>
+
+        <div className="chat-list">
+          {isLoading ? (
+            <div style={{ padding: '20px', textAlign: 'center', color: '#667781' }}>
+              {activeTab === 'chats' ? 'Decrypting chats...' : 'Scanning nearby hubs...'}
+            </div>
+          ) : (
+            currentList.map((item: any) => (
+              <div 
+                key={item.id} 
+                className={`contact-row ${activeChatId === item.id ? 'selected' : ''}`}
+                onClick={() => setActiveChatId(item.id)}
+              >
+                <div className="row-avatar">
+                  {item.photoURL ? (
+                    <img src={item.photoURL} alt={item.name} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+                  ) : (
+                    item.name?.charAt(0) || '?'
+                  )}
+                </div>
+                <div className="row-content">
+                  <div className="row-top">
+                    <span className="contact-name">{item.name}</span>
+                    <span className="row-time">
+                      {activeTab === 'radar' 
+                        ? item.distance || 'Nearby'
+                        : item.lastMessageTimestamp?.seconds 
+                          ? new Date(item.lastMessageTimestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                          : item.time || ''}
+                    </span>
+                  </div>
+                  <span className="row-snippet">
+                    {activeTab === 'radar' 
+                      ? `${item.participantCount || 0} active drifters`
+                      : item.lastMessage || 'No messages yet'}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+      </aside>
+
+      {/* PANE 2: The Active Chat Interface */}
+      <main className="main-chat-pane">
+        {activeChatId ? (
+          <ChatRoom roomId={activeChatId} chatType={activeTab} />
+        ) : (
+
+          <div className="empty-chat-canvas">
+            <div className="empty-state-icon" style={{ fontSize: '100px', marginBottom: '20px' }}>📱</div>
+            <h2>WhatsApp Web</h2>
+            <p>Send and receive messages without keeping your phone online.<br/>Use WhatsApp on up to 4 linked devices and 1 phone at the same time.</p>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+const Gateway = () => {
+  const { currentUser, loading } = useAuth();
+
+  if (loading) return <div className="loading-screen">FlameChat Initializing...</div>;
+
+  if (!currentUser) {
+    return <AuthScreen onAuthSuccess={() => window.location.reload()} />;
+  }
+
+  return (
+    <AppModeProvider>
+      <VaultIdentityProvider>
+        <RadarIdentityProvider>
+          <WhatsAppShell />
+        </RadarIdentityProvider>
+      </VaultIdentityProvider>
+    </AppModeProvider>
+  );
+};
+
+function App() {
+  return (
+    <AuthProvider>
+      <Gateway />
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;

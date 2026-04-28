@@ -44,7 +44,7 @@
   background: white;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
   z-index: 1000;
   animation: slideDown 0.2s ease-out;
 }
@@ -356,3 +356,4 @@
     grid-template-columns: 1fr;
   }
 }
+

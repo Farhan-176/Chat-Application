@@ -1,1088 +1,237 @@
-import {
-  deleteMessage,
-  editMessage,
-  fetchModerationReports,
-  inviteRoomMember,
-  moderateDeleteMessage,
-  reportMessage,
-  searchMessages,
-  sendMessageToServer,
-  setTypingStatus,
-  trackAnalyticsEvent,
-  toggleMessageReaction,
-  fetchRoomDigest,
-  getRoomReadState,
-  markRoomRead,
-  fetchMessageTranslations,
-  prewarmMessageTranslations,
-  parseSmartActions,
-} from '../../../core/shared/api'
-import { FileUploader } from '../../../core/shared/api/fileUploader'
-import { featureFlags } from '../../../core/shared/config'
-import { MessageList } from './MessageList'
-import { MessageInput } from './MessageInput'
-import { TypingIndicator } from './TypingIndicator'
-import { AIPanel } from './AIPanel'
-import { RoomExpiryBanner } from '../../../features/rooms/components/RoomExpiryBanner'
-import { VaultInterface } from './VaultInterface'
-import { useChatRoom } from '../hooks/useChatRoom'
-import { ModerationReport, RoomDigest, User, VibeType, Message } from '../../../core/shared/types'
-import './ChatRoom.css'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Sparkles, Timer, MoreVertical } from 'lucide-react'
-import { loadVibe } from '../utils/vibeUtils'
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
+import { useAuth } from '../../../core/auth/AuthContext';
+import { useRadarIdentity } from '../../../core/app/RadarIdentityContext';
+import { useMessages } from '../../../core/shared/hooks/useMessages';
+import { translateMessage, catchMeUp, CatchMeUpResult } from '../../../core/shared/api/geminiService';
+import { Smile, Plus, Send, Sparkles, Languages, X } from 'lucide-react';
+
+const RadarVoiceBar = lazy(() => import('../../../features/radar/components/RadarVoiceBar').then(m => ({ default: m.RadarVoiceBar })));
 
 interface ChatRoomProps {
-  user: User
-  roomId: string
-  vibe?: VibeType
-  expiresAt?: Date | null
+  roomId: string;
+  chatType: 'chats' | 'radar';
 }
 
-
-export const ChatRoom = ({ user, roomId, vibe = 'default', expiresAt }: ChatRoomProps) => {
-
-  const {
-    messages,
-    setMessages,
-    roomName,
-    roomVisibility,
-    roomTranslationMode,
-    roomDefaultLanguage,
-    roomMemberCount,
-    isRoomCreator,
-    canModerateRoom,
-    typingUsers,
-    loading,
-    loadingOlder,
-    hasMoreMessages,
-    onlineCount,
-    error,
-    vaultMessages,
-    loadOlderMessages,
-    saveToVault,
-    removeFromVault,
-  } = useChatRoom(roomId, user)
-  const [editingMessage, setEditingMessage] = useState<{ id: string; text: string } | null>(null)
-  const [isInviteOpen, setIsInviteOpen] = useState(false)
-  const [inviteEmail, setInviteEmail] = useState('')
-  const [inviteMessage, setInviteMessage] = useState('')
-  const [isInviting, setIsInviting] = useState(false)
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [isModerationOpen, setIsModerationOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [searchResults, setSearchResults] = useState<typeof messages>([])
-  const [isSearching, setIsSearching] = useState(false)
-  const [searchError, setSearchError] = useState('')
-  const [moderationReports, setModerationReports] = useState<ModerationReport[]>([])
-  const [isLoadingReports, setIsLoadingReports] = useState(false)
-  const [moderationError, setModerationError] = useState('')
-  const [isDigestOpen, setIsDigestOpen] = useState(false)
-  const [isLoadingDigest, setIsLoadingDigest] = useState(false)
-  const [isMarkingRead, setIsMarkingRead] = useState(false)
-  const [digestError, setDigestError] = useState('')
-  const [digest, setDigest] = useState<RoomDigest | null>(null)
-  const [translationEnabled, setTranslationEnabled] = useState(false)
-  const [translationError, setTranslationError] = useState('')
-  const [isTranslating, setIsTranslating] = useState(false)
-  const [isPrewarmingTranslations, setIsPrewarmingTranslations] = useState(false)
-  const [prewarmMessage, setPrewarmMessage] = useState('')
-  const [translatedByMessageId, setTranslatedByMessageId] = useState<Record<string, {
-    text: string
-    sourceLanguage: string
-    targetLanguage: string
-  }>>({})
-  // Phase 1 — Differentiation state
-  const [isAIPanelOpen, setIsAIPanelOpen] = useState(false)
-  const [isVaultOpen, setIsVaultOpen] = useState(false)
-  const [ephemeralCountdown, setEphemeralCountdown] = useState<string | null>(null)
-  const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false)
-
-  const inviteCardRef = useRef<HTMLDivElement>(null)
-  const searchCardRef = useRef<HTMLDivElement>(null)
-  const moderationCardRef = useRef<HTMLDivElement>(null)
-  const digestCardRef = useRef<HTMLDivElement>(null)
-  const headerMenuRef = useRef<HTMLDivElement>(null)
-  const readSyncTimerRef = useRef<number | null>(null)
-  const searchInputRef = useRef<HTMLInputElement>(null)
-
-  // Load vibe theme when room vibe changes
-  useEffect(() => {
-    if (vibe && vibe !== 'default') {
-      loadVibe(vibe)
-    }
-  }, [vibe])
-
-  useEffect(() => {
-    const handlePointerDown = (event: MouseEvent) => {
-      const target = event.target as Node
-      if (isInviteOpen && inviteCardRef.current && !inviteCardRef.current.contains(target)) {
-        setIsInviteOpen(false)
-      }
-      if (isSearchOpen && searchCardRef.current && !searchCardRef.current.contains(target)) {
-        setIsSearchOpen(false)
-      }
-      if (isModerationOpen && moderationCardRef.current && !moderationCardRef.current.contains(target)) {
-        setIsModerationOpen(false)
-      }
-      if (isDigestOpen && digestCardRef.current && !digestCardRef.current.contains(target)) {
-        setIsDigestOpen(false)
-      }
-      if (isHeaderMenuOpen && headerMenuRef.current && !headerMenuRef.current.contains(target)) {
-        setIsHeaderMenuOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handlePointerDown)
-    return () => document.removeEventListener('mousedown', handlePointerDown)
-  }, [isDigestOpen, isInviteOpen, isModerationOpen, isSearchOpen, isHeaderMenuOpen])
-
-  // Ephemeral room countdown ticker
-  useEffect(() => {
-    if (!expiresAt || !featureFlags.ephemeralRooms) {
-      setEphemeralCountdown(null)
-      return
-    }
-
-    const tick = () => {
-      const now = Date.now()
-      const diff = expiresAt.getTime() - now
-      if (diff <= 0) {
-        setEphemeralCountdown('Expired')
-        return
-      }
-      const h = Math.floor(diff / 3600000)
-      const m = Math.floor((diff % 3600000) / 60000)
-      const s = Math.floor((diff % 60000) / 1000)
-      setEphemeralCountdown(
-        h > 0 ? `⏳ ${h}h ${m}m left` : m > 0 ? `⏳ ${m}m ${s}s left` : `⏳ ${s}s left`
-      )
-    }
-
-    tick()
-    const interval = window.setInterval(tick, 1000)
-    return () => window.clearInterval(interval)
-  }, [expiresAt])
-
-
-  useEffect(() => {
-    if (!featureFlags.roomTranslationToggle) {
-      setTranslationEnabled(false)
-      return
-    }
-
-    const roomTranslationStorageKey = `flamechat:translate:${roomId}`
-    const stored = window.localStorage.getItem(roomTranslationStorageKey)
-    if (roomTranslationMode === 'off') {
-      setTranslationEnabled(false)
-      window.localStorage.removeItem(roomTranslationStorageKey)
-      return
-    }
-
-    if (roomTranslationMode === 'auto') {
-      setTranslationEnabled(true)
-      return
-    }
-
-    setTranslationEnabled(stored === '1')
-  }, [roomId, roomTranslationMode])
-
-  useEffect(() => {
-    if (!featureFlags.roomTranslationToggle) {
-      return
-    }
-
-    if (roomTranslationMode === 'off') {
-      return
-    }
-
-    const roomTranslationStorageKey = `flamechat:translate:${roomId}`
-    window.localStorage.setItem(roomTranslationStorageKey, translationEnabled ? '1' : '0')
-  }, [roomId, roomTranslationMode, translationEnabled])
-
-  useEffect(() => {
-    return () => {
-      if (readSyncTimerRef.current !== null) {
-        window.clearTimeout(readSyncTimerRef.current)
-      }
-    }
-  }, [])
-
-  const syncRoomReadState = async () => {
-    if (isMarkingRead || document.visibilityState !== 'visible') {
-      return
-    }
-
-    try {
-      setIsMarkingRead(true)
-      await markRoomRead(roomId)
-    } catch (error) {
-      console.error('Failed to sync room read-state:', error)
-    } finally {
-      setIsMarkingRead(false)
-    }
-  }
-
-  useEffect(() => {
-    if (readSyncTimerRef.current !== null) {
-      window.clearTimeout(readSyncTimerRef.current)
-    }
-
-    readSyncTimerRef.current = window.setTimeout(() => {
-      syncRoomReadState().catch((error) => {
-        console.error('Initial read-state sync failed:', error)
-      })
-    }, 350)
-  }, [roomId])
-
-  const latestMessageKey = useMemo(() => {
-    const latest = messages[messages.length - 1]
-    return latest ? `${latest.id}-${latest.createdAt.getTime()}` : 'empty'
-  }, [messages])
-
-  useEffect(() => {
-    if (messages.length === 0) {
-      return
-    }
-
-    if (readSyncTimerRef.current !== null) {
-      window.clearTimeout(readSyncTimerRef.current)
-    }
-
-    readSyncTimerRef.current = window.setTimeout(() => {
-      syncRoomReadState().catch((error) => {
-        console.error('Message-triggered read-state sync failed:', error)
-      })
-    }, 700)
-  }, [latestMessageKey, messages.length])
-
-  useEffect(() => {
-    setTranslatedByMessageId({})
-    setTranslationError('')
-    setPrewarmMessage('')
-  }, [roomId, roomDefaultLanguage])
-
-  const translationMessageKey = useMemo(() => {
-    const latest = messages[messages.length - 1]
-    return latest ? `${latest.id}-${latest.createdAt.getTime()}` : 'empty'
-  }, [messages])
-
-  useEffect(() => {
-    if (!featureFlags.roomTranslationToggle) {
-      setIsTranslating(false)
-      return
-    }
-
-    const shouldTranslate = roomTranslationMode !== 'off' && translationEnabled
-    if (!shouldTranslate || messages.length === 0) {
-      return
-    }
-
-    const targetLanguage = (roomDefaultLanguage || 'en').toLowerCase()
-    const untranslatedIds = messages
-      .filter((message) => {
-        const text = String(message.text || '').trim()
-        return text.length > 0 && !translatedByMessageId[message.id]
-      })
-      .slice(-80)
-      .map((message) => message.id)
-
-    if (untranslatedIds.length === 0) {
-      return
-    }
-
-    let cancelled = false
-    setIsTranslating(true)
-    setTranslationError('')
-
-    fetchMessageTranslations(roomId, untranslatedIds, targetLanguage)
-      .then((response) => {
-        if (cancelled) {
-          return
-        }
-
-        const nextEntries: Record<string, {
-          text: string
-          sourceLanguage: string
-          targetLanguage: string
-        }> = {}
-
-        Object.entries(response.translations || {}).forEach(([messageId, translation]) => {
-          nextEntries[messageId] = {
-            text: translation.text,
-            sourceLanguage: translation.sourceLanguage,
-            targetLanguage: translation.targetLanguage,
-          }
-        })
-
-        setTranslatedByMessageId((prev) => ({
-          ...prev,
-          ...nextEntries,
-        }))
-      })
-      .catch((error) => {
-        console.error('Failed to fetch message translations:', error)
-        if (!cancelled) {
-          setTranslationError('Translation unavailable right now.')
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsTranslating(false)
-        }
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [roomId, roomDefaultLanguage, roomTranslationMode, translationEnabled, translationMessageKey, translatedByMessageId, messages])
-
-  useEffect(() => {
-    const handleKeyboardShortcut = (event: KeyboardEvent) => {
-      const isSearchShortcut = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k'
-
-      if (isSearchShortcut) {
-        event.preventDefault()
-        setIsSearchOpen(true)
-        requestAnimationFrame(() => {
-          searchInputRef.current?.focus()
-        })
-        return
-      }
-
-      if (event.key === 'Escape') {
-        setIsInviteOpen(false)
-        setIsSearchOpen(false)
-        setIsModerationOpen(false)
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyboardShortcut)
-    return () => window.removeEventListener('keydown', handleKeyboardShortcut)
-  }, [])
-
-  const loadModerationReports = async () => {
-    try {
-      setIsLoadingReports(true)
-      setModerationError('')
-      const response = await fetchModerationReports(roomId, 'open')
-      const mapped = (response.reports || []).map((report: any) => ({
-        ...report,
-        createdAt: report.createdAt ? new Date(report.createdAt) : null,
-      }))
-      setModerationReports(mapped)
-    } catch (error) {
-      console.error('Failed to fetch moderation reports:', error)
-      setModerationError('Could not load moderation queue.')
-      setModerationReports([])
-    } finally {
-      setIsLoadingReports(false)
-    }
-  }
-
-  useEffect(() => {
-    if (isModerationOpen && isRoomCreator) {
-      loadModerationReports().catch((error) => {
-        console.error('Failed to load moderation reports:', error)
-      })
-    }
-  }, [isModerationOpen, isRoomCreator, roomId])
-
-  const activeMessages = useMemo(() => {
-    const baseMessages = !searchQuery.trim() ? messages : searchResults
-
-    if (!translationEnabled || roomTranslationMode === 'off') {
-      return baseMessages
-    }
-
-    return baseMessages.map((message) => {
-      const translated = translatedByMessageId[message.id]
-      if (!translated || !translated.text || translated.text === message.text) {
-        return message
-      }
-
-      return {
-        ...message,
-        translatedText: translated.text,
-        translatedFromLanguage: translated.sourceLanguage,
-        translatedToLanguage: translated.targetLanguage,
-      }
-    })
-  }, [messages, searchQuery, searchResults, translationEnabled, roomTranslationMode, translatedByMessageId])
-
-  const handleSendMessage = async (
-    text: string,
-    isGhostMode: boolean = false,
-    ttl: number = 30,
-    attachments?: any[],
-    sealedUntil?: Date | null,
-    capsuleLabel?: string
-  ) => {
-    // 1. Generate a temporary ID
-    const tempId = `temp-${Date.now()}`
-
-    // 2. Construct the Optimistic Message instantly
-    const optimisticMsg: Message = {
-      id: tempId,
-      text,
-      uid: user.uid,
-      displayName: user.displayName || 'Me',
-      photoURL: user.photoURL,
-      createdAt: new Date(),
-      isEphemeral: isGhostMode,
-      ttl: ttl,
-      dissolved: false,
-      isOptimistic: true, // Flag it as pending
-      sealedUntil: sealedUntil || null,
-      capsuleLabel: capsuleLabel || '',
-      attachments: attachments?.map(a => ({
-        name: a.name || 'Attachment',
-        url: a.url || '',
-        type: a.type || 'application/octet-stream',
-        size: a.size || 0
-      })) || []
-    }
-
-    // 3. Inject it into the UI immediately (Zero Latency)
-    // Don't inject if we are editing an existing message to avoid weird UI jumps
-    if (!editingMessage) {
-      setMessages((prev) => [...prev, optimisticMsg])
-    }
-
-    try {
-      if (editingMessage) {
-        await editMessage(roomId, editingMessage.id, text)
-        setEditingMessage(null)
-        return
-      }
-
-      let uploadedAttachments = attachments || []
-      if (attachments && attachments.length > 0) {
-        const uploadQueue = attachments.filter((item) => item?._file instanceof File)
-        if (uploadQueue.length > 0) {
-          uploadedAttachments = []
-          for (const queued of uploadQueue) {
-            const validationError = FileUploader.validate(queued._file)
-            if (validationError) {
-              throw new Error(validationError)
-            }
-
-            const uploaded = await FileUploader.upload(queued._file, roomId)
-            uploadedAttachments.push(uploaded)
-          }
-        }
-      }
-
-      // 4. Async Smart Action Detection
-      let detectedActions: any[] = []
-      if (text.trim().length > 5) {
-        parseSmartActions(text).then((actions) => {
-          if (actions && actions.length > 0) {
-            detectedActions = actions
-            // Update the optimistic message in state with the detected actions
-            setMessages((prev) => 
-              prev.map((m) => m.id === tempId ? { ...m, smartActions: actions } : m)
-            )
-          }
-        }).catch(err => console.error("Smart action detection failed", err))
-      }
-
-      await sendMessageToServer(roomId, text, isGhostMode, ttl, uploadedAttachments, sealedUntil, capsuleLabel, detectedActions)
-      await trackAnalyticsEvent('message_sent', {
-        has_attachments: uploadedAttachments.length > 0,
-        ghost_mode: isGhostMode,
-        is_sealed: !!sealedUntil,
-      })
-    } catch (error) {
-      console.error('Error sending message:', error)
-      // 5. If it fails, roll back the optimistic update
-      if (!editingMessage) {
-        setMessages((prev) => prev.filter((m) => m.id !== tempId))
-      }
-      throw error
-    }
-  }
-
-  const handleDeleteMessage = async (messageId: string) => {
-    await deleteMessage(roomId, messageId)
-    if (editingMessage?.id === messageId) {
-      setEditingMessage(null)
-    }
-  }
-
-  const handleStartEdit = (messageId: string, text: string) => {
-    setEditingMessage({ id: messageId, text })
-  }
-
-  const handleTyping = async (isTyping: boolean) => {
-    try {
-      await setTypingStatus(roomId, isTyping)
-    } catch (error) {
-      console.error('Error updating typing status:', error)
-    }
-  }
-
-  const handleQuickInvite = async () => {
-    const normalized = inviteEmail.trim().toLowerCase()
-    if (!normalized) {
-      setInviteMessage('Enter an email to invite.')
-      return
-    }
-
-    try {
-      setIsInviting(true)
-      setInviteMessage('')
-      await inviteRoomMember(roomId, normalized)
-      setInviteEmail('')
-      setInviteMessage('Member invited successfully.')
-    } catch (error) {
-      console.error('Invite failed:', error)
-      setInviteMessage('Invite failed. Check email and try again.')
-    } finally {
-      setIsInviting(false)
-    }
-  }
-
-  const handleToggleReaction = async (messageId: string, emoji: string) => {
-    try {
-      await toggleMessageReaction(roomId, messageId, emoji)
-    } catch (error) {
-      console.error('Failed to toggle reaction:', error)
-    }
-  }
-
-  const handleReportMessage = async (
-    messageId: string,
-    reason: 'spam' | 'harassment' | 'abuse' | 'off-topic' | 'other',
-    note?: string
-  ) => {
-    await reportMessage(roomId, messageId, reason, note)
-  }
-
-  const handleModerateDelete = async (messageId: string, reportId?: string) => {
-    await moderateDeleteMessage(roomId, messageId, reportId)
-    if (isModerationOpen) {
-      await loadModerationReports()
-    }
-  }
-
-  const handleMessageSearch = async () => {
-    const normalized = searchQuery.trim()
-    if (!normalized) {
-      setSearchError('')
-      setSearchResults([])
-      return
-    }
-
-    try {
-      setIsSearching(true)
-      setSearchError('')
-      const response = await searchMessages(roomId, normalized)
-      const mapped = (response.messages || []).map((message: any) => ({
-        ...message,
-        createdAt: message.createdAt ? new Date(message.createdAt) : new Date(),
-        editedAt: message.editedAt ? new Date(message.editedAt) : null,
-      }))
-      setSearchResults(mapped)
-    } catch (error) {
-      console.error('Message search failed:', error)
-      setSearchError('Search failed. Please try again.')
-      setSearchResults([])
-    } finally {
-      setIsSearching(false)
-    }
-  }
-
-  const clearSearch = () => {
-    setSearchQuery('')
-    setSearchResults([])
-    setSearchError('')
-  }
-
-  const handleLoadDigest = async () => {
-    if (!featureFlags.roomDigest) {
-      return
-    }
-
-    try {
-      setIsLoadingDigest(true)
-      setDigestError('')
-
-      const readState = await getRoomReadState(roomId)
-      const response = await fetchRoomDigest(roomId, readState.lastReadAt || undefined, 120)
-      setDigest(response.digest)
-      setIsDigestOpen(true)
-      await trackAnalyticsEvent('digest_generated', {
-        room_id: roomId,
-        unread_count: response.digest.unreadCount,
-        mention_count: response.digest.mentionCount,
-        action_items: response.digest.actionItems.length,
-        since_source: response.digest.sinceSource,
-      })
-    } catch (error) {
-      console.error('Digest generation failed:', error)
-      setDigestError('Unable to generate catch-up digest right now.')
-      setDigest(null)
-      setIsDigestOpen(true)
-      await trackAnalyticsEvent('digest_generation_failed', {
-        room_id: roomId,
-      })
-    } finally {
-      setIsLoadingDigest(false)
-    }
-  }
-
-  const handleMarkReadNow = async () => {
-    await syncRoomReadState()
-    setIsDigestOpen(false)
-  }
-
-  const handleToggleTranslation = async () => {
-    if (!featureFlags.roomTranslationToggle) {
-      return
-    }
-
-    const nextEnabled = !translationEnabled
-    setTranslationEnabled(nextEnabled)
-    if (!nextEnabled) {
-      setTranslationError('')
-    }
-    await trackAnalyticsEvent('translation_toggled', {
-      room_id: roomId,
-      enabled: nextEnabled,
-      translation_mode: roomTranslationMode,
-    })
-  }
-
-  const handlePrewarmTranslations = async () => {
-    if (!featureFlags.roomTranslationToggle) {
-      return
-    }
-
-    try {
-      setIsPrewarmingTranslations(true)
-      setPrewarmMessage('')
-
-      const response = await prewarmMessageTranslations(roomId, roomDefaultLanguage, 120)
-      setPrewarmMessage(`Pre-warm complete: ${response.translated} translated, ${response.cached} cached.`)
-      await trackAnalyticsEvent('translation_prewarm_run', {
-        room_id: roomId,
-        target_language: response.targetLanguage,
-        scanned: response.scanned,
-        translated: response.translated,
-        cached: response.cached,
-      })
-    } catch (error) {
-      console.error('Translation pre-warm failed:', error)
-      setPrewarmMessage('Pre-warm failed. Check permissions and try again.')
-    } finally {
-      setIsPrewarmingTranslations(false)
-    }
-  }
-
-  if (error) {
+export const ChatRoom: React.FC<ChatRoomProps> = ({ roomId, chatType }) => {
+  const { currentUser } = useAuth();
+  const { anonymousAlias, avatarUrl } = useRadarIdentity();
+  
+  // Guard Clause: Prevent crash if user state is still loading
+  if (!currentUser) {
     return (
-      <div className="chat-room error">
-        <div className="error-content">
-          <h2>Room Unavailable</h2>
-          <p>{error}</p>
-          <button onClick={() => window.location.reload()}>Retry Connection</button>
-        </div>
+      <div className="chat-room-loading" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8696a0' }}>
+        <div className="loading-spinner">Initializing chat frequencies...</div>
       </div>
-    )
+    );
   }
+
+  const { messages, sendMessage, loading } = useMessages(roomId, chatType, currentUser, anonymousAlias, avatarUrl);
+  
+  const [inputValue, setInputValue] = useState('');
+  const [summary, setSummary] = useState<CatchMeUpResult | null>(null);
+  const [isSummarizing, setIsSummarizing] = useState(false);
+  const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [translatingId, setTranslatingId] = useState<string | null>(null);
+  const [isVoiceConnected, setIsVoiceConnected] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
+  const handleSend = async () => {
+    if (!inputValue.trim() || !currentUser?.uid) return;
+    const text = inputValue;
+    setInputValue('');
+    await sendMessage(text);
+  };
+
+  const handleCatchUp = async () => {
+    if (messages.length === 0) return;
+    setIsSummarizing(true);
+    try {
+      const last20 = messages.slice(-20).map(m => ({
+        displayName: m.senderName,
+        text: m.text,
+        createdAt: new Date(m.timestamp?.seconds * 1000 || Date.now())
+      }));
+      const result = await catchMeUp(last20);
+      setSummary(result);
+    } catch (error) {
+      console.error('AI Catch-up failed:', error);
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
+
+  const handleTranslate = async (msgId: string, text: string) => {
+    setTranslatingId(msgId);
+    try {
+      const locale = navigator.language || 'en';
+      const translated = await translateMessage(text, locale);
+      setTranslations(prev => ({ ...prev, [msgId]: translated }));
+    } catch (error) {
+      console.error('Translation failed:', error);
+    } finally {
+      setTranslatingId(null);
+    }
+  };
 
   return (
-    <div className={`chat-room${vibe && vibe !== 'default' ? ` vibe-${vibe}` : ''}`}>
-      <header className="chat-header">
-        <div className="header-content">
-          <h1>
-            <span className="room-hash">#</span>
-            {roomName}
-          </h1>
-          <p className="subtitle">
-            Online: <span className="subtitle-count">{onlineCount}</span>
-          </p>
-          <div className="room-detail-pills">
-            <span className={`room-visibility-pill ${roomVisibility}`}>
-              {roomVisibility === 'private' ? 'Private Room' : 'Public Room'}
-            </span>
-            <span className="room-members-pill">{roomMemberCount} members</span>
-            <span className="room-translation-pill">
-              {roomTranslationMode === 'off' ? 'Translation Off' : `Translation ${roomDefaultLanguage.toUpperCase()}`}
-            </span>
-            {vibe && vibe !== 'default' && (
-              <span className="room-vibe-badge">
-                {vibe === 'lofi' ? '🌙' : vibe === 'hype' ? '⚡' : vibe === 'focus' ? '🔥' : vibe === 'chill' ? '🌿' : '🌌'}
-                {' '}{vibe}
-              </span>
-            )}
-            {ephemeralCountdown && (
-              <span className="room-countdown-badge">
-                <Timer size={10} />
-                {ephemeralCountdown}
-              </span>
-            )}
-          </div>
-
+    <div className={`chat-room-container ${chatType}-mode`} style={{ display: 'flex', flexDirection: 'column', height: '100%', background: chatType === 'radar' ? '#0b141a' : '#efeae2' }}>
+      {/* Chat Header */}
+      <header className="chat-header" style={{ height: '60px', background: chatType === 'radar' ? '#111b21' : '#f0f2f5', display: 'flex', alignItems: 'center', padding: '0 16px', borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
+        <div className="header-avatar" style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#d1d7db', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+          {roomId.charAt(0).toUpperCase()}
         </div>
-        <div className="chat-header-actions">
-          <span className="live-badge">Live</span>
-
-          {featureFlags.aiPanel && (
-            <button
-              type="button"
-              className={`ai-panel-btn${isAIPanelOpen ? ' active' : ''}`}
-              onClick={() => setIsAIPanelOpen((prev) => !prev)}
-              title="AI Intelligence Panel"
-            >
-              <Sparkles size={13} />
-              AI
-            </button>
-          )}
-
-          {/* Header Menu Button */}
-          <div className="header-menu-wrapper" ref={headerMenuRef}>
-            <button
-              type="button"
-              className="header-menu-btn"
-              onClick={() => setIsHeaderMenuOpen((prev) => !prev)}
-              title="More options"
-            >
-              <MoreVertical size={16} />
-            </button>
-
-            {isHeaderMenuOpen && (
-              <div className="header-menu-dropdown">
-                {/* Vault */}
-                <button
-                  type="button"
-                  className="header-menu-item"
-                  onClick={() => {
-                    setIsVaultOpen(true)
-                    setIsHeaderMenuOpen(false)
-                  }}
-                >
-                  Vault
-                </button>
-
-                {/* Catch up / Digest */}
-                {featureFlags.roomDigest && (
-                  <button
-                    type="button"
-                    className="header-menu-item"
-                    onClick={() => {
-                      handleLoadDigest().catch((digestLoadError) => {
-                        console.error('Digest generation failed:', digestLoadError)
-                      })
-                      setIsHeaderMenuOpen(false)
-                    }}
-                    disabled={isLoadingDigest}
-                  >
-                    {isLoadingDigest ? 'Catching up...' : 'Catch up'}
-                  </button>
-                )}
-
-                {/* Divider */}
-                <div className="header-menu-divider" />
-
-                {/* Translate Toggle */}
-                {featureFlags.roomTranslationToggle && (
-                  <button
-                    type="button"
-                    className="header-menu-item"
-                    disabled={roomTranslationMode === 'off'}
-                    onClick={() => {
-                      handleToggleTranslation().catch((toggleError) => {
-                        console.error('Translation toggle tracking failed:', toggleError)
-                      })
-                      setIsHeaderMenuOpen(false)
-                    }}
-                  >
-                    {translationEnabled ? 'Translate: On' : 'Translate: Off'}
-                  </button>
-                )}
-
-                {/* Pre-warm */}
-                {featureFlags.roomTranslationToggle && canModerateRoom && (
-                  <button
-                    type="button"
-                    className="header-menu-item"
-                    onClick={() => {
-                      handlePrewarmTranslations().catch((prewarmError) => {
-                        console.error('Prewarm action failed:', prewarmError)
-                      })
-                      setIsHeaderMenuOpen(false)
-                    }}
-                    disabled={isPrewarmingTranslations}
-                  >
-                    {isPrewarmingTranslations ? 'Prewarming...' : 'Pre-warm'}
-                  </button>
-                )}
-
-                {/* Search */}
-                <button
-                  type="button"
-                  className="header-menu-item"
-                  onClick={() => {
-                    setIsSearchOpen((prev) => !prev)
-                    setIsHeaderMenuOpen(false)
-                  }}
-                >
-                  Search
-                </button>
-
-                {/* Divider */}
-                <div className="header-menu-divider" />
-
-                {/* Moderation */}
-                {canModerateRoom && (
-                  <button
-                    type="button"
-                    className="header-menu-item"
-                    onClick={() => {
-                      setModerationError('')
-                      setIsModerationOpen((prev) => !prev)
-                      setIsHeaderMenuOpen(false)
-                    }}
-                  >
-                    Moderation
-                  </button>
-                )}
-
-                {/* Quick Invite */}
-                {roomVisibility === 'private' && isRoomCreator && (
-                  <button
-                    type="button"
-                    className="header-menu-item"
-                    onClick={() => {
-                      setInviteMessage('')
-                      setIsInviteOpen((prev) => !prev)
-                      setIsHeaderMenuOpen(false)
-                    }}
-                  >
-                    Quick Invite
-                  </button>
-                )}
-              </div>
-            )}
+        <div className="header-info" style={{ marginLeft: '12px' }}>
+          <div style={{ fontWeight: '500', color: chatType === 'radar' ? '#e9edef' : '#111b21' }}>
+            {chatType === 'radar' ? `Hub: ${roomId.slice(0, 8)}` : `Contact: ${roomId.slice(0, 8)}`}
           </div>
-
-          {/* Translation status pills */}
-          {featureFlags.roomTranslationToggle && isTranslating && <span className="translation-status-pill">Translating...</span>}
-          {featureFlags.roomTranslationToggle && translationError && <span className="translation-status-pill error">{translationError}</span>}
-          {featureFlags.roomTranslationToggle && prewarmMessage && (
-            <span className={`translation-status-pill ${prewarmMessage.includes('failed') ? 'error' : 'success'}`}>
-              {prewarmMessage}
-            </span>
-          )}
-
-          {/* Digest Card (Catch-up) */}
-          {featureFlags.roomDigest && isDigestOpen && (
-            <div className="quick-invite-card digest-card" ref={digestCardRef}>
-              <div className="moderation-card-header">
-                <label>Catch-up digest</label>
-                <button type="button" onClick={() => setIsDigestOpen(false)}>Close</button>
-              </div>
-
-              {digestError && <p className="message-search-error">{digestError}</p>}
-
-              {digest && (
-                <>
-                  <p className="digest-summary">{digest.summary}</p>
-                  <p className="digest-metrics">
-                    {digest.unreadCount} unread • {digest.mentionCount} mentions
-                  </p>
-                  {digest.sinceAt && (
-                    <p className="digest-since-meta">
-                      Since {new Date(digest.sinceAt).toLocaleString()} ({digest.sinceSource})
-                    </p>
-                  )}
-                  {digest.actionItems.length > 0 && (
-                    <div className="digest-action-items">
-                      <strong>Action items</strong>
-                      {digest.actionItems.map((item, index) => (
-                        <p key={`${item}-${index}`}>{item}</p>
-                      ))}
-                    </div>
-                  )}
-                  {digest.highlights.length > 0 && (
-                    <div className="digest-highlights">
-                      {digest.highlights.map((highlight, index) => (
-                        <p key={`${highlight}-${index}`}>{highlight}</p>
-                      ))}
-                    </div>
-                  )}
-                  <button type="button" onClick={() => handleMarkReadNow().catch((error) => {
-                    console.error('Manual read-state sync failed:', error)
-                  })}>
-                    Mark As Read
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Search Card */}
-          {isSearchOpen && (
-            <div className="quick-invite-card search-card" ref={searchCardRef}>
-              <label htmlFor="messageSearch">Search messages</label>
-              <div className="quick-invite-row">
-                <input
-                  ref={searchInputRef}
-                  id="messageSearch"
-                  type="search"
-                  value={searchQuery}
-                  onChange={(event) => {
-                    const next = event.target.value
-                    setSearchQuery(next)
-                    if (!next.trim()) {
-                      setSearchError('')
-                      setSearchResults([])
-                    }
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
-                      event.preventDefault()
-                      handleMessageSearch().catch((error) => {
-                        console.error('Message search failed:', error)
-                      })
-                    }
-                  }}
-                  placeholder="keyword"
-                />
-                <button type="button" onClick={handleMessageSearch} disabled={isSearching}>
-                  {isSearching ? 'Searching...' : 'Search'}
-                </button>
-              </div>
-              {searchQuery.trim() && !isSearching && !searchError && (
-                <p className="message-search-meta">Showing {searchResults.length} result(s)</p>
-              )}
-              {searchError && <p className="message-search-error">{searchError}</p>}
-              {searchQuery.trim() && (
-                <button type="button" className="search-clear-btn" onClick={clearSearch}>
-                  Clear
-                </button>
-              )}
-            </div>
-          )}
-
-          {/* Moderation Card */}
-          {isModerationOpen && canModerateRoom && (
-            <div className="quick-invite-card moderation-card" ref={moderationCardRef}>
-              <div className="moderation-card-header">
-                <label>Open reports</label>
-                <button type="button" onClick={() => loadModerationReports()} disabled={isLoadingReports}>
-                  Refresh
-                </button>
-              </div>
-
-              {moderationError && <p className="message-search-error">{moderationError}</p>}
-
-              {isLoadingReports ? (
-                <p>Loading reports...</p>
-              ) : moderationReports.length === 0 ? (
-                <p>No open reports.</p>
-              ) : (
-                <div className="moderation-report-list">
-                  {moderationReports.map((report) => (
-                    <div key={report.id} className="moderation-report-item">
-                      <p>
-                        <strong>{report.reason}</strong> by {report.reporterName}
-                      </p>
-                      <p className="moderation-preview">{report.messagePreview || 'No preview available'}</p>
-                      <button
-                        type="button"
-                        onClick={() => handleModerateDelete(report.messageId, report.id)}
-                      >
-                        Delete Message
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Invite Card */}
-          {isInviteOpen && (
-            <div className="quick-invite-card" ref={inviteCardRef}>
-              <label htmlFor="quickInviteEmail">Invite by email</label>
-              <div className="quick-invite-row">
-                <input
-                  id="quickInviteEmail"
-                  type="email"
-                  value={inviteEmail}
-                  onChange={(event) => setInviteEmail(event.target.value)}
-                  placeholder="teammate@company.com"
-                />
-                <button type="button" onClick={handleQuickInvite} disabled={isInviting}>
-                  {isInviting ? 'Inviting...' : 'Invite'}
-                </button>
-              </div>
-              {inviteMessage && <p>{inviteMessage}</p>}
-            </div>
+          <div style={{ fontSize: '12px', color: '#8696a0' }}>online</div>
+        </div>
+        <div className="header-actions" style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>
+          <button 
+            className={`ai-sparkle-btn ${isSummarizing ? 'loading' : ''}`}
+            onClick={handleCatchUp}
+            title="AI Catch-up"
+            style={{ background: 'none', border: 'none', color: '#00a884', cursor: 'pointer' }}
+          >
+            <Sparkles size={20} />
+          </button>
+          {chatType === 'radar' && (
+            <button 
+              className={`voice-btn ${isVoiceConnected ? 'active' : ''}`}
+              onClick={() => setIsVoiceConnected(!isVoiceConnected)}
+              style={{ background: 'none', border: 'none', color: isVoiceConnected ? '#00a884' : '#8696a0', cursor: 'pointer' }}
+            >
+              Join Audio
+            </button>
           )}
         </div>
       </header>
 
-      {/* AI Intelligence Panel */}
-      {featureFlags.aiPanel && (
-        <AIPanel
-          isOpen={isAIPanelOpen}
-          onClose={() => setIsAIPanelOpen(false)}
-          messages={activeMessages}
-          roomName={roomName}
-        />
+      {/* Voice Bar for Radar */}
+      {chatType === 'radar' && (
+        <Suspense fallback={null}>
+          {isVoiceConnected && (
+            <RadarVoiceBar isConnected={isVoiceConnected} onDisconnect={() => setIsVoiceConnected(false)} />
+          )}
+        </Suspense>
       )}
 
-      <section className="chat-main-container" aria-busy={loading}>
-        {expiresAt && <RoomExpiryBanner expiresAt={expiresAt} />}
-        <div className="chat-messages-section">
-          <MessageList
-            messages={activeMessages}
-            currentUserId={user.uid}
-            onDeleteMessage={handleDeleteMessage}
-            onReportMessage={handleReportMessage}
-            onModerateDelete={(messageId) => handleModerateDelete(messageId)}
-            onStartEdit={handleStartEdit}
-            onLoadOlder={loadOlderMessages}
-            hasMoreMessages={!searchQuery.trim() ? hasMoreMessages : false}
-            loadingOlder={loadingOlder}
-            onToggleReaction={handleToggleReaction}
-            canModerate={canModerateRoom}
-            searchQuery={searchQuery}
-            vaultMessages={vaultMessages}
-            onSaveToVault={saveToVault}
-            onRemoveFromVault={removeFromVault}
-            targetLanguage={roomDefaultLanguage}
-          />
-        </div>
-      </section>
+      {/* Message List */}
+      <div className="message-list-canvas" style={{ flex: 1, overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        
+        {/* AI Summary Card */}
+        {summary && (
+          <div className="ai-summary-card" style={{ 
+            background: chatType === 'radar' ? '#202c33' : '#e8f0fe', 
+            borderRadius: '8px', 
+            padding: '12px', 
+            marginBottom: '16px',
+            border: chatType === 'radar' ? '1px solid #00a884' : '1px solid #d1e3fa',
+            position: 'sticky',
+            top: '0',
+            zIndex: '5'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <strong style={{ color: chatType === 'radar' ? '#00a884' : '#1967d2', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Sparkles size={16} /> AI Summary
+              </strong>
+              <button onClick={() => setSummary(null)} style={{ background: 'none', border: 'none', color: '#8696a0', cursor: 'pointer' }}>
+                <X size={16} />
+              </button>
+            </div>
+            <p style={{ margin: '0 0 8px 0', fontSize: '0.9rem', color: chatType === 'radar' ? '#e9edef' : '#3c4043' }}>{summary.summary}</p>
+          </div>
+        )}
 
-      {isVaultOpen && (
-        <div className="vault-overlay">
-          <VaultInterface
-            vaultMessages={vaultMessages}
-            onClose={() => setIsVaultOpen(false)}
-            onDeleteMessage={removeFromVault}
-          />
-        </div>
-      )}
+        {loading ? (
+          <div style={{ textAlign: 'center', color: '#8696a0' }}>Syncing messages...</div>
+        ) : (
+          messages.map((msg) => {
+            const isMe = msg.senderId === currentUser?.uid;
+            const translation = translations[msg.id];
+            
+            return (
+              <div 
+                key={msg.id} 
+                className={`message-bubble ${isMe ? 'outgoing' : 'incoming'}`}
+                style={{
+                  alignSelf: isMe ? 'flex-end' : 'flex-start',
+                  maxWidth: '65%',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  background: isMe ? (chatType === 'radar' ? '#005c4b' : '#d9fdd3') : (chatType === 'radar' ? '#202c33' : '#ffffff'),
+                  color: chatType === 'radar' ? '#e9edef' : '#111b21',
+                  position: 'relative',
+                  borderTopRightRadius: isMe ? '0' : '8px',
+                  borderTopLeftRadius: isMe ? '8px' : '0',
+                }}
+              >
+                {/* Community context: show alias for others */}
+                {chatType === 'radar' && !isMe && (
+                  <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#00a884', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {msg.senderAvatar && <img src={msg.senderAvatar} alt="" style={{ width: '16px', height: '16px', borderRadius: '50%' }} />}
+                    {msg.senderName}
+                  </div>
+                )}
 
-      <div className="typing-area">
-        <TypingIndicator typingUsers={typingUsers} />
+                <div className="text-content">
+                  {msg.text}
+                  {!isMe && (
+                    <button 
+                      className="translate-icon-btn"
+                      onClick={() => handleTranslate(msg.id, msg.text)}
+                      style={{ background: 'none', border: 'none', color: '#8696a0', marginLeft: '8px', cursor: 'pointer', opacity: '0.4' }}
+                    >
+                      <Languages size={14} />
+                    </button>
+                  )}
+                </div>
+
+                {translation && (
+                  <div style={{ marginTop: '4px', paddingTop: '4px', borderTop: '1px solid rgba(0,0,0,0.05)', fontSize: '13px', fontStyle: 'italic', opacity: '0.8' }}>
+                    {translation}
+                  </div>
+                )}
+
+                <div style={{ fontSize: '10px', textAlign: 'right', marginTop: '4px', opacity: 0.6 }}>
+                  {msg.timestamp?.seconds 
+                    ? new Date(msg.timestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    : '...'}
+                </div>
+              </div>
+            );
+          })
+        )}
+        <div ref={bottomRef} />
       </div>
 
-      <div className="chat-input-area">
-        <MessageInput
-          onSendMessage={handleSendMessage}
-          onTyping={handleTyping}
-          editingMessage={editingMessage}
-          onCancelEdit={() => setEditingMessage(null)}
-        />
-      </div>
+      {/* Input Bar */}
+      <footer className="chat-input-bar" style={{ height: '60px', background: chatType === 'radar' ? '#202c33' : '#f0f2f5', display: 'flex', alignItems: 'center', padding: '0 16px', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '12px', color: '#8696a0' }}>
+          <Smile size={24} />
+          <Plus size={24} />
+        </div>
+        <div className="input-pill" style={{ flex: 1, background: chatType === 'radar' ? '#2a3942' : '#ffffff', borderRadius: '24px', padding: '0 16px' }}>
+          <input 
+            type="text" 
+            placeholder={chatType === 'radar' ? `Signal as ${anonymousAlias}...` : "Type a message"} 
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            style={{ width: '100%', height: '40px', border: 'none', background: 'transparent', outline: 'none', color: chatType === 'radar' ? '#e9edef' : '#111b21' }}
+          />
+        </div>
+        <button className="send-btn" onClick={handleSend} style={{ background: 'none', border: 'none', color: '#8696a0', cursor: 'pointer' }}>
+          <Send size={24} />
+        </button>
+      </footer>
     </div>
-  )
-}
-
+  );
+};

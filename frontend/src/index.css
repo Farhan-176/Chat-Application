@@ -8,25 +8,26 @@
 }
 
 :root {
-  /* ── Core Surface Depth ── */
-  --surface-base: #0f1115;      /* The absolute bottom layer */
-  --surface-layer-1: #161920;   /* Sidebars */
-  --surface-layer-2: #1c202a;   /* Main Chat Area */
-  --surface-layer-float: rgba(30, 34, 45, 0.7);
+  /* ── WhatsApp Flat Palette ── */
+  --surface-1: #ffffff;      /* Sidebar Light */
+  --surface-2: #f0f2f5;      /* Canvas Light */
+  --border-color: #e9edef;
+  
+  --accent-primary: #00a884;  /* WhatsApp Green */
+  --text-primary: #111b21;
+  --text-secondary: #667781;
+  
+  --transition-fast: 150ms ease-out;
+}
 
-  /* ── Glass & Borders ── */
-  --glass-blur-md: blur(16px);
-  --border-subtle: rgba(255, 255, 255, 0.05);
-
-  /* ── Brand ── */
-  --accent-primary: #3b82f6;
-  --text-display: #ffffff;
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-
-  /* ── Motion ── */
-  --spring-fluid: cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: 150ms var(--spring-fluid);
+/* Dark Mode Override */
+.app-mode-radar, .theme-dark {
+  --surface-1: #111b21;      /* Sidebar Dark */
+  --surface-2: #0b141a;      /* Canvas Dark */
+  --border-color: #222d34;
+  
+  --text-primary: #e9edef;
+  --text-secondary: #8696a0;
 }
 
 /* LOCKDOWN THE VIEWPORT */
@@ -35,115 +36,19 @@ html, body, #root {
   height: 100vh;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* THIS IS CRITICAL. NO GLOBAL SCROLLING. */
-  background-color: var(--surface-base);
+  overflow: hidden; 
+  background-color: var(--surface-2);
   color: var(--text-primary);
-  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ────────────────────────────────────────────────────────────
-   PREMIUM KEYFRAME ANIMATIONS
-   ──────────────────────────────────────────────────────────── */
 
-@keyframes drift {
-  0% {
-    transform: scale(1) translate(0, 0);
-  }
-
-  50% {
-    transform: scale(1.1) translate(2%, -2%);
-  }
-
-  100% {
-    transform: scale(1) translate(0, 0);
-  }
+/* NUKED GLASSMORPHISM & TEXTURES */
+body::after, body::before {
+  display: none !important;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideFadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(-12px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes pulseGlow {
-    0%, 100% {
-      box-shadow: var(--shadow-md), 0 0 12px rgba(45, 90, 159, 0.3);
-    }
-    50% {
-      box-shadow: var(--shadow-lg), 0 0 20px rgba(45, 90, 159, 0.5);
-    }
-  }
-}
-
-/* Sub-pixel Dot Texture */
-body::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 24px 24px;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(circle at 8% 8%, rgba(79, 140, 255, 0.1), transparent 18%),
-    radial-gradient(circle at 92% 18%, rgba(34, 211, 238, 0.08), transparent 20%);
-  pointer-events: none;
-  z-index: -1;
-}
 
 /* ────────────────────────────────────────────────────────────
    TYPOGRAPHY ENHANCEMENTS

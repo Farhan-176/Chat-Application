@@ -97,7 +97,7 @@
   height: 36px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
   transition: transform 0.2s ease;
 }
 
@@ -140,8 +140,8 @@
   padding: 10px 14px;
   background: #1e222d;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(12px);
+  box-shadow: none;
+  
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   line-height: 1.4;
   border-radius: 18px;
@@ -157,7 +157,7 @@
 .message-bubble.own {
   color: #ffffff;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
+  box-shadow: none;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -268,7 +268,7 @@
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,0.1);
   background: rgba(15, 15, 30, 0.97);
-  backdrop-filter: blur(10px);
+  
 }
 
 .reaction-picker-btn {
@@ -367,9 +367,9 @@
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(15, 15, 30, 0.97);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  box-shadow: none;
+  
+  -webkit-
   padding: 6px;
   z-index: 3;
 }
@@ -477,7 +477,7 @@
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(15, 15, 30, 0.95);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
   font-size: 13px;
 }
 
@@ -590,8 +590,8 @@
 }
 
 @keyframes pulseSending {
-  from { box-shadow: 0 0 0 rgba(59, 130, 246, 0); }
-  to { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+  from { box-shadow: none; }
+  to { box-shadow: none; }
 }
 
 /* Smart Actions Container */
@@ -644,3 +644,4 @@
   color: #f472b6; /* Pink */
   border-color: rgba(244, 114, 182, 0.2);
 }
+

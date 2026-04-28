@@ -130,8 +130,8 @@ export const MessageList = ({
 
       const TIME_THRESHOLD = 5 * 60 * 1000 // 5 minutes
 
-      const isSameUserAsPrev = prevMsg && prevMsg.uid === msg.uid
-      const isSameUserAsNext = nextMsg && nextMsg.uid === msg.uid
+      const isSameUserAsPrev = prevMsg && prevMsg?.uid === msg?.uid
+      const isSameUserAsNext = nextMsg && nextMsg?.uid === msg?.uid
 
       const timeDiffPrev = prevMsg ? new Date(msg.createdAt).getTime() - new Date(prevMsg.createdAt).getTime() : Infinity
       const timeDiffNext = nextMsg ? new Date(nextMsg.createdAt).getTime() - new Date(msg.createdAt).getTime() : Infinity
@@ -214,7 +214,7 @@ export const MessageList = ({
                   text={message.text}
                   senderName={message.displayName || 'Unknown'}
                   sealedUntil={message.sealedUntil || new Date()}
-                  isOwn={message.uid === currentUserId}
+                  isOwn={message?.uid === currentUserId}
                 />
               );
             }
@@ -222,9 +222,9 @@ export const MessageList = ({
             return (
               <div
                 key={message.id}
-                className={`message-wrapper ${message.uid === currentUserId ? 'own' : 'other'} cluster-${position} ${message.isEphemeral ? 'ephemeral' : ''} ${message.dissolved ? 'dissolved' : ''} ${isFirstInSequence ? '' : 'continued'} new-message ${message.isOptimistic ? 'optimistic-sending' : ''}`}
+                className={`message-wrapper ${message?.uid === currentUserId ? 'own' : 'other'} cluster-${position} ${message?.isEphemeral ? 'ephemeral' : ''} ${message?.dissolved ? 'dissolved' : ''} ${isFirstInSequence ? '' : 'continued'} new-message ${message?.isOptimistic ? 'optimistic-sending' : ''}`}
               >
-              {message.uid !== currentUserId && (
+              {message?.uid !== currentUserId && (
                 <div className="message-avatar-wrapper">
                   {isFirstInSequence ? (
                     <>
@@ -253,11 +253,11 @@ export const MessageList = ({
               )}
               
               <div className="message-content-wrapper">
-                {message.uid !== currentUserId && isFirstInSequence && (
+                {message?.uid !== currentUserId && isFirstInSequence && (
                   <div className="message-sender">{message.displayName}</div>
                 )}
                 <div
-                  className={`message-bubble bubble-${position} ${message.uid === currentUserId ? 'own' : 'other'} ${message.mood ? `mood-${message.mood}` : ''} ${message.isEphemeral ? 'ghostly' : ''}`}
+                  className={`message-bubble bubble-${position} ${message?.uid === currentUserId ? 'own' : 'other'} ${message?.mood ? `mood-${message.mood}` : ''} ${message?.isEphemeral ? 'ghostly' : ''}`}
                   style={message.moodColor ? { '--mood-color': message.moodColor } as React.CSSProperties : {}}
                 >
                   {message.isEphemeral && !message.dissolved && (
@@ -408,10 +408,10 @@ export const MessageList = ({
 
                     {actionMenuMessageId === message.id && (
                       <div
-                        className={`message-actions-menu ${message.uid === currentUserId ? 'own' : 'other'}`}
+                        className={`message-actions-menu ${message?.uid === currentUserId ? 'own' : 'other'}`}
                         role="menu"
                       >
-                        {message.uid === currentUserId ? (
+                        {message?.uid === currentUserId ? (
                           <>
                             <button
                               type="button"
@@ -508,7 +508,7 @@ export const MessageList = ({
                 </div>
               </div>
 
-              {message.uid === currentUserId && (
+              {message?.uid === currentUserId && (
                 <div className="message-avatar-wrapper">
                   {isFirstInSequence ? (
                     <>

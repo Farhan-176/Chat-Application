@@ -18,8 +18,8 @@
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.05);
   border: 2px solid var(--vibe-primary, #3b82f6);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  box-shadow: none;
   transition: all var(--vibe-animation-speed, 0.3s) ease-out;
 }
 
@@ -219,3 +219,4 @@
 .sealed-message-bubble.countdown-critical .lock-icon {
   animation: critical-pulse 0.5s ease-in-out infinite;
 }
+

@@ -9,13 +9,10 @@
   width: 340px;
   max-height: calc(100vh - 140px);
   background: rgba(15, 15, 30, 0.97);
-  backdrop-filter: blur(24px) saturate(180%);
+  
   border: 1px solid rgba(99, 102, 241, 0.3);
   border-radius: 16px;
-  box-shadow:
-    0 0 0 1px rgba(99, 102, 241, 0.15),
-    0 24px 64px rgba(0, 0, 0, 0.6),
-    0 0 80px rgba(99, 102, 241, 0.08);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -382,3 +379,4 @@
   color: #334155;
   flex-shrink: 0;
 }
+

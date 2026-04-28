@@ -80,7 +80,7 @@
 .message-input input:focus {
   outline: none;
   border-color: #fbbf24;
-  box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.1);
+  box-shadow: none;
   background-color: #262626;
 }
 
@@ -228,3 +228,4 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #5a5a5a;
 }
+

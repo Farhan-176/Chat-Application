@@ -1,0 +1,126 @@
+.sidebar-hub {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--surface-1);
+}
+
+.sidebar-header {
+  height: 60px;
+  min-height: 60px;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  color: white;
+  font-weight: 700;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-tab {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-tab:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.action-tab.active {
+  color: var(--accent-primary);
+  background: rgba(0, 168, 132, 0.1);
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* WhatsApp Style Contact Rows */
+.contact-item, .hub-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.contact-item:hover, .hub-item:hover {
+  background: var(--surface-2);
+}
+
+.contact-item.active, .hub-item.active {
+  background: var(--surface-2);
+}
+
+.contact-avatar, .hub-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #dfe5e7;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.contact-info, .hub-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-name, .hub-info h3 {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.contact-last-msg, .hub-info span {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contact-meta {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: -12px;
+}

@@ -24,7 +24,7 @@
   top: 0;
   z-index: 100;
   background: rgba(5, 12, 24, 0.78);
-  backdrop-filter: blur(18px);
+  
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -68,7 +68,7 @@
 
 .nav-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 26px rgba(79, 140, 255, 0.38);
+  box-shadow: none;
 }
 
 .hero-section {
@@ -145,7 +145,7 @@
 
 .primary-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 32px rgba(34, 211, 238, 0.32);
+  box-shadow: none;
 }
 
 .secondary-btn {
@@ -198,7 +198,7 @@
   background:
     radial-gradient(circle at top right, rgba(79, 140, 255, 0.22), transparent 28%),
     linear-gradient(180deg, rgba(16, 31, 53, 0.96), rgba(8, 17, 32, 0.98));
-  box-shadow: 0 34px 80px rgba(3, 9, 19, 0.38);
+  box-shadow: none;
   padding: 20px;
 }
 
@@ -378,7 +378,7 @@
 .feature-card:hover {
   transform: translateY(-5px);
   border-color: rgba(30, 202, 211, 0.45);
-  box-shadow: 0 24px 42px rgba(0, 0, 0, 0.32);
+  box-shadow: none;
 }
 
 .feature-card .icon {
@@ -539,7 +539,7 @@
 
 .enterprise-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(79, 140, 255, 0.35);
+  box-shadow: none;
 }
 
 .landing-footer {
@@ -654,3 +654,4 @@
     font-size: clamp(2.6rem, 14vw, 4.8rem);
   }
 }
+

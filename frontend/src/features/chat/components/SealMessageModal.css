@@ -26,7 +26,7 @@
 .seal-modal {
   background: white;
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
   width: 90%;
   max-width: 500px;
   max-height: 90vh;
@@ -130,7 +130,7 @@
   background: #e5e7eb;
   border-color: var(--vibe-primary, #3b82f6);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 }
 
 .duration-btn:active {
@@ -201,7 +201,7 @@
 .input-wrapper:focus-within {
   background: #ffffff;
   border-color: var(--vibe-primary, #3b82f6);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: none;
 }
 
 .input-wrapper svg {
@@ -314,7 +314,7 @@
 
 .btn-seal-custom:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: none;
 }
 
 .btn-seal-custom:disabled {
@@ -455,3 +455,4 @@
     flex-direction: column;
   }
 }
+

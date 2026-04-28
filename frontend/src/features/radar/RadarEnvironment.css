@@ -1,0 +1,165 @@
+/* WhatsApp Style Radar Interface (Neon Dark Theme) */
+
+.radar-main-fill {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #0b141a; /* WhatsApp Dark Canvas */
+}
+
+.radar-room {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Chat Header */
+.radar-room-header {
+  height: 60px;
+  min-height: 60px;
+  background: #111b21; /* WhatsApp Dark Header */
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid #222d34;
+  gap: 12px;
+}
+
+.header-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-meta h2 {
+  font-size: 1rem;
+  color: #e9edef;
+  margin: 0;
+}
+
+.header-meta span {
+  font-size: 0.75rem;
+  color: #8696a0;
+}
+
+/* Radar Specific Actions */
+.radar-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+}
+
+.radar-action-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(0, 168, 132, 0.1);
+  color: #00a884;
+  border: 1px solid rgba(0, 168, 132, 0.2);
+}
+
+/* Message Canvas */
+.radar-room-canvas {
+  flex: 1;
+  background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+  background-color: #0b141a;
+  background-blend-mode: multiply; /* Dark mode blend */
+  overflow: hidden;
+  padding: 10px 0;
+}
+
+/* Message Bubbles */
+.radar-msg {
+  display: flex;
+  flex-direction: column;
+  padding: 2px 5%;
+  margin-bottom: 8px;
+}
+
+.radar-msg.me {
+  align-items: flex-end;
+}
+
+.radar-msg:not(.me) {
+  align-items: flex-start;
+}
+
+.radar-msg-content {
+  max-width: 65%;
+  padding: 6px 12px 8px;
+  border-radius: 8px;
+  position: relative;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 2px;
+  background: #202c33; /* WhatsApp Dark Message bubble */
+  color: #e9edef;
+}
+
+.radar-msg.me .radar-msg-content {
+  background: #005c4b; /* WhatsApp Dark Outgoing Green */
+}
+
+/* Tail Effect */
+.radar-msg:not(.me) .radar-msg-content {
+  border-top-left-radius: 0;
+}
+
+.radar-msg.me .radar-msg-content {
+  border-top-right-radius: 0;
+}
+
+.radar-alias {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #00a884;
+  margin-bottom: 2px;
+  display: block;
+}
+
+.radar-msg.me .radar-alias {
+  color: #00a884;
+  text-align: right;
+}
+
+/* Input Bar */
+.radar-input-container {
+  min-height: 60px;
+  background: #202c33;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+}
+
+.radar-input-box {
+  flex: 1;
+  background: #2a3942;
+  border-radius: 24px;
+  padding: 4px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.radar-input-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 0;
+  outline: none;
+  font-size: 1rem;
+  color: #e9edef;
+}
+
+.radar-send-btn {
+  background: transparent;
+  border: none;
+  color: #8696a0;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.radar-send-btn:hover {
+  color: #e9edef;
+}

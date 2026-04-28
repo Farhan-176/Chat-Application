@@ -1,33 +1,318 @@
-.app-viewport {
-  display: grid;
-  grid-template-columns: 72px 280px 1fr auto;
+/* ─── STRICT WHATSAPP 2-PANE LAYOUT ─── */
+.whatsapp-master-layout {
+  display: flex;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background: var(--surface-base);
-  color: var(--text-primary);
+  background-color: #f0f2f5; /* Standard background */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-.chat-canvas {
-  position: relative;
+/* ─── THE LEFT HUB (30%) ─── */
+.left-hub-pane {
+  flex: 0 0 30%;
+  min-width: 300px;
+  max-width: 415px; /* WhatsApp strictly caps the sidebar width */
+  border-right: 1px solid #d1d7db;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
-  background: var(--surface-layer-2);
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-  box-shadow: -10px 0 30px rgba(0,0,0,0.2);
-  overflow: hidden;
   z-index: 10;
 }
 
-.side-nav-placeholder {
-  width: 72px;
-  background: var(--surface-layer-1);
-  border-right: var(--glass-border);
+/* ─── THE CHAT CANVAS (70%) ─── */
+.main-chat-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #efeae2; /* WhatsApp chat background */
+  position: relative;
+  z-index: 1;
 }
 
-.context-panel-placeholder {
-  width: 0px; /* Optional right sidebar, can be expanded to 300px when active */
-  background: var(--surface-layer-1);
-  border-left: var(--glass-border);
-  transition: width var(--transition-med);
+/* ─── LEFT HUB COMPONENTS ─── */
+
+.hub-header {
+  height: 60px;
+  min-height: 60px;
+  background-color: #f0f2f5;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  justify-content: space-between;
+  border-bottom: 1px solid #d1d7db;
 }
+
+.hub-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #dfe5e7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #54656f;
+  cursor: pointer;
+}
+
+.hub-actions {
+  display: flex;
+  gap: 16px;
+  color: #54656f;
+}
+
+.action-icon {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.action-icon:hover {
+  background-color: rgba(0,0,0,0.05);
+}
+
+.action-icon.active {
+  background-color: rgba(0,0,0,0.1);
+  color: #00a884; /* WhatsApp Green for active tab */
+}
+
+/* ─── SEARCH AREA ─── */
+.search-container {
+  padding: 8px 12px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #d1d7db;
+}
+
+
+.search-pill {
+  background-color: #f0f2f5;
+  border-radius: 8px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+}
+
+.search-pill input {
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 4px 8px;
+  font-size: 14px;
+  color: #3b4a54;
+}
+
+/* ─── CHAT LIST ─── */
+.chat-list {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #ffffff;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 12px;
+  border-bottom: 1px solid #f0f2f5;
+  cursor: pointer;
+  transition: background 150ms ease-out;
+}
+
+.contact-row:hover {
+  background-color: #f5f6f6;
+}
+
+.contact-row.selected {
+  background-color: #f0f2f5;
+}
+
+.row-avatar {
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+  background-color: #dfe5e7;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  color: #54656f;
+}
+
+.row-content {
+  flex: 1;
+  min-width: 0; /* Important for ellipsis */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.contact-name {
+  font-size: 16px;
+  color: #111b21;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.row-time {
+  font-size: 12px;
+  color: #667781;
+}
+
+.row-snippet {
+  font-size: 14px;
+  color: #667781;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── MAIN CHAT INTERFACE ─── */
+
+.chat-header {
+  height: 60px;
+  min-height: 60px;
+  background-color: #f0f2f5;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid #d1d7db;
+  gap: 12px;
+}
+
+.chat-header-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #dfe5e7;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+}
+
+.chat-header-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header-info strong {
+  font-size: 16px;
+  color: #111b21;
+}
+
+.chat-header-info span {
+  font-size: 12px;
+  color: #667781;
+}
+
+/* ─── MESSAGE LIST ─── */
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 5%;
+  background-color: #efeae2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bubble {
+  max-width: 65%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14.2px;
+  line-height: 1.4;
+  position: relative;
+  box-shadow: 0 1px 0.5px rgba(11,20,26,.13);
+}
+
+.bubble-incoming {
+  align-self: flex-start;
+  background-color: #ffffff;
+  color: #111b21;
+}
+
+.bubble-outgoing {
+  align-self: flex-end;
+  background-color: #d9fdd3;
+  color: #111b21;
+}
+
+/* ─── CHAT INPUT ─── */
+.chat-input-area {
+  background-color: #f0f2f5;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-input-pill {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.chat-input-pill input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  padding: 8px 0;
+  font-size: 15px;
+  color: #3b4a54;
+}
+
+.send-btn {
+  color: #54656f;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 20px;
+}
+
+.send-btn:hover {
+  color: #00a884;
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-chat-canvas {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-bottom: 6px solid #25d366; /* WhatsApp brand bottom bar */
+  text-align: center;
+  padding: 40px;
+}
+
+.empty-chat-canvas h2 {
+  font-size: 32px;
+  font-weight: 300;
+  color: #41525d;
+  margin-bottom: 16px;
+}
+
+.empty-chat-canvas p {
+  font-size: 14px;
+  color: #667781;
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+
+

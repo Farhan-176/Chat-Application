@@ -1,19 +1,17 @@
 :root {
-  /* ── Core Surface Depth (The Obsidian Model) ── */
-  --surface-base: #0f1115;      /* Absolute background (underneath everything) */
-  --surface-layer-1: #161920;   /* Sidebar / Nav */
-  --surface-layer-2: #1c202a;   /* Main Chat Area */
-  --surface-layer-float: rgba(30, 34, 45, 0.7); /* Floating elements (Modals, Inputs) */
+  /* ── Core Surface Depth ── */
+  --surface-base: #ffffff;
+  --surface-layer-1: #f8fafc;
+  --surface-layer-2: #f1f5f9;
+  --surface-layer-float: #ffffff;
 
-  /* ── Glassmorphism & Blur ── */
-  --glass-blur-sm: blur(8px);
-  --glass-blur-md: blur(16px);
-  --glass-blur-lg: blur(24px);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.05);
-  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  /* ── Flat Borders ── */
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
 
   /* ── Typography Hierarchy ── */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
   --text-display: #ffffff;
   --text-primary: #e2e8f0;
   --text-secondary: #94a3b8;
@@ -100,15 +98,9 @@ body {
 }
 
 body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: radial-gradient(rgba(88, 108, 138, 0.1) 1px, transparent 1px);
-  background-size: 26px 26px;
-  opacity: 0.5;
-  pointer-events: none;
-  z-index: -1;
+  display: none !important;
 }
+
 
 button,
 input,

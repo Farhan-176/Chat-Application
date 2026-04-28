@@ -37,13 +37,13 @@
 
 .chat-header {
   background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
-  backdrop-filter: blur(10px);
+  
   border-bottom: 1px solid #5b21b6;
 }
 
 .message-bubble.self {
   background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-  box-shadow: 0 8px 16px rgba(124, 58, 237, 0.3);
+  box-shadow: none;
 }
 
 .message-bubble.other {
@@ -67,17 +67,17 @@
 }
 
 .message-input input:focus {
-  box-shadow: 0 0 0 3px rgba(196, 181, 253, 0.3);
+  box-shadow: none;
   border-color: #c4b5fd;
 }
 
 .vibe-button {
   background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+  box-shadow: none;
 }
 
 .vibe-button:hover {
-  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.6);
+  box-shadow: none;
 }
 
 /* Lofi room sidebar with dark theme */
@@ -98,14 +98,14 @@
 .room-item.active {
   background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
   color: #f3e8ff;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+  box-shadow: none;
 }
 
 /* AI Panel with lofi styling */
 .ai-panel {
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(109, 40, 217, 0.1) 100%);
   border: 1px solid #5b21b6;
-  backdrop-filter: blur(10px);
+  
 }
 
 .ai-panel-tab {
@@ -178,5 +178,6 @@
 
 /* Hover glow effect */
 .chat-container:hover .ai-panel {
-  box-shadow: 0 0 20px rgba(196, 181, 253, 0.2);
+  box-shadow: none;
 }
+

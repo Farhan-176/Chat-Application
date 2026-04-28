@@ -1,0 +1,165 @@
+/* WhatsApp Style Chat Interface */
+
+.vault-main-fill {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--surface-2);
+}
+
+.vault-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Chat Header */
+.vault-chat-header {
+  height: 60px;
+  min-height: 60px;
+  background: var(--surface-1);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-color);
+  gap: 12px;
+}
+
+.header-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #dfe5e7;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.contact-status-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-status-stack strong {
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.contact-status-stack span {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Message Canvas */
+.vault-chat-canvas {
+  flex: 1;
+  background: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); /* Classic WhatsApp Background */
+  background-color: var(--surface-2);
+  background-blend-mode: overlay;
+  overflow: hidden;
+  padding: 10px 0;
+}
+
+/* WhatsApp Bubbles */
+.message-group {
+  display: flex;
+  flex-direction: column;
+  padding: 2px 5%;
+  margin-bottom: 8px;
+}
+
+.message-group.me {
+  align-items: flex-end;
+}
+
+.message-group.them {
+  align-items: flex-start;
+}
+
+.message-block {
+  max-width: 65%;
+  padding: 6px 12px 8px;
+  border-radius: 8px;
+  position: relative;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-group.them .message-block {
+  background: var(--surface-1);
+  color: var(--text-primary);
+}
+
+.message-group.me .message-block {
+  background: #d9fdd3; /* WhatsApp Outgoing Green */
+  color: var(--text-primary);
+}
+
+/* Tail Effect - Square off the top corner facing the edge */
+.message-group.them .message-block:first-child {
+  border-top-left-radius: 0;
+}
+
+.message-group.me .message-block:first-child {
+  border-top-right-radius: 0;
+}
+
+.message-text {
+  word-wrap: break-word;
+}
+
+.message-time {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  align-self: flex-end;
+  margin-top: 2px;
+  margin-left: 10px;
+}
+
+/* Input Bar */
+.vault-chat-input {
+  min-height: 60px;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+}
+
+.input-actions {
+  display: flex;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.input-container {
+  flex: 1;
+  background: var(--surface-1);
+  border-radius: 24px;
+  padding: 4px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.input-container input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 0;
+  outline: none;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.send-button {
+  background: transparent;
+  border: none;
+  color: var(--accent-primary);
+  cursor: pointer;
+  padding: 8px;
+  display: grid;
+  place-items: center;
+}

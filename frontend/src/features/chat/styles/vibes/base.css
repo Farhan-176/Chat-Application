@@ -47,7 +47,7 @@
   color: var(--vibe-text);
   border-bottom: 1px solid var(--vibe-border);
   transition: var(--vibe-transition);
-  box-shadow: var(--vibe-shadow);
+  box-shadow: none;
 }
 
 .message-list {
@@ -98,7 +98,7 @@
 .message-input input:focus {
   outline: none;
   border-color: var(--vibe-accent);
-  box-shadow: 0 0 0 3px var(--vibe-glow);
+  box-shadow: none;
 }
 
 /* Buttons */
@@ -116,7 +116,7 @@
 .vibe-button:hover {
   opacity: 0.85;
   transform: translateY(-1px);
-  box-shadow: var(--vibe-shadow-lg);
+  box-shadow: none;
 }
 
 .vibe-button:active {
@@ -156,7 +156,7 @@
   padding: 16px;
   margin: 8px 0;
   transition: var(--vibe-transition);
-  box-shadow: var(--vibe-shadow);
+  box-shadow: none;
 }
 
 .ai-panel-tab {
@@ -249,9 +249,10 @@
 
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 5px var(--vibe-glow);
+    box-shadow: none;
   }
   50% {
-    box-shadow: 0 0 20px var(--vibe-glow);
+    box-shadow: none;
   }
 }
+

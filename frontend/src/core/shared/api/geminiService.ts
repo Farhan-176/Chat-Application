@@ -263,3 +263,19 @@ If no intents found, return an empty array [].`
     return actions
   }
 }
+
+// ─── Feature: Translation ─────────────────────────────────────────────────────
+
+export async function translateMessage(text: string, targetLocale: string): Promise<string> {
+  const prompt = `Translate the following message into the language matching the locale "${targetLocale}". 
+Original message: "${text}"
+
+Return ONLY the translated text. No explanation, no quotes.`
+
+  try {
+    return await callGemini(prompt)
+  } catch (error) {
+    console.error('Translation failed:', error)
+    return text // fallback to original
+  }
+}

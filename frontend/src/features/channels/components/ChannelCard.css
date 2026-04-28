@@ -9,12 +9,12 @@
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   transition: all 0.3s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: none;
 }
 
 .channel-card:hover {
   border-color: #d1d5db;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
   transform: translateY(-4px);
 }
 
@@ -273,3 +273,4 @@
     color: #fca5a5;
   }
 }
+
