@@ -11,9 +11,10 @@ import './AppLayout.css';
 import './App.css';
 
 // Using Lucide-React icons for better UI
-import { MessageSquare, Radio, Settings, LogOut } from 'lucide-react';
+import { MessageSquare, Radio, Settings, LogOut, PlusSquare, Check, CheckCheck } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { auth } from '../shared/config/firebase';
+import { NewChatSidebar } from '../../features/chat/components/NewChatSidebar';
 
 const WhatsAppShell = () => {
   const { currentUser } = useAuth();
@@ -21,6 +22,7 @@ const WhatsAppShell = () => {
   const { rooms: radarRooms, loading: radarLoading } = useRadarRooms();
   const [activeTab, setActiveTab] = useState<'chats' | 'radar'>('chats');
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [isNewChatOpen, setIsNewChatOpen] = useState(false);
 
   // Reset chat selection when switching tabs
   React.useEffect(() => {
@@ -64,59 +66,90 @@ const WhatsAppShell = () => {
             >
               <Radio size={20} />
             </span>
+            <span 
+              className="action-icon" 
+              onClick={() => setIsNewChatOpen(true)}
+              title="New Chat"
+            >
+              <PlusSquare size={20} />
+            </span>
             <span className="action-icon" onClick={handleLogout} title="Logout">
               <LogOut size={20} />
             </span>
           </div>
         </header>
 
-        <div className="search-container">
-          <div className="search-pill">
-            <input type="text" placeholder="Search or start new chat" />
-          </div>
-        </div>
-
-        <div className="chat-list">
-          {isLoading ? (
-            <div style={{ padding: '20px', textAlign: 'center', color: '#667781' }}>
-              {activeTab === 'chats' ? 'Decrypting chats...' : 'Scanning nearby hubs...'}
-            </div>
-          ) : (
-            currentList.map((item: any) => (
-              <div 
-                key={item.id} 
-                className={`contact-row ${activeChatId === item.id ? 'selected' : ''}`}
-                onClick={() => setActiveChatId(item.id)}
-              >
-                <div className="row-avatar">
-                  {item.photoURL ? (
-                    <img src={item.photoURL} alt={item.name} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
-                  ) : (
-                    item.name?.charAt(0) || '?'
-                  )}
-                </div>
-                <div className="row-content">
-                  <div className="row-top">
-                    <span className="contact-name">{item.name}</span>
-                    <span className="row-time">
-                      {activeTab === 'radar' 
-                        ? item.distance || 'Nearby'
-                        : item.lastMessageTimestamp?.seconds 
-                          ? new Date(item.lastMessageTimestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                          : item.time || ''}
-                    </span>
-                  </div>
-                  <span className="row-snippet">
-                    {activeTab === 'radar' 
-                      ? `${item.participantCount || 0} active drifters`
-                      : item.lastMessage || 'No messages yet'}
-                  </span>
-                </div>
+        {isNewChatOpen ? (
+          <NewChatSidebar 
+            onClose={() => setIsNewChatOpen(false)} 
+            onChatSelected={(id) => {
+              setActiveTab('chats');
+              setActiveChatId(id);
+            }} 
+          />
+        ) : (
+          <>
+            <div className="search-container">
+              <div className="search-pill">
+                <input type="text" placeholder="Search or start new chat" />
               </div>
-            ))
-          )}
-        </div>
+            </div>
 
+            <div className="chat-list">
+              {isLoading ? (
+                <div style={{ padding: '20px', textAlign: 'center', color: '#667781' }}>
+                  {activeTab === 'chats' ? 'Decrypting chats...' : 'Scanning nearby hubs...'}
+                </div>
+              ) : (
+                currentList.map((item: any) => (
+                  <div 
+                    key={item.id} 
+                    className={`contact-row ${activeChatId === item.id ? 'selected' : ''}`}
+                    onClick={() => setActiveChatId(item.id)}
+                  >
+                    <div className="row-avatar">
+                      {item.photoURL ? (
+                        <img src={item.photoURL} alt={item.name} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+                      ) : (
+                        item.name?.charAt(0) || '?'
+                      )}
+                    </div>
+                    <div className="row-content">
+                      <div className="row-top">
+                        <span className="contact-name">{item.name}</span>
+                        <span className="row-time">
+                          {activeTab === 'radar' 
+                            ? item.distance || 'Nearby'
+                            : item.lastMessageTimestamp?.seconds 
+                              ? new Date(item.lastMessageTimestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                              : item.time || ''}
+                        </span>
+                      </div>
+                      <span className="row-snippet" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {activeTab === 'chats' && item.lastMessageSenderId === currentUser?.uid && (
+                      <span className="sidebar-status-ticks">
+                        {item.lastMessageStatus === 'read' ? (
+                          <CheckCheck size={14} color="#53bdeb" />
+                        ) : item.lastMessageStatus === 'delivered' ? (
+                          <CheckCheck size={14} color="#8696a0" />
+                        ) : (
+                          <Check size={14} color="#8696a0" />
+                        )}
+                      </span>
+                    )}
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {activeTab === 'radar' 
+                        ? `${item.participantCount || 0} active drifters`
+                        : item.lastMessage || 'No messages yet'}
+                    </span>
+                  </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </>
+        )}
       </aside>
 
       {/* PANE 2: The Active Chat Interface */}

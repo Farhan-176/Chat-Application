@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
-import { File as FileIcon, ExternalLink, MoreHorizontal, Pencil, Trash2, Flag, ShieldAlert, SmilePlus, Calendar, CheckCircle, MapPin, AlertTriangle } from 'lucide-react'
+import { File as FileIcon, ExternalLink, MoreHorizontal, Pencil, Trash2, Flag, ShieldAlert, SmilePlus, Calendar, CheckCircle, MapPin, AlertTriangle, Check, CheckCheck } from 'lucide-react'
 import { Message } from '../../../core/shared/types'
 import { isMessageSealed } from '../utils/sealUtils'
 import SealedMessageBubble from './SealedMessageBubble'
@@ -281,9 +281,20 @@ export const MessageList = ({
                     </div>
 
                     {(!message.attachments || message.attachments.length === 0) && (
-                      <div className="message-meta message-meta-inline">
+                      <div className="message-meta message-meta-inline" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         {message.edited ? <span className="message-edited">(edited)</span> : null}
                         <span className="message-time">{formatTime(message.createdAt)}</span>
+                        {message.uid === currentUserId && (
+                          <span className="status-ticks">
+                            {message.status === 'read' ? (
+                              <CheckCheck size={14} color="#53bdeb" />
+                            ) : message.status === 'delivered' ? (
+                              <CheckCheck size={14} color="#8696a0" />
+                            ) : (
+                              <Check size={14} color="#8696a0" />
+                            )}
+                          </span>
+                        )}
                       </div>
                     )}
                   </div>

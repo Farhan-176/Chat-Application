@@ -29,7 +29,8 @@ service cloud.firestore {
     // ─── USER PROFILES ───
     
     match /users/{userId} {
-      allow read: if isAuthenticated();
+      allow get: if isAuthenticated();
+      allow list: if isAuthenticated(); // Allow querying/searching for discovery
       allow create, update: if isAuthenticated() && request.auth.uid == userId;
       allow delete: if false; 
     }
@@ -75,6 +76,25 @@ service cloud.firestore {
         allow read: if isRoomMember(roomId);
         allow write: if isAuthenticated() && userId == request.auth.uid && isRoomMember(roomId);
       }
+    }
+
+    // ─── PRIVATE ROOMS (VAULT) ───
+    
+    match /rooms/{roomId} {
+      allow read: if isAuthenticated() && request.auth.uid in resource.data.members;
+      allow create: if isAuthenticated() && request.auth.uid in request.resource.data.members;
+      allow update: if isAuthenticated() && request.auth.uid in resource.data.members;
+    }
+
+    match /private_messages/{messageId} {
+      allow read: if isAuthenticated() && (
+        exists(/databases/$(database)/documents/rooms/$(resource.data.conversationId)) &&
+        request.auth.uid in get(/databases/$(database)/documents/rooms/$(resource.data.conversationId)).data.members
+      );
+      allow create: if isAuthenticated() && (
+        exists(/databases/$(database)/documents/rooms/$(request.resource.data.conversationId)) &&
+        request.auth.uid in get(/databases/$(database)/documents/rooms/$(request.resource.data.conversationId)).data.members
+      );
     }
 
     // Public/Shared Invitations

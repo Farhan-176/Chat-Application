@@ -3,7 +3,9 @@ import { useAuth } from '../../../core/auth/AuthContext';
 import { useRadarIdentity } from '../../../core/app/RadarIdentityContext';
 import { useMessages } from '../../../core/shared/hooks/useMessages';
 import { translateMessage, catchMeUp, CatchMeUpResult } from '../../../core/shared/api/geminiService';
-import { Smile, Plus, Send, Sparkles, Languages, X } from 'lucide-react';
+import { Smile, Plus, Send, Sparkles, Languages, X, Check, CheckCheck } from 'lucide-react';
+import { doc, updateDoc, writeBatch, onSnapshot as firestoreSnapshot } from 'firebase/firestore';
+import { db } from '../../../core/shared/config/firebase';
 
 const RadarVoiceBar = lazy(() => import('../../../features/radar/components/RadarVoiceBar').then(m => ({ default: m.RadarVoiceBar })));
 
@@ -33,6 +35,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ roomId, chatType }) => {
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [translatingId, setTranslatingId] = useState<string | null>(null);
   const [isVoiceConnected, setIsVoiceConnected] = useState(false);
+  const [presence, setPresence] = useState<{ isOnline: boolean; lastSeen?: any; isTyping?: boolean }>({ isOnline: false });
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom
@@ -41,6 +44,55 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ roomId, chatType }) => {
       bottomRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  // Read Receipt Logic: Mark as read when room is active
+  useEffect(() => {
+    if (!messages.length || chatType !== 'chats') return;
+
+    const unreadMessages = messages.filter(m => m.senderId !== currentUser.uid && m.status !== 'read');
+    if (unreadMessages.length > 0) {
+      const batch = writeBatch(db);
+      unreadMessages.forEach(msg => {
+        const msgRef = doc(db, 'private_messages', msg.id);
+        batch.update(msgRef, { status: 'read' });
+      });
+      batch.commit().catch(err => console.error('Read receipt update failed:', err));
+    }
+  }, [messages, chatType, currentUser.uid]);
+
+  // Presence & Typing Listener
+  useEffect(() => {
+    if (chatType !== 'chats' || !roomId) return;
+    
+    // In a 1:1 chat, roomId is the conversation ID. We need the OTHER user's UID.
+    // This assumes usePrivateChats has already resolved the target user.
+    // For now, we query the room's members to find the other user.
+    const roomRef = doc(db, 'rooms', roomId);
+    let unsubscribePresence: () => void;
+
+    const unsubRoom = firestoreSnapshot(roomRef, (snapshot) => {
+      const data = snapshot.data();
+      if (!data) return;
+      const otherUid = data.members.find((uid: string) => uid !== currentUser.uid);
+      if (!otherUid) return;
+
+      unsubscribePresence = firestoreSnapshot(doc(db, 'users', otherUid), (userSnap) => {
+        const userData = userSnap.data();
+        if (userData) {
+          setPresence({
+            isOnline: userData.status === 'online',
+            lastSeen: userData.lastActive,
+            isTyping: userData.typingIn === roomId
+          });
+        }
+      });
+    });
+
+    return () => {
+      unsubRoom();
+      if (unsubscribePresence) unsubscribePresence();
+    };
+  }, [roomId, chatType, currentUser.uid]);
 
   const handleSend = async () => {
     if (!inputValue.trim() || !currentUser?.uid) return;
@@ -89,9 +141,19 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ roomId, chatType }) => {
         </div>
         <div className="header-info" style={{ marginLeft: '12px' }}>
           <div style={{ fontWeight: '500', color: chatType === 'radar' ? '#e9edef' : '#111b21' }}>
-            {chatType === 'radar' ? `Hub: ${roomId.slice(0, 8)}` : `Contact: ${roomId.slice(0, 8)}`}
+            {chatType === 'radar' ? `Hub: ${roomId.slice(0, 8)}` : `Chat`}
           </div>
-          <div style={{ fontSize: '12px', color: '#8696a0' }}>online</div>
+          <div style={{ fontSize: '12px', color: presence.isOnline ? '#00a884' : '#8696a0', fontWeight: presence.isOnline ? 'bold' : 'normal' }}>
+            {presence.isTyping ? (
+              <span style={{ fontStyle: 'italic', color: '#00a884' }}>typing...</span>
+            ) : presence.isOnline ? (
+              'online'
+            ) : presence.lastSeen ? (
+              `last seen ${new Date(presence.lastSeen.seconds * 1000).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`
+            ) : (
+              'offline'
+            )}
+          </div>
         </div>
         <div className="header-actions" style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>
           <button 
@@ -200,10 +262,22 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ roomId, chatType }) => {
                   </div>
                 )}
 
-                <div style={{ fontSize: '10px', textAlign: 'right', marginTop: '4px', opacity: 0.6 }}>
+                <div style={{ fontSize: '10px', textAlign: 'right', marginTop: '4px', opacity: 0.6, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
                   {msg.timestamp?.seconds 
                     ? new Date(msg.timestamp.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                     : '...'}
+                  
+                  {isMe && chatType === 'chats' && (
+                    <span className="status-ticks">
+                      {msg.status === 'read' ? (
+                        <CheckCheck size={14} color="#53bdeb" />
+                      ) : msg.status === 'delivered' ? (
+                        <CheckCheck size={14} color="#8696a0" />
+                      ) : (
+                        <Check size={14} color="#8696a0" />
+                      )}
+                    </span>
+                  )}
                 </div>
               </div>
             );
